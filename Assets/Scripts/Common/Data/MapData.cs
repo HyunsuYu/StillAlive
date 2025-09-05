@@ -15,4 +15,9 @@ public struct MapData
 
     public bool[,] NodePlane;
     public Dictionary<int, List<Node>> Nodes;
+
+    public Vector2Int MapSize;
+
+    public int MaxYPos;
+    public int DayOffset;
 }
