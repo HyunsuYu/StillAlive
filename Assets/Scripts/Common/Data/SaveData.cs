@@ -30,4 +30,6 @@ public struct SaveData
     public List<string> ConversationInfos;
 
     public List<CardData> LastCombatEnemys;
+
+    public List<Vector2Int> PassedWays;
 }

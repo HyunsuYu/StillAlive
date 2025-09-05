@@ -66,8 +66,9 @@ public class BattleField : MonoBehaviour
         for (int i = 0; i < _friendlyCardCount; i++)
         {
             Vector3 cardPosition = startPosition + new Vector3(i * playerCardSpacing, 0, 0);
-            BattleCard newCard = Instantiate(m_cardPrefab, cardPosition, playerFieldAnchor.rotation).AddComponent<BattleCard>();
-            // newCard.Init(_playerCardDatas[i]);
+            GameObject newCardObject = Instantiate(m_cardPrefab, cardPosition, playerFieldAnchor.rotation);
+            BattleCard newCard = newCardObject.AddComponent<BattleCard>();
+            newCard.Init(_playerCardDatas[i]);
             newCard.transform.SetParent(playerFieldAnchor);
             m_friendlyCardList.Add(newCard);
         }
@@ -124,8 +125,9 @@ public class BattleField : MonoBehaviour
             for (int i = 0; i < enemyDatas.Count; i++)
             {
                 Vector3 cardPosition = startPosition + new Vector3(i * enemyCardSpacing, 0, 0);
-                BattleCard newCard = Instantiate(m_cardPrefab, cardPosition, enemyFieldAnchor.rotation).AddComponent<BattleCard>();
-                // newCard.Init(enemyDatas[i]);
+                GameObject newCardObject = Instantiate(m_cardPrefab, cardPosition, enemyFieldAnchor.rotation);
+                BattleCard newCard = newCardObject.AddComponent<BattleCard>();
+                newCard.Init(enemyDatas[i]);
                 newCard.transform.SetParent(enemyFieldAnchor);
                 m_enemyCardList.Add(newCard);
             }

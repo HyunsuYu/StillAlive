@@ -6,7 +6,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NPCLookPart", menuName = "StillAlive/NPCLookPart")]
 public class NPCLookPart : ScriptableObject
 {
-    [Serializable] public struct ColorPallete
+    [Serializable] public struct ColorPalette
     {
         [Serializable] public struct LookPartColors
         {
@@ -41,5 +41,5 @@ public class NPCLookPart : ScriptableObject
     public Sprite[] BackHairs;
 
 
-    public ColorPallete[] ColorPalletes;
+    public ColorPalette[] ColorPalettes;
 }

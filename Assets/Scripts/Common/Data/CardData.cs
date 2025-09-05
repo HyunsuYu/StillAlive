@@ -48,7 +48,7 @@ public struct CardData
         return status;
     }
 
-    // ÇÃ·¹ÀÌ¾î¶ó¸é 
+    // í”Œë ˆì´ì–´ ì—¬ë¶€
     public bool BIsPlayer;
     
     public Dictionary<NPCLookPartType, int> NPCLookTable;
