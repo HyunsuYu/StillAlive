@@ -19,19 +19,6 @@ public sealed class SaveDataBuffer : SingleTonForGameObject<SaveDataBuffer>
         SetInstance(this);
     }
 
-    internal SaveData Data
-    {
-        get
-        {
-            if(m_curSaveData == null)
-            {
-                throw new Exception("Cur Save Data is Empty");
-            }
-
-            return m_curSaveData.Value;
-        }
-    }
-
     private SaveData DefaultSaveData
     {
         get
