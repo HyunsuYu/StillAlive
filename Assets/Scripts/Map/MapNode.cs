@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
@@ -17,8 +18,9 @@ public sealed class MapNode : MonoBehaviour
 
 
     private EventNodeType m_eventNodeType;
-    [SerializeField] private Vector2Int m_position;
+    private Vector2Int m_position;
 
+    [SerializeField] private GameObject m_gameObject_CurPosIcon;
     [SerializeField] private Sprite[] m_Icons;
 
     private SpriteRenderer m_spriteRenderer_Icon;
@@ -78,30 +80,15 @@ public sealed class MapNode : MonoBehaviour
         }
 
         #region Render
-        Vector2Int curPlayerMapPos = SaveDataBuffer.Instance.Data.CurPlayerMapPos;
-        List<Vector2Int> linkedNodePoses = null;
-        foreach (var nodeData in SaveDataBuffer.Instance.Data.MapData.Value.Nodes[curPlayerMapPos.y])
-        {
-            if (nodeData.XPos == curPlayerMapPos.x)
-            {
-                linkedNodePoses = nodeData.LinkedNodePoses;
-                break;
-            }
-        }
-        foreach(int yPos in SaveDataBuffer.Instance.Data.MapData.Value.Nodes.Keys)
-        {
-            foreach(var nodeData in SaveDataBuffer.Instance.Data.MapData.Value.Nodes[yPos])
-            {
-                if(nodeData.LinkedNodePoses.Contains(SaveDataBuffer.Instance.Data.CurPlayerMapPos))
-                {
-                    linkedNodePoses.Add(new Vector2Int(nodeData.XPos, yPos));
-                }
-            }
-        }
-
-        if(!linkedNodePoses.Contains(m_position))
+        List<Vector2Int> linkedNodePoses = MapRenderControl.GetCurNextLinkedNodePoses();
+        if (!linkedNodePoses.Contains(m_position))
         {
             m_spriteRenderer_Icon.color = Color.Lerp(m_spriteRenderer_Icon.color, Color.black, 0.5f);
+        }
+
+        if(SaveDataBuffer.Instance.Data.CurPlayerMapPos == m_position)
+        {
+            m_gameObject_CurPosIcon.SetActive(true);
         }
         #endregion
     }

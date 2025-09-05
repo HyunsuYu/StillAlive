@@ -13,6 +13,10 @@ public class NPCLookPart : ScriptableObject
             public Color RedRegionColor;
             public Color BlueRegionColor;
             public Color GreenRegionColor;
+            public Color RedGreenRegionColor;
+            public Color RedBlueRegionColor;
+            public Color GreenBlueRegionColor;
+            public Color RedGreenBlueRegionColor;
         }
 
 
