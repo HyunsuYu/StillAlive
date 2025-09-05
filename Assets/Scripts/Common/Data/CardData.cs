@@ -25,7 +25,9 @@ public struct CardData
 
     public struct StatusInfo
     {
-        public int HP;
+        public int MaxHP;
+        public int CurHP;
+
         public int AttackPower;
         public int DefencePower;
         public int Speed;
@@ -48,6 +50,8 @@ public struct CardData
     public bool BIsPlayer;
     
     public Dictionary<NPCLookPartType, int> NPCLookTable;
+
+    public bool BIsTraitor;
 
     public DiseasesType Diseases;
 
