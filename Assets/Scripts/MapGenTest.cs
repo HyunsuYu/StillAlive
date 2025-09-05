@@ -1,16 +1,20 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 using UnityEngine;
 
+using CommonUtilLib.ThreadSafe;
 
-public sealed class MapGenTest : MonoBehaviour
+
+public class MapGenTest : SingleTonForGameObject<MapGenTest>
 {
-    internal struct Node
-    {
-        public int XPos;
-        public List<Vector2Int> LinkedNodePoses;
-    }
+    //internal struct Node
+    //{
+    //    public int XPos;
+    //    public List<Vector2Int> LinkedNodePoses;
+    //    public MapNode.EventNodeType EventNodeType;
+    //}
 
 
     [SerializeField] private GameObject m_prefab_Node;
@@ -18,7 +22,7 @@ public sealed class MapGenTest : MonoBehaviour
 
     [Header("Map Gen Setting")]
     [SerializeField] private Vector2Int m_mapSize;
-    [SerializeField] private float m_nodeFillPercent;
+    private float m_nodeFillPercent;
 
     [Header("Node Setting")]
     [SerializeField] private int m_startNodeXPos;
@@ -33,38 +37,39 @@ public sealed class MapGenTest : MonoBehaviour
 
     [SerializeField] private float m_nodeSpawnPosWiggleWeight;
 
-    // Datas
     private bool[,] m_nodePlane;
+  
+    private Dictionary<int, List<MapData.Node>> m_nodes = new Dictionary<int, List<MapData.Node>>();
 
-    // n                 Ʈ              
-    private Dictionary<int, List<Node>> m_nodes = new Dictionary<int, List<Node>>();
+    private Dictionary<Vector2Int, MapNode> m_mapNodeTable = new Dictionary<Vector2Int, MapNode>();
 
 
-    public void Awake()
+    internal bool[,] NodePlane
+    {
+        get
+        {
+            return m_nodePlane;
+        }
+    }
+    internal Dictionary<int, List<MapData.Node>> Nodes
+    {
+        get
+        {
+            return m_nodes;
+        }
+    }
+    internal Dictionary<Vector2Int, MapNode> MapNodeTable
+    {
+        get
+        {
+            return m_mapNodeTable;
+        }
+    }
+
+    internal void GenerateMap()
     {
         Init();
-        GenerateMap();
-    }
 
-    private void Init()
-    {
-        if (m_mapSize.x % 2 == 0)
-        {
-            throw new System.Exception("Map Size X is Even Number");
-        }
-        else if (m_startNodeXPos < 0 || m_startNodeXPos >= m_mapSize.x)
-        {
-            throw new System.Exception("Start Node X Pos is Out of Range");
-        }
-
-        m_nodePlane = new bool[m_mapSize.y, m_mapSize.x];
-        for (int index = 0; index < m_mapSize.y; index++)
-        {
-            m_nodes.Add(index, new List<Node>());
-        }
-    }
-    private void GenerateMap()
-    {
         #region Gen Random Node Plane
         int filledNodeCount = (int)((m_mapSize.x * m_mapSize.y) * m_nodeFillPercent);
 
@@ -84,8 +89,8 @@ public sealed class MapGenTest : MonoBehaviour
             {
                 Vector2 targetPos = new Vector2()
                 {
-                    x = Random.Range(0, m_mapSize.x),
-                    y = Random.Range(0, m_mapSize.y)
+                    x = UnityEngine.Random.Range(0, m_mapSize.x),
+                    y = UnityEngine.Random.Range(0, m_mapSize.y)
                 };
 
                 // Check Shape
@@ -132,6 +137,8 @@ public sealed class MapGenTest : MonoBehaviour
                     // For Visual
                     GameObject nodeObject = Instantiate(m_prefab_Node, GetNodePos(new Vector2Int(coord_x, coord_y)), Quaternion.identity);
                     nodeObject.transform.SetParent(this.transform);
+
+                    m_mapNodeTable.Add(new Vector2Int(coord_x, coord_y), nodeObject.GetComponent<MapNode>());
                 }
             }
         }
@@ -182,10 +189,11 @@ public sealed class MapGenTest : MonoBehaviour
                         pathLinkCandidates.Add(targetNodePos);
                     }
 
-                    Node node = new Node()
+                    MapData.Node node = new MapData.Node()
                     {
                         XPos = coord_x,
-                        LinkedNodePoses = new List<Vector2Int>()
+                        LinkedNodePoses = new List<Vector2Int>(),
+                        EventNodeType = (MapNode.EventNodeType)UnityEngine.Random.Range(0, Enum.GetNames(typeof(MapNode.EventNodeType)).Length)
                     };
                     pathLinkCandidates = RandomizePathCandidatePoses(pathLinkCandidates);
                     for (int pathLinkCandidateIndex = 0; pathLinkCandidateIndex < pathLinkCandidates.Count; pathLinkCandidateIndex++)
@@ -198,6 +206,7 @@ public sealed class MapGenTest : MonoBehaviour
                     }
 
                     m_nodes[coord_y].Add(node);
+                    m_mapNodeTable[new Vector2Int(coord_x, coord_y)].Init(node.EventNodeType);
                 }
             }
         }
@@ -235,7 +244,7 @@ public sealed class MapGenTest : MonoBehaviour
         #region Spawn Path
         foreach (int coord_y in m_nodes.Keys)
         {
-            foreach (Node node in m_nodes[coord_y])
+            foreach (MapData.Node node in m_nodes[coord_y])
             {
                 //Debug.Log($"Node X Pos: {node.XPos}, Linked Node Count: {node.LinkedNodePoses.Count}");
                 foreach (Vector2Int linkedNodePos in node.LinkedNodePoses)
@@ -251,6 +260,24 @@ public sealed class MapGenTest : MonoBehaviour
             }
         }
         #endregion
+    }
+
+    private void Init()
+    {
+        if (m_mapSize.x % 2 == 0)
+        {
+            throw new System.Exception("Map Size X is Even Number");
+        }
+        else if (m_startNodeXPos < 0 || m_startNodeXPos >= m_mapSize.x)
+        {
+            throw new System.Exception("Start Node X Pos is Out of Range");
+        }
+
+        m_nodePlane = new bool[m_mapSize.y, m_mapSize.x];
+        for (int index = 0; index < m_mapSize.y; index++)
+        {
+            m_nodes.Add(index, new List<MapData.Node>());
+        }
     }
 
     //       ġ               Խ Ŵ
@@ -277,10 +304,15 @@ public sealed class MapGenTest : MonoBehaviour
         List<Vector2Int> randomizedPathLinkCandidates = new List<Vector2Int>();
         while (pathLinkCandidates.Count > 0)
         {
-            int randomIndex = Random.Range(0, pathLinkCandidates.Count);
+            int randomIndex = UnityEngine.Random.Range(0, pathLinkCandidates.Count);
             randomizedPathLinkCandidates.Add(pathLinkCandidates[randomIndex]);
             pathLinkCandidates.RemoveAt(randomIndex);
         }
         return randomizedPathLinkCandidates;
+    }
+
+    protected override void Dispose(bool bisDisposing)
+    {
+        throw new NotImplementedException();
     }
 }
