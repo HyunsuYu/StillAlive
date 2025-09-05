@@ -9,6 +9,7 @@ public struct MapData
     {
         public int XPos;
         public List<Vector2Int> LinkedNodePoses;
+        public MapNode.EventNodeType EventNodeType;
     }
 
 
