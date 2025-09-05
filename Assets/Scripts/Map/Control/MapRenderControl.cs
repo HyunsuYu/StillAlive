@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.Linq;
 
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 
 using CommonUtilLib.ThreadSafe;
+using Unity.VisualScripting;
 
 
 public sealed class MapRenderControl : SingleTonForGameObject<MapRenderControl>
@@ -66,26 +68,14 @@ public sealed class MapRenderControl : SingleTonForGameObject<MapRenderControl>
 
         if(Input.GetMouseButtonDown(0))
         {
-            Vector2Int curPlayerMapPos = SaveDataBuffer.Instance.Data.CurPlayerMapPos;
-            List<Vector2Int> linkedNodePoses = null;
-            foreach (var nodeData in SaveDataBuffer.Instance.Data.MapData.Value.Nodes[curPlayerMapPos.y])
+            List<Vector2Int> linkedNodePoses = GetCurNextLinkedNodePoses();
+
+            string log = string.Empty;
+            foreach(var nodePoses in linkedNodePoses)
             {
-                if (nodeData.XPos == curPlayerMapPos.x)
-                {
-                    linkedNodePoses = nodeData.LinkedNodePoses;
-                    break;
-                }
+                log += nodePoses.ToString() + "\n";
             }
-            foreach (int yPos in SaveDataBuffer.Instance.Data.MapData.Value.Nodes.Keys)
-            {
-                foreach (var nodeData in SaveDataBuffer.Instance.Data.MapData.Value.Nodes[yPos])
-                {
-                    if (nodeData.LinkedNodePoses.Contains(SaveDataBuffer.Instance.Data.CurPlayerMapPos))
-                    {
-                        linkedNodePoses.Add(new Vector2Int(nodeData.XPos, yPos));
-                    }
-                }
-            }
+            Debug.Log(log);
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit[] hits = Physics.RaycastAll(ray);
@@ -102,6 +92,7 @@ public sealed class MapRenderControl : SingleTonForGameObject<MapRenderControl>
                     SaveData curSaveData = SaveDataBuffer.Instance.Data;
                     curSaveData.CurPlayerMapPos = mapNode.Position;
                     curSaveData.DPlusDay++;
+                    curSaveData.PassedWays.Add(mapNode.Position);
                     SaveDataBuffer.Instance.TrySetData(curSaveData);
                     SaveDataBuffer.Instance.TrySaveData();
 
@@ -132,12 +123,57 @@ public sealed class MapRenderControl : SingleTonForGameObject<MapRenderControl>
         }
     }
 
+    internal static List<Vector2Int> GetCurNextLinkedNodePoses()
+    {
+        Vector2Int curPlayerMapPos = SaveDataBuffer.Instance.Data.CurPlayerMapPos;
+        List<Vector2Int> linkedNodePoses = null;
+        foreach (var nodeData in SaveDataBuffer.Instance.Data.MapData.Value.Nodes[curPlayerMapPos.y])
+        {
+            if (nodeData.XPos == curPlayerMapPos.x)
+            {
+                linkedNodePoses = ((Vector2Int[])nodeData.LinkedNodePoses.ToArray().Clone()).ToList();
+                break;
+            }
+        }
+
+        foreach (int yPos in SaveDataBuffer.Instance.Data.MapData.Value.Nodes.Keys)
+        {
+            foreach (var nodeData in SaveDataBuffer.Instance.Data.MapData.Value.Nodes[yPos])
+            {
+                Vector2Int curPos = new Vector2Int(nodeData.XPos, yPos);
+                if (nodeData.LinkedNodePoses.Contains(SaveDataBuffer.Instance.Data.CurPlayerMapPos)
+                    && !linkedNodePoses.Contains(curPos))
+                {
+                    linkedNodePoses.Add(curPos);
+                }
+            }
+        }
+
+        List<int> removalLinkIndexes = new List<int>();
+        for (int index = 0; index < linkedNodePoses.Count; index++)
+        {
+            if (linkedNodePoses[index].y <= curPlayerMapPos.y)
+            {
+                removalLinkIndexes.Add(index);
+            }
+        }
+        for (int index = removalLinkIndexes.Count - 1; index >= 0; index--)
+        {
+            linkedNodePoses.RemoveAt(removalLinkIndexes[index]);
+        }
+
+        return linkedNodePoses;
+    }
+
+
     internal void Render()
     {
         if(!SaveDataBuffer.Instance.Data.MapData.HasValue)
         {
             MapGenerator.Instance.GenerateMap();
         }
+
+        Debug.Log(SaveDataBuffer.Instance.Data.CurPlayerMapPos);
 
         MapData mapData = SaveDataBuffer.Instance.Data.MapData.Value;
 
