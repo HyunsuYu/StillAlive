@@ -1,56 +1,35 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BattleCard : MonoBehaviour
 {
-    // NPCLookPart 에셋을 연결하기 위한 public 변수
-    public NPCLookPart lookPartData;
-
     private CardData m_myData;
-    private Renderer m_renderer;
 
-    private void Awake()
-    {
-        m_renderer = GetComponent<Renderer>();
-        if (m_renderer == null)
-        {
-            m_renderer = GetComponentInChildren<Renderer>();
-        }
-    }
+    [SerializeField] private Transform portraitPos;
+    private NPCPortrait m_portraitInstance; // 생성된 초상화 인스턴스
 
     public void Init(CardData _data)
     {
         m_myData = _data;
 
-
-        ApplyColorPalette(partType);
-
-    }   
-
-    /// <summary>
-    /// 지정된 부위의 색상을 마스킹 셰이더에 적용합니다.
-    /// 팔레트 인덱스는 m_myData에서 가져옵니다.
-    /// </summary>
-    /// <param name="_partType">색상을 가져올 부위 (상의, 얼굴 등)</param>
-    public void ApplyColorPalette(CardData.NPCLookPartType _partType)
-    {
-        int paletteIndex = m_myData.ColorPalleteIndex;
-
-        if (paletteIndex < 0 || paletteIndex >= lookPartData.ColorPalettes.Length)
+        // 기존 초상화가 있다면 파괴
+        if (m_portraitInstance != null)
         {
-            Debug.LogError($"유효하지 않은 팔레트 인덱스({paletteIndex})입니다.");
-            return;
+            Destroy(m_portraitInstance);
         }
 
-        // ScriptableObject에서 팔레트 데이터 가져오기
-        NPCLookPart.ColorPalette palette = lookPartData.ColorPalettes[paletteIndex];
-        int partIndex = m_myData.NPCLookTable[_partType];
-
-
-        // 중요: .sharedMaterial 대신 .material을 사용해야 이 오브젝트에만 변경사항이 적용됩니다.
-        Material mat = m_renderer.material;
-        mat.SetColor("_ColorR", partColors.RedRegionColor);
-        mat.SetColor("_ColorG", partColors.GreenRegionColor);
-        mat.SetColor("_ColorB", partColors.BlueRegionColor);
+        // CharacterPortraitHelper를 사용하여 초상화 생성 (Resources에서 자동 로드)
+        m_portraitInstance = CharacterPortraitHelper.CreatePortrait(m_myData).GetComponent<NPCPortrait>();
+        
+        if (m_portraitInstance != null)
+        {
+            // 생성된 초상화를 이 오브젝트의 자식으로 설정
+            m_portraitInstance.transform.SetParent(portraitPos);
+        }
+        else
+        {
+            Debug.LogWarning("BattleCard: 초상화 생성에 실패했습니다. Resources 폴더에 'Portrait' 프리팹과 'NPCLookPart' 에셋이 있는지 확인해주세요.");
+        }
     }
 
     public int GetSpeed()
@@ -79,5 +58,25 @@ public class BattleCard : MonoBehaviour
     public bool IsDead()
     {
         return m_myData.Status.CurHP <= 0;
+    }
+   
+    /// <summary>
+    /// 특정 부위의 색상만 변경합니다.
+    /// </summary>
+    public void ChangePartColor(CardData.NPCLookPartType partType)
+    {
+        if (m_portraitInstance != null)
+        {
+            CharacterPortraitHelper.ApplyPartColor(m_portraitInstance.gameObject, partType);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        // 오브젝트가 파괴될 때 초상화도 함께 정리
+        if (m_portraitInstance != null)
+        {
+            Destroy(m_portraitInstance);
+        }
     }
 }

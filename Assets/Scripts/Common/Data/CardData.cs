@@ -13,8 +13,10 @@ public struct CardData
         Mouth,
         Glasses,
         Cap,
-        hair
+        FrontHair,
+        BackHair
     }
+
     public enum DiseasesType : byte
     {
         None        = 0b0000_0000,

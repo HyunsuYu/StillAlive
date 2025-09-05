@@ -38,7 +38,7 @@ public class BattleField : MonoBehaviour
         m_enemyCardList = new List<BattleCard>();
 
         List<CardData> cardDatas = SaveDataBuffer.Instance.Data.CardDatas;
-
+                
         Vector2Int nowPlayerMapPos = SaveDataBuffer.Instance.Data.CurPlayerMapPos;
 
         // TODO: 나중에 적용해야 할 코드 
@@ -61,10 +61,21 @@ public class BattleField : MonoBehaviour
 
         // 플레이어 카드 세팅
         float totalWidth = (_friendlyCardCount - 1) * playerCardSpacing;
-        Vector3 startPosition = playerFieldAnchor.position - new Vector3(totalWidth / 2f, 0, 0);       
+        Vector3 startPosition = playerFieldAnchor.position - new Vector3(totalWidth / 2f, 0, 0);
+        
+        _playerCardDatas = new List<CardData>();
 
         for (int i = 0; i < _friendlyCardCount; i++)
         {
+            CardData cd = new CardData();
+            _playerCardDatas.Add(cd);
+            cd.NPCLookTable = new Dictionary<NPCLookPartType, int>();
+
+            _playerCardDatas[i].NPCLookTable[NPCLookPartType.Face] = 0;
+            _playerCardDatas[i].NPCLookTable[NPCLookPartType.Eye] = 0;
+            _playerCardDatas[i].NPCLookTable[NPCLookPartType.Glasses] = 0;
+
+
             Vector3 cardPosition = startPosition + new Vector3(i * playerCardSpacing, 0, 0);
             GameObject newCardObject = Instantiate(m_cardPrefab, cardPosition, playerFieldAnchor.rotation);
             BattleCard newCard = newCardObject.AddComponent<BattleCard>();
