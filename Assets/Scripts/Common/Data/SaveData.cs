@@ -5,6 +5,13 @@ using UnityEngine;
 
 public struct SaveData
 {
+    public struct IntelnfoData
+    {
+        public List<string> RadioInfos;
+        public List<string> ConversationInfos;
+    }
+
+
     public List<CardData> CardDatas;
 
     /// <summary>
@@ -18,4 +25,9 @@ public struct SaveData
     public int DPlusDay;
 
     public int Money;
+
+    public List<string> RadioInfos;
+    public List<string> ConversationInfos;
+
+    public List<CardData> LastCombatEnemys;
 }
