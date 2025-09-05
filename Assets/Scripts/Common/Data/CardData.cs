@@ -31,10 +31,22 @@ public struct CardData
         public int Speed;
     }
 
-
     public StatusInfo Status;
 
+    public static StatusInfo DefaultStatus()
+    {
+        StatusInfo status = new StatusInfo();
+        status.HP = Random.Range(1,4);
+        status.AttackPower = Random.Range(1,4);
+        status.DefencePower = Random.Range(1,4);
+        status.Speed = Random.Range(1,4);
+
+        return status;
+    }
+
+    // 플레이어라면 
     public bool BIsPlayer;
+    
     public Dictionary<NPCLookPartType, int> NPCLookTable;
 
     public DiseasesType Diseases;

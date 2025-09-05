@@ -7,8 +7,8 @@ public class BattleField : MonoBehaviour
     [SerializeField] private GameObject m_cardPrefab;
 
     [Header("카드 필드 리스트")]
-    private List<GameObject> m_friendlyCardList = new List<GameObject>();
-    private List<GameObject> m_enemyCardList = new List<GameObject>();
+    private List<BattleCard> m_friendlyCardList;
+    private List<BattleCard> m_enemyCardList;
 
     [Header("플레이어 진영 설정")]
     [SerializeField] private Transform playerFieldAnchor;
@@ -18,33 +18,53 @@ public class BattleField : MonoBehaviour
     [SerializeField] private Transform enemyFieldAnchor;
     [SerializeField] private float enemyCardSpacing = 1.5f;
 
+    // BattleField 세팅
+    // 0. 세이브 데이터 로드하여 card, Item(인벤토리), 
+    // 1. 카드 세팅
+    // 2. UI 세팅
+    public void Awake()
+    {
+        SaveDataBuffer.Instance.TryLoadData();
+        
+        m_friendlyCardList  = new List<BattleCard>();
+        m_enemyCardList = new List<BattleCard>();
+
+        List<CardData> cardDatas = SaveDataBuffer.Instance.Data.CardDatas;
+
+        PlaceCards(cardDatas.Count, 4, cardDatas);
+    }
 
     /// <summary>
     /// 월드 공간에 카드 GameObject를 배치하고 정렬하는 재사용 가능한 함수
     /// </summary>
-    private void PlaceCards(int friendlyCardCount, int enemyCardCount)
+    private void PlaceCards(int _friendlyCardCount, int _enemyCardCount, List<CardData> _playerCardDatas)
     {
-        if (friendlyCardCount <= 0 || enemyCardCount <= 0) return;
+        if (_friendlyCardCount <= 0 || _enemyCardCount <= 0) return;
 
-        float totalWidth = (friendlyCardCount - 1) * playerCardSpacing;
-        Vector3 startPosition = playerFieldAnchor.position - new Vector3(totalWidth / 2f, 0, 0);
+        float totalWidth = (_friendlyCardCount - 1) * playerCardSpacing;
+        Vector3 startPosition = playerFieldAnchor.position - new Vector3(totalWidth / 2f, 0, 0);       
 
-        for (int i = 0; i < friendlyCardCount; i++)
+        for (int i = 0; i < _friendlyCardCount; i++)
         {
             Vector3 cardPosition = startPosition + new Vector3(i * playerCardSpacing, 0, 0);
-            GameObject newCard = Instantiate(m_cardPrefab, cardPosition, playerFieldAnchor.rotation);
+            BattleCard newCard = Instantiate(m_cardPrefab, cardPosition, playerFieldAnchor.rotation).AddComponent<BattleCard>();
+            newCard.Init(_playerCardDatas[i]);
             newCard.transform.SetParent(playerFieldAnchor);
             m_friendlyCardList.Add(newCard);
         }
 
         
-        totalWidth = (enemyCardCount - 1) * enemyCardSpacing;
+        totalWidth = (_enemyCardCount - 1) * enemyCardSpacing;
         startPosition = enemyFieldAnchor.position - new Vector3(totalWidth / 2f, 0, 0);
 
-        for (int i = 0; i < enemyCardCount; i++)
+        for (int i = 0; i < _enemyCardCount; i++)
         {
+            CardData monsterData = new CardData();
+            monsterData.Status = CardData.DefaultStatus();
+
             Vector3 cardPosition = startPosition + new Vector3(i * enemyCardSpacing, 0, 0);
-            GameObject newCard = Instantiate(m_cardPrefab, cardPosition, enemyFieldAnchor.rotation);
+            BattleCard newCard = Instantiate(m_cardPrefab, cardPosition, enemyFieldAnchor.rotation).AddComponent<BattleCard>();
+            newCard.Init(monsterData);
             newCard.transform.SetParent(enemyFieldAnchor);
             m_enemyCardList.Add(newCard);
         }
@@ -53,21 +73,15 @@ public class BattleField : MonoBehaviour
 
     void ExitBattleField()
     {
-        foreach (GameObject card in m_friendlyCardList)
+        foreach (BattleCard card in m_friendlyCardList)
         {
             Destroy(card);
         }
-        foreach (GameObject card in m_enemyCardList)
+        foreach (BattleCard card in m_enemyCardList)
         {
             Destroy(card);
         }
         m_friendlyCardList.Clear();
         m_enemyCardList.Clear();
     }    
-
-    public void BattleFieldStart()
-    {
-        // 예시 -> 아군 카드 3장, 적군 카드 4장으로 필드 구성 한다고 가정
-        PlaceCards(3, 4);
-    }
 }

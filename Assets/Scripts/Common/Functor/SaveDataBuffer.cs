@@ -79,6 +79,7 @@ public sealed class SaveDataBuffer : SingleTonForGameObject<SaveDataBuffer>
 
         return true;
     }
+
     internal bool TrySaveData()
     {
         if (m_curSaveData == null)
