@@ -1,8 +1,10 @@
-using CommonUtilLib.ThreadSafe;
 using System.Collections.Generic;
-using System.Linq;
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
+
+using CommonUtilLib.ThreadSafe;
 
 
 public sealed class MapRenderControl : SingleTonForGameObject<MapRenderControl>
@@ -22,6 +24,9 @@ public sealed class MapRenderControl : SingleTonForGameObject<MapRenderControl>
 
     [Header("Scrool Speed")]
     [SerializeField] private float m_scroolSpeed = 1.0f;
+
+    [Header("UIs")]
+    [SerializeField] private TMP_Text m_text_DPlusDay;
 
 
     public void Awake()
@@ -198,6 +203,8 @@ public sealed class MapRenderControl : SingleTonForGameObject<MapRenderControl>
             y = 0.0f,
             z = -10.0f
         };
+
+        m_text_DPlusDay.text = "D+" + SaveDataBuffer.Instance.Data.DPlusDay.ToString();
     }
 
     protected override void Dispose(bool bisDisposing)
