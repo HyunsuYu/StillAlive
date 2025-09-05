@@ -17,4 +17,7 @@ public struct MapData
     public Dictionary<int, List<Node>> Nodes;
 
     public Vector2Int MapSize;
+
+    public int MaxYPos;
+    public int DayOffset;
 }

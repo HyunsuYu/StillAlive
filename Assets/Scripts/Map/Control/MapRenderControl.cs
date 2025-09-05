@@ -1,6 +1,12 @@
-using CommonUtilLib.ThreadSafe;
 using System.Collections.Generic;
+using System.Linq;
+
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using TMPro;
+
+using CommonUtilLib.ThreadSafe;
+using Unity.VisualScripting;
 
 
 public sealed class MapRenderControl : SingleTonForGameObject<MapRenderControl>
@@ -20,6 +26,9 @@ public sealed class MapRenderControl : SingleTonForGameObject<MapRenderControl>
 
     [Header("Scrool Speed")]
     [SerializeField] private float m_scroolSpeed = 1.0f;
+
+    [Header("UIs")]
+    [SerializeField] private TMP_Text m_text_DPlusDay;
 
 
     public void Awake()
@@ -57,38 +66,105 @@ public sealed class MapRenderControl : SingleTonForGameObject<MapRenderControl>
             }
         }
 
-        Ray ray = Camera.main.ScreenPointToRay(Camera.main.transform.position);
-        RaycastHit[] hits = Physics.RaycastAll(ray);
-        foreach(RaycastHit hit in hits )
+        if(Input.GetMouseButtonDown(0))
         {
-            var mapNode = hit.transform.GetComponent<MapNode>();
-            if (mapNode != null)
+            List<Vector2Int> linkedNodePoses = GetCurNextLinkedNodePoses();
+
+            string log = string.Empty;
+            foreach(var nodePoses in linkedNodePoses)
             {
-                switch(mapNode.CurEventNodeType)
+                log += nodePoses.ToString() + "\n";
+            }
+            Debug.Log(log);
+
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit[] hits = Physics.RaycastAll(ray);
+            foreach (RaycastHit hit in hits)
+            {
+                var mapNode = hit.transform.GetComponent<MapNode>();
+                if (mapNode != null)
                 {
-                    case MapNode.EventNodeType.Combat_Common:
-                    case MapNode.EventNodeType.Combat_MiddleBoss:
-                    case MapNode.EventNodeType.Combat_ChapterBoss:
+                    if(!linkedNodePoses.Contains(mapNode.Position))
+                    {
+                        return;
+                    }
 
-                        break;
+                    SaveData curSaveData = SaveDataBuffer.Instance.Data;
+                    curSaveData.CurPlayerMapPos = mapNode.Position;
+                    curSaveData.DPlusDay++;
+                    curSaveData.PassedWays.Add(mapNode.Position);
+                    SaveDataBuffer.Instance.TrySetData(curSaveData);
+                    SaveDataBuffer.Instance.TrySaveData();
 
-                    case MapNode.EventNodeType.Rest:
+                    switch (mapNode.CurEventNodeType)
+                    {
+                        case MapNode.EventNodeType.Combat_Common:
+                        case MapNode.EventNodeType.Combat_MiddleBoss:
+                        case MapNode.EventNodeType.Combat_ChapterBoss:
+                            SceneManager.LoadScene("Combat");
+                            break;
 
-                        break;
+                        case MapNode.EventNodeType.Rest:
 
-                    case MapNode.EventNodeType.Conversation:
+                            break;
 
-                        break;
+                        case MapNode.EventNodeType.Conversation:
+                            SceneManager.LoadScene("Conversation");
+                            break;
 
-                    case MapNode.EventNodeType.Explolor:
+                        case MapNode.EventNodeType.Explolor:
+                            SceneManager.LoadScene("Explolor");
+                            break;
+                    }
 
-                        break;
+                    break;
                 }
-
-                break;
             }
         }
     }
+
+    internal static List<Vector2Int> GetCurNextLinkedNodePoses()
+    {
+        Vector2Int curPlayerMapPos = SaveDataBuffer.Instance.Data.CurPlayerMapPos;
+        List<Vector2Int> linkedNodePoses = null;
+        foreach (var nodeData in SaveDataBuffer.Instance.Data.MapData.Value.Nodes[curPlayerMapPos.y])
+        {
+            if (nodeData.XPos == curPlayerMapPos.x)
+            {
+                linkedNodePoses = ((Vector2Int[])nodeData.LinkedNodePoses.ToArray().Clone()).ToList();
+                break;
+            }
+        }
+
+        foreach (int yPos in SaveDataBuffer.Instance.Data.MapData.Value.Nodes.Keys)
+        {
+            foreach (var nodeData in SaveDataBuffer.Instance.Data.MapData.Value.Nodes[yPos])
+            {
+                Vector2Int curPos = new Vector2Int(nodeData.XPos, yPos);
+                if (nodeData.LinkedNodePoses.Contains(SaveDataBuffer.Instance.Data.CurPlayerMapPos)
+                    && !linkedNodePoses.Contains(curPos))
+                {
+                    linkedNodePoses.Add(curPos);
+                }
+            }
+        }
+
+        List<int> removalLinkIndexes = new List<int>();
+        for (int index = 0; index < linkedNodePoses.Count; index++)
+        {
+            if (linkedNodePoses[index].y <= curPlayerMapPos.y)
+            {
+                removalLinkIndexes.Add(index);
+            }
+        }
+        for (int index = removalLinkIndexes.Count - 1; index >= 0; index--)
+        {
+            linkedNodePoses.RemoveAt(removalLinkIndexes[index]);
+        }
+
+        return linkedNodePoses;
+    }
+
 
     internal void Render()
     {
@@ -96,6 +172,8 @@ public sealed class MapRenderControl : SingleTonForGameObject<MapRenderControl>
         {
             MapGenerator.Instance.GenerateMap();
         }
+
+        Debug.Log(SaveDataBuffer.Instance.Data.CurPlayerMapPos);
 
         MapData mapData = SaveDataBuffer.Instance.Data.MapData.Value;
 
@@ -115,7 +193,7 @@ public sealed class MapRenderControl : SingleTonForGameObject<MapRenderControl>
                     {
                         if(temp.XPos == coord_x)
                         {
-                            mapNode.Init(temp.EventNodeType);
+                            mapNode.Init(temp.EventNodeType, new Vector2Int(coord_x, coord_y));
                             break;
                         }
                     }
@@ -161,6 +239,8 @@ public sealed class MapRenderControl : SingleTonForGameObject<MapRenderControl>
             y = 0.0f,
             z = -10.0f
         };
+
+        m_text_DPlusDay.text = "D+" + SaveDataBuffer.Instance.Data.DPlusDay.ToString();
     }
 
     protected override void Dispose(bool bisDisposing)

@@ -39,6 +39,7 @@ public struct CardData
 
     public bool BIsPlayer;
     public Dictionary<NPCLookPartType, int> NPCLookTable;
+    public int ColorPalleteIndex;
 
     public bool BIsTraitor;
 

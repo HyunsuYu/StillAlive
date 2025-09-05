@@ -244,11 +244,12 @@ public class MapGenerator : SingleTonForGameObject<MapGenerator>
             MapSize = m_mapSize,
             NodePlane = m_nodePlane,
             Nodes = m_nodes,
+            MaxYPos = maxYPos,
+            DayOffset = (curSaveData.MapData.HasValue ? curSaveData.MapData.Value.DayOffset + 1 : 0)
         };
+        curSaveData.PassedWays.Add(curSaveData.CurPlayerMapPos);
         SaveDataBuffer.Instance.TrySetData(curSaveData);
         SaveDataBuffer.Instance.TrySaveData();
-
-        Debug.Log("A");
     }
 
     private void Init()
