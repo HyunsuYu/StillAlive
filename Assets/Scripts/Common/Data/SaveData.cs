@@ -19,15 +19,16 @@ public struct SaveData
     /// </summary>
     public Dictionary<int, int> ItemAmountTable;
 
-    public MapData MapData;
+    public MapData? MapData;
     public Vector2Int CurPlayerMapPos;
 
     public int DPlusDay;
 
     public int Money;
 
-    public List<string> RadioInfos;
-    public List<string> ConversationInfos;
+    public IntelnfoData Intelnfos;
 
     public List<CardData> LastCombatEnemys;
+
+    public List<Vector2Int> PassedWays;
 }

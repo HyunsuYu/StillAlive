@@ -17,6 +17,8 @@ public sealed class SaveDataBuffer : SingleTonForGameObject<SaveDataBuffer>
     public void Awake()
     {
         SetInstance(this);
+
+        TryLoadData();
     }
 
     internal SaveData Data
@@ -40,10 +42,17 @@ public sealed class SaveDataBuffer : SingleTonForGameObject<SaveDataBuffer>
             {
                 CardDatas = new System.Collections.Generic.List<CardData>(),
                 ItemAmountTable = new System.Collections.Generic.Dictionary<int, int>(),
-                //MapData = 
-                //CurPlayerMapPos = 
+                MapData = null,
+                CurPlayerMapPos = new Vector2Int(7, 0),
                 DPlusDay = 0,
-                Money = UnityEngine.Random.Range(0, 31)
+                Money = UnityEngine.Random.Range(0, 31),
+                PassedWays = new List<Vector2Int>(),
+                Intelnfos = new SaveData.IntelnfoData()
+                {
+                    ConversationInfos = new Dictionary<int, string>(),
+                    RadioInfos = new List<string>()
+                },
+                LastCombatEnemys = new List<CardData>()
             };
         }
     }
@@ -110,7 +119,9 @@ public sealed class SaveDataBuffer : SingleTonForGameObject<SaveDataBuffer>
 
     public bool TrySetData(in SaveData targetSaveData)
     {
-        throw new NotImplementedException();
+        m_curSaveData = targetSaveData;
+
+        return true;
     }
 
     protected override void Dispose(bool bisDisposing)
