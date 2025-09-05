@@ -1,6 +1,8 @@
 using CommonUtilLib.ThreadSafe;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 public sealed class MapRenderControl : SingleTonForGameObject<MapRenderControl>
@@ -57,35 +59,70 @@ public sealed class MapRenderControl : SingleTonForGameObject<MapRenderControl>
             }
         }
 
-        Ray ray = Camera.main.ScreenPointToRay(Camera.main.transform.position);
-        RaycastHit[] hits = Physics.RaycastAll(ray);
-        foreach(RaycastHit hit in hits )
+        if(Input.GetMouseButtonDown(0))
         {
-            var mapNode = hit.transform.GetComponent<MapNode>();
-            if (mapNode != null)
+            Vector2Int curPlayerMapPos = SaveDataBuffer.Instance.Data.CurPlayerMapPos;
+            List<Vector2Int> linkedNodePoses = null;
+            foreach (var nodeData in SaveDataBuffer.Instance.Data.MapData.Value.Nodes[curPlayerMapPos.y])
             {
-                switch(mapNode.CurEventNodeType)
+                if (nodeData.XPos == curPlayerMapPos.x)
                 {
-                    case MapNode.EventNodeType.Combat_Common:
-                    case MapNode.EventNodeType.Combat_MiddleBoss:
-                    case MapNode.EventNodeType.Combat_ChapterBoss:
-
-                        break;
-
-                    case MapNode.EventNodeType.Rest:
-
-                        break;
-
-                    case MapNode.EventNodeType.Conversation:
-
-                        break;
-
-                    case MapNode.EventNodeType.Explolor:
-
-                        break;
+                    linkedNodePoses = nodeData.LinkedNodePoses;
+                    break;
                 }
+            }
+            foreach (int yPos in SaveDataBuffer.Instance.Data.MapData.Value.Nodes.Keys)
+            {
+                foreach (var nodeData in SaveDataBuffer.Instance.Data.MapData.Value.Nodes[yPos])
+                {
+                    if (nodeData.LinkedNodePoses.Contains(SaveDataBuffer.Instance.Data.CurPlayerMapPos))
+                    {
+                        linkedNodePoses.Add(new Vector2Int(nodeData.XPos, yPos));
+                    }
+                }
+            }
 
-                break;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit[] hits = Physics.RaycastAll(ray);
+            foreach (RaycastHit hit in hits)
+            {
+                var mapNode = hit.transform.GetComponent<MapNode>();
+                if (mapNode != null)
+                {
+                    if(!linkedNodePoses.Contains(mapNode.Position))
+                    {
+                        return;
+                    }
+
+                    SaveData curSaveData = SaveDataBuffer.Instance.Data;
+                    curSaveData.CurPlayerMapPos = mapNode.Position;
+                    curSaveData.DPlusDay++;
+                    SaveDataBuffer.Instance.TrySetData(curSaveData);
+                    SaveDataBuffer.Instance.TrySaveData();
+
+                    switch (mapNode.CurEventNodeType)
+                    {
+                        case MapNode.EventNodeType.Combat_Common:
+                        case MapNode.EventNodeType.Combat_MiddleBoss:
+                        case MapNode.EventNodeType.Combat_ChapterBoss:
+                            SceneManager.LoadScene("Combat");
+                            break;
+
+                        case MapNode.EventNodeType.Rest:
+
+                            break;
+
+                        case MapNode.EventNodeType.Conversation:
+                            SceneManager.LoadScene("Conversation");
+                            break;
+
+                        case MapNode.EventNodeType.Explolor:
+                            SceneManager.LoadScene("Explolor");
+                            break;
+                    }
+
+                    break;
+                }
             }
         }
     }
@@ -115,7 +152,7 @@ public sealed class MapRenderControl : SingleTonForGameObject<MapRenderControl>
                     {
                         if(temp.XPos == coord_x)
                         {
-                            mapNode.Init(temp.EventNodeType);
+                            mapNode.Init(temp.EventNodeType, new Vector2Int(coord_x, coord_y));
                             break;
                         }
                     }
