@@ -7,7 +7,7 @@ using UnityEngine;
 using CommonUtilLib.ThreadSafe;
 
 
-public class MapGenTest : SingleTonForGameObject<MapGenTest>
+public class MapGenerator : SingleTonForGameObject<MapGenerator>
 {
     //internal struct Node
     //{
@@ -17,12 +17,12 @@ public class MapGenTest : SingleTonForGameObject<MapGenTest>
     //}
 
 
-    [SerializeField] private GameObject m_prefab_Node;
-    [SerializeField] private GameObject m_prefab_Path;
+    //[SerializeField] private GameObject m_prefab_Node;
+    //[SerializeField] private GameObject m_prefab_Path;
 
     [Header("Map Gen Setting")]
     [SerializeField] private Vector2Int m_mapSize;
-    private float m_nodeFillPercent;
+    [SerializeField] private float m_nodeFillPercent;
 
     [Header("Node Setting")]
     [SerializeField] private int m_startNodeXPos;
@@ -32,17 +32,17 @@ public class MapGenTest : SingleTonForGameObject<MapGenTest>
     [SerializeField] private Vector2Int m_pathSearchRange;
     [SerializeField] private float m_pathLinkChanceWeight = 1.0f;
 
-    [Header("Visual Setting")]
-    [SerializeField] private Vector2 m_nodeSpawnGap;
-
-    [SerializeField] private float m_nodeSpawnPosWiggleWeight;
-
     private bool[,] m_nodePlane;
   
     private Dictionary<int, List<MapData.Node>> m_nodes = new Dictionary<int, List<MapData.Node>>();
 
-    private Dictionary<Vector2Int, MapNode> m_mapNodeTable = new Dictionary<Vector2Int, MapNode>();
+    //private Dictionary<Vector2Int, MapNode> m_mapNodeTable = new Dictionary<Vector2Int, MapNode>();
 
+
+    public void Awake()
+    {
+        SetInstance(this);
+    }
 
     internal bool[,] NodePlane
     {
@@ -58,25 +58,25 @@ public class MapGenTest : SingleTonForGameObject<MapGenTest>
             return m_nodes;
         }
     }
-    internal Dictionary<Vector2Int, MapNode> MapNodeTable
-    {
-        get
-        {
-            return m_mapNodeTable;
-        }
-    }
+    //internal Dictionary<Vector2Int, MapNode> MapNodeTable
+    //{
+    //    get
+    //    {
+    //        return m_mapNodeTable;
+    //    }
+    //}
 
     internal void GenerateMap()
     {
         Init();
 
+        int maxYPos = int.MinValue;
+
         #region Gen Random Node Plane
         int filledNodeCount = (int)((m_mapSize.x * m_mapSize.y) * m_nodeFillPercent);
 
-        //    ۳       
         m_nodePlane[0, m_startNodeXPos] = true;
-
-        //                
+    
         foreach (int endNodeXPos in m_endNodeXPoses)
         {
             m_nodePlane[m_mapSize.y - 1, endNodeXPos] = true;
@@ -121,24 +121,13 @@ public class MapGenTest : SingleTonForGameObject<MapGenTest>
                 {
                     m_nodePlane[(int)targetPos.y, (int)targetPos.x] = true;
                     nodePoses.Add(new Vector2Int((int)targetPos.x, (int)targetPos.y));
+
+                    if((int)targetPos.y > maxYPos)
+                    {
+                        maxYPos = (int)targetPos.y;
+                    }
+
                     break;
-                }
-            }
-        }
-        #endregion
-
-        #region Spawn Node
-        for (int coord_y = 0; coord_y < m_mapSize.y; coord_y++)
-        {
-            for (int coord_x = 0; coord_x < m_mapSize.x; coord_x++)
-            {
-                if (m_nodePlane[coord_y, coord_x])
-                {
-                    // For Visual
-                    GameObject nodeObject = Instantiate(m_prefab_Node, GetNodePos(new Vector2Int(coord_x, coord_y)), Quaternion.identity);
-                    nodeObject.transform.SetParent(this.transform);
-
-                    m_mapNodeTable.Add(new Vector2Int(coord_x, coord_y), nodeObject.GetComponent<MapNode>());
                 }
             }
         }
@@ -193,8 +182,18 @@ public class MapGenTest : SingleTonForGameObject<MapGenTest>
                     {
                         XPos = coord_x,
                         LinkedNodePoses = new List<Vector2Int>(),
-                        EventNodeType = (MapNode.EventNodeType)UnityEngine.Random.Range(0, Enum.GetNames(typeof(MapNode.EventNodeType)).Length)
+                        EventNodeType = (MapNode.EventNodeType)UnityEngine.Random.Range(0, 4)
                     };
+
+                    if(coord_y - 1 == maxYPos / 2)
+                    {
+                        node.EventNodeType = MapNode.EventNodeType.Combat_MiddleBoss;
+                    }
+                    else if(coord_y - 1 == maxYPos)
+                    {
+                        node.EventNodeType = MapNode.EventNodeType.Combat_ChapterBoss;
+                    }
+
                     pathLinkCandidates = RandomizePathCandidatePoses(pathLinkCandidates);
                     for (int pathLinkCandidateIndex = 0; pathLinkCandidateIndex < pathLinkCandidates.Count; pathLinkCandidateIndex++)
                     {
@@ -206,12 +205,10 @@ public class MapGenTest : SingleTonForGameObject<MapGenTest>
                     }
 
                     m_nodes[coord_y].Add(node);
-                    m_mapNodeTable[new Vector2Int(coord_x, coord_y)].Init(node.EventNodeType);
                 }
             }
         }
 
-        //      Node              Node        Node
         foreach (Vector2Int nodePos in nodePoses)
         {
             float minDistance = float.MaxValue;
@@ -241,25 +238,17 @@ public class MapGenTest : SingleTonForGameObject<MapGenTest>
         }
         #endregion
 
-        #region Spawn Path
-        foreach (int coord_y in m_nodes.Keys)
+        SaveData curSaveData = SaveDataBuffer.Instance.Data;
+        curSaveData.MapData = new MapData()
         {
-            foreach (MapData.Node node in m_nodes[coord_y])
-            {
-                //Debug.Log($"Node X Pos: {node.XPos}, Linked Node Count: {node.LinkedNodePoses.Count}");
-                foreach (Vector2Int linkedNodePos in node.LinkedNodePoses)
-                {
-                    GameObject pathObject = Instantiate(m_prefab_Path, GetNodePos(new Vector2Int(node.XPos, coord_y)), Quaternion.identity);
-                    pathObject.transform.SetParent(this.transform);
+            MapSize = m_mapSize,
+            NodePlane = m_nodePlane,
+            Nodes = m_nodes,
+        };
+        SaveDataBuffer.Instance.TrySetData(curSaveData);
+        SaveDataBuffer.Instance.TrySaveData();
 
-                    LineRenderer lineRenderer = pathObject.GetComponent<LineRenderer>();
-                    lineRenderer.positionCount = 2;
-                    lineRenderer.SetPosition(0, GetNodePos(new Vector2Int(node.XPos, coord_y)));
-                    lineRenderer.SetPosition(1, GetNodePos(linkedNodePos));
-                }
-            }
-        }
-        #endregion
+        Debug.Log("A");
     }
 
     private void Init()
@@ -280,20 +269,6 @@ public class MapGenTest : SingleTonForGameObject<MapGenTest>
         }
     }
 
-    //       ġ               Խ Ŵ
-    private Vector2 GetNodePos(in Vector2Int nodePos)
-    {
-        float wiggleXFactor = Mathf.PerlinNoise(nodePos.x / 10.0f, nodePos.y / 10.0f) * m_nodeSpawnPosWiggleWeight;
-        float wiggleYFactor = Mathf.PerlinNoise(nodePos.y / 10.0f, nodePos.x / 10.0f) * m_nodeSpawnPosWiggleWeight;
-
-        Debug.Log($"Node Pos: {nodePos}, Wiggle X Factor: {wiggleXFactor}, Wiggle Y Factor: {wiggleYFactor}");
-
-        return new Vector2()
-        {
-            x = nodePos.x * m_nodeSpawnGap.x + wiggleXFactor,
-            y = nodePos.y * m_nodeSpawnGap.y + wiggleYFactor
-        };
-    }
     private bool BIsPathCanLink(in int index)
     {
         return (UnityEngine.Random.Range(0.0f, 1.0f) <= Mathf.Pow((1.0f / index), m_pathLinkChanceWeight)) ? true : false;

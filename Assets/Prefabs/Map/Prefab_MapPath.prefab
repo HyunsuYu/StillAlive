@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4472816904839875762}
   - component: {fileID: 2146023483191987071}
   m_Layer: 0
-  m_Name: Path
+  m_Name: Prefab_MapPath
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -56,7 +56,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 1c827e10bf03637459727e1c22bba44d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

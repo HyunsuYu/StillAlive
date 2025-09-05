@@ -10,5 +10,6 @@ public class NPCLookPart : ScriptableObject
     public Sprite[] Mouths;
     public Sprite[] Glasses;
     public Sprite[] Caps;
-    public Sprite[] hairs;
+    public Sprite[] FrontHairs;
+    public Sprite[] BackHairs;
 }
