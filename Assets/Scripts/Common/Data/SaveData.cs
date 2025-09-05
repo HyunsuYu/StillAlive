@@ -19,7 +19,7 @@ public struct SaveData
     /// </summary>
     public Dictionary<int, int> ItemAmountTable;
 
-    public MapData MapData;
+    public MapData? MapData;
     public Vector2Int CurPlayerMapPos;
 
     public int DPlusDay;
