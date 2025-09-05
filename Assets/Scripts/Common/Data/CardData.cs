@@ -13,9 +13,10 @@ public struct CardData
         Mouth,
         Glasses,
         Cap,
-        Fronthair,
+        FrontHair,
         BackHair
     }
+
     public enum DiseasesType : byte
     {
         None        = 0b0000_0000,
@@ -34,10 +35,24 @@ public struct CardData
         public int Speed;
     }
 
-
     public StatusInfo Status;
 
+    public static StatusInfo DefaultStatus()
+    {
+        StatusInfo status = new StatusInfo();
+
+        status.MaxHP = Random.Range(1,4);
+        status.CurHP = status.MaxHP;
+        status.AttackPower = Random.Range(1,4);
+        status.DefencePower = Random.Range(1,4);
+        status.Speed = Random.Range(1,4);
+
+        return status;
+    }
+
+    // 플레이어 여부
     public bool BIsPlayer;
+    
     public Dictionary<NPCLookPartType, int> NPCLookTable;
     public int ColorPalleteIndex;
 
