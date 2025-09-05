@@ -2,12 +2,11 @@ using UnityEngine;
 
 public class BattleCard : MonoBehaviour
 {
-    private int m_maxHp;
-    private int m_curHp;
+    private CardData m_myData;
 
     public void Init(CardData _data)
     {
-        
+        m_myData = _data;
     }
 
 }

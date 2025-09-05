@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using static CardData;
 
 public class BattleField : MonoBehaviour
 {
@@ -11,12 +12,12 @@ public class BattleField : MonoBehaviour
     private List<BattleCard> m_enemyCardList;
 
     [Header("플레이어 진영 설정")]
-    [SerializeField] private Transform playerFieldAnchor;
-    [SerializeField] private float playerCardSpacing = 1.5f;
+    [SerializeField] private Transform playerFieldAnchor;     // 플레이어 진영 카드 중심 앵커값 
+    [SerializeField] private float playerCardSpacing = 1.5f;  // 카드 범위 넓이
 
     [Header("적 진영 설정")]
-    [SerializeField] private Transform enemyFieldAnchor;
-    [SerializeField] private float enemyCardSpacing = 1.5f;
+    [SerializeField] private Transform enemyFieldAnchor;      // 에너미 진영 카드 중심 앵커값
+    [SerializeField] private float enemyCardSpacing = 1.5f;   // 카드 범위 넓이
 
     // BattleField 세팅
     // 0. 세이브 데이터 로드하여 card, Item(인벤토리), 
@@ -41,6 +42,7 @@ public class BattleField : MonoBehaviour
     {
         if (_friendlyCardCount <= 0 || _enemyCardCount <= 0) return;
 
+        // 플레이어 카드 세팅
         float totalWidth = (_friendlyCardCount - 1) * playerCardSpacing;
         Vector3 startPosition = playerFieldAnchor.position - new Vector3(totalWidth / 2f, 0, 0);       
 
@@ -54,13 +56,29 @@ public class BattleField : MonoBehaviour
         }
 
         
+        // 몬스터 카드 세팅
         totalWidth = (_enemyCardCount - 1) * enemyCardSpacing;
         startPosition = enemyFieldAnchor.position - new Vector3(totalWidth / 2f, 0, 0);
 
+        int nowDay = SaveDataBuffer.Instance.Data.DPlusDay;
+
         for (int i = 0; i < _enemyCardCount; i++)
         {
+            // 몬스터 스텟 결정
             CardData monsterData = new CardData();
-            monsterData.Status = CardData.DefaultStatus();
+            for(int j = 0; j< nowDay; j++)
+            {
+                monsterData.Status.CurHP += Random.Range(1, MathUtility.CalculateValueByDay(nowDay));
+                monsterData.Status.DefencePower += Random.Range(1, MathUtility.CalculateValueByDay(nowDay));
+                monsterData.Status.AttackPower += Random.Range(1, MathUtility.CalculateValueByDay(nowDay));
+                monsterData.Status.Speed += Random.Range(1, MathUtility.CalculateValueByDay(nowDay));                    
+            }
+            StatusInfo defaultStatus = CardData.DefaultStatus();
+            monsterData.Status.CurHP = defaultStatus.CurHP;
+            monsterData.Status.DefencePower = defaultStatus.DefencePower;
+            monsterData.Status.AttackPower = defaultStatus.AttackPower;
+            monsterData.Status.Speed = defaultStatus.Speed;
+
 
             Vector3 cardPosition = startPosition + new Vector3(i * enemyCardSpacing, 0, 0);
             BattleCard newCard = Instantiate(m_cardPrefab, cardPosition, enemyFieldAnchor.rotation).AddComponent<BattleCard>();
@@ -71,6 +89,7 @@ public class BattleField : MonoBehaviour
 
     }
 
+    // BattleField 탈출할 때 호출함
     void ExitBattleField()
     {
         foreach (BattleCard card in m_friendlyCardList)
