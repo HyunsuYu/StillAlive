@@ -31,6 +31,13 @@ public sealed class SaveDataBuffer : SingleTonForGameObject<SaveDataBuffer>
             return m_curSaveData.Value;
         }
     }
+    internal bool BHasValue
+    {
+        get
+        {
+            return m_curSaveData.HasValue;
+        }
+    }
 
     private SaveData DefaultSaveData
     {
@@ -60,10 +67,7 @@ public sealed class SaveDataBuffer : SingleTonForGameObject<SaveDataBuffer>
     {
         if (!File.Exists(SaveDataPath))
         {
-            m_curSaveData = DefaultSaveData;
-            TrySaveData();
-
-            return true;
+            return false;
         }
 
         try
@@ -107,6 +111,11 @@ public sealed class SaveDataBuffer : SingleTonForGameObject<SaveDataBuffer>
         }
 
         return true;
+    }
+    internal void ClearSaveData()
+    {
+        m_curSaveData = DefaultSaveData;
+        TrySaveData();
     }
 
     public bool TrySetData(in SaveData targetSaveData)
