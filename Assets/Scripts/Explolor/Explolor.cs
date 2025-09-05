@@ -2,8 +2,10 @@ using UnityEngine;
 
 public class Explolor : MonoBehaviour
 {
-    [SerializeField] private GameObject EventWindow; // 이벤트 창
+    [SerializeField] private GameObject SelecterWindow; // 선택 창
     [SerializeField] private GameObject CheckWindow; // 확인 창
+
+    
     private int selectedButton = 0; // 선택된 버튼 (1: 아이템, 2: 동료)
 
 
@@ -12,7 +14,7 @@ public class Explolor : MonoBehaviour
     void Start()
     {
         CheckWindow.SetActive(false); // 시작 시 확인 창 비활성화
-        EventWindow.SetActive(true); // 시작 시 이벤트 창 비활성화
+        SelecterWindow.SetActive(true); // 시작 시 이벤트 창 비활성화
     }
 
     public void OnItemButtonClick() //아이템 탐사 버튼을 눌렀을 때
@@ -37,7 +39,7 @@ public class Explolor : MonoBehaviour
             colleagueCatch();
         }
         CheckWindow.SetActive(false); // 확인 창 비활성화
-        EventWindow.SetActive(false); // 이벤트 창 비활성화
+        SelecterWindow.SetActive(false); // 선택 창 비활성화
         selectedButton = 0; // 선택된 버튼 초기화
     }
 
@@ -54,11 +56,11 @@ public class Explolor : MonoBehaviour
         if (itemCount > 0)
         {
             Debug.Log($"아이템 {itemCount}개 발견!");
+            ItemTypes[] item = new ItemTypes[itemCount];
 
             for (int i = 0; i < itemCount; i++)
             {
-                // 아이템 발견 시 추가 행동을 여기에 작성
-                Debug.Log($"아이템{i} 획득!");
+                
             }
         }
         else
