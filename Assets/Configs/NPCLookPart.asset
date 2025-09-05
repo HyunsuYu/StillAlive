@@ -18,4 +18,38 @@ MonoBehaviour:
   Mouths: []
   Glasses: []
   Caps: []
-  hairs: []
+  FrontHairs: []
+  BackHairs: []
+  ColorPalletes:
+  - TopColors:
+      RedRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      BlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      GreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
+    FacesColors:
+      RedRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      BlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      GreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
+    EyesColors:
+      RedRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      BlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      GreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
+    MouthsColors:
+      RedRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      BlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      GreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
+    GlassesColors:
+      RedRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      BlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      GreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
+    CapsColors:
+      RedRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      BlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      GreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
+    FrontHairsColors:
+      RedRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      BlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      GreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
+    BackHairsColors:
+      RedRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      BlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      GreenRegionColor: {r: 0, g: 0, b: 0, a: 0}

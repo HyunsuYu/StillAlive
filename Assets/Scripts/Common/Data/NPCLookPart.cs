@@ -27,6 +27,10 @@ public class NPCLookPart : ScriptableObject
     }
 
 
+    [Header("Fixed Characters")]
+    public Sprite MainCharacter;
+
+    [Header("Random Characters")]
     public Sprite[] Tops;
     public Sprite[] Faces;
     public Sprite[] Eyes;
