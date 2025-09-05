@@ -38,7 +38,9 @@ public struct CardData
     public static StatusInfo DefaultStatus()
     {
         StatusInfo status = new StatusInfo();
-        status.HP = Random.Range(1,4);
+
+        status.MaxHP = Random.Range(1,4);
+        status.CurHP = status.MaxHP;
         status.AttackPower = Random.Range(1,4);
         status.DefencePower = Random.Range(1,4);
         status.Speed = Random.Range(1,4);
