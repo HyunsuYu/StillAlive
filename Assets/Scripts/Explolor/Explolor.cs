@@ -11,7 +11,7 @@ public class Explolor : MonoBehaviour
 
     public int Day = 0; // 현재 날짜
 
-    void Start()
+    void Awake()
     {
         CheckWindow.SetActive(false); // 시작 시 확인 창 비활성화
         SelecterWindow.SetActive(true); // 시작 시 이벤트 창 비활성화
