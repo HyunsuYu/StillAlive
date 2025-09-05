@@ -105,7 +105,7 @@ public sealed class MapRenderControl : SingleTonForGameObject<MapRenderControl>
                             break;
 
                         case MapNode.EventNodeType.Rest:
-
+                            RestPopupControl.Instance.OepnPopup();
                             break;
 
                         case MapNode.EventNodeType.Conversation:
