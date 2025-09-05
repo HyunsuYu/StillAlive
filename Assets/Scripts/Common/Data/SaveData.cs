@@ -8,7 +8,7 @@ public struct SaveData
     public struct IntelnfoData
     {
         public List<string> RadioInfos;
-        public List<string> ConversationInfos;
+        public Dictionary<int, string> ConversationInfos;
     }
 
 
