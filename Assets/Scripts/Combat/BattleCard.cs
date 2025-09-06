@@ -1,3 +1,5 @@
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,18 +7,31 @@ public class BattleCard : MonoBehaviour
 {
     private CardData m_myData;
 
+    private Canvas m_canvas;
+
+    [SerializeField] private TMP_Text m_hpText;
+    [SerializeField] private TMP_Text m_defenceText;
+    [SerializeField] private TMP_Text m_speedText;
+    [SerializeField] private TMP_Text m_atkText;
+
     [SerializeField] private Transform portraitPos;
     private NPCPortrait m_portraitInstance; // 생성된 초상화 인스턴스
 
     public void Init(CardData _data)
     {
         m_myData = _data;
+        
+        m_canvas = GetComponentInChildren<Canvas>();
 
+        m_canvas.worldCamera = Camera.main;
         // 기존 초상화가 있다면 파괴
         if (m_portraitInstance != null)
         {
             Destroy(m_portraitInstance);
         }
+
+        // 임의로 0번으로 지정
+        m_myData.ColorPalleteIndex = 0;
 
         // CharacterPortraitHelper를 사용하여 초상화 생성 (Resources에서 자동 로드)
         m_portraitInstance = CharacterPortraitHelper.CreatePortrait(m_myData).GetComponent<NPCPortrait>();
@@ -24,7 +39,8 @@ public class BattleCard : MonoBehaviour
         if (m_portraitInstance != null)
         {
             // 생성된 초상화를 이 오브젝트의 자식으로 설정
-            m_portraitInstance.transform.SetParent(portraitPos);
+            m_portraitInstance.transform.SetParent(m_canvas.transform);
+            m_portraitInstance.transform.position = portraitPos.position;
         }
         else
         {
@@ -53,6 +69,12 @@ public class BattleCard : MonoBehaviour
             m_myData.Status.CurHP = 0;
         }
         Debug.Log($"{name}이(가) {finalDamage}의 피해를 입었습니다. 남은 체력: {m_myData.Status.CurHP}");
+
+        // 피격 효과 재생
+        if (m_portraitInstance != null)
+        {
+            StartCoroutine(m_portraitInstance.PlayHitEffect());
+        }
     }
 
     public bool IsDead()

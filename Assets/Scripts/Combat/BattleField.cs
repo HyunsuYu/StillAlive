@@ -1,35 +1,35 @@
 using UnityEngine;
 using System.Collections.Generic;
-using static CardData;
-using UnityEditor.Experimental.GraphView;
 using System.Collections;
 
 public class BattleField : MonoBehaviour
 {
    
-    [Header("Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½")]
+    [Header("Ä«µå ÇÁ¸®ÆÕ")]
     [SerializeField] private GameObject m_cardPrefab;
 
-    [Header("Ä«ï¿½ï¿½ ï¿½Êµï¿½ ï¿½ï¿½ï¿½ï¿½Æ®")]
+    [Header("Ä«µå ÇÊµå ¸®½ºÆ®")]
     private List<BattleCard> m_friendlyCardList;
     private List<BattleCard> m_enemyCardList;
 
-    [Header("ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½")]
-    [SerializeField] private Transform playerFieldAnchor;     // ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½ ï¿½ß½ï¿½ ï¿½ï¿½Ä¿ï¿½ï¿½ 
-    [SerializeField] private float playerCardSpacing = 1.5f;  // Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    [Header("ÇÃ·¹ÀÌ¾î Áø¿µ ¼³Á¤")]
+    [SerializeField] private Transform playerFieldAnchor;     // ÇÃ·¹ÀÌ¾î Áø¿µ Ä«µå Áß½É ¾ÞÄ¿°ª 
+    [SerializeField] private float playerCardSpacing = 1.5f;  // Ä«µå ¹üÀ§ ³ÐÀÌ
 
-    [Header("ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½")]
-    [SerializeField] private Transform enemyFieldAnchor;      // ï¿½ï¿½ï¿½Ê¹ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½ ï¿½ß½ï¿½ ï¿½ï¿½Ä¿ï¿½ï¿½
-    [SerializeField] private float enemyCardSpacing = 1.5f;   // Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    [Header("Àû Áø¿µ ¼³Á¤")]
+    [SerializeField] private Transform enemyFieldAnchor;      // ¿¡³Ê¹Ì Áø¿µ Ä«µå Áß½É ¾ÞÄ¿°ª
+    [SerializeField] private float enemyCardSpacing = 1.5f;   // Ä«µå ¹üÀ§ ³ÐÀÌ
 
-    [Header("ï¿½×½ï¿½Æ® Ä«ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½")]
+    [Header("Å×½ºÆ® Ä«¿îÆ® ¼³Á¤")]
     [SerializeField] private int playerTestCount;
     [SerializeField] private int enemyTestCount;
-    
-    // BattleField ï¿½ï¿½ï¿½ï¿½
-    // 0. ï¿½ï¿½ï¿½Ìºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½Ï¿ï¿½ card, Item(ï¿½Îºï¿½ï¿½ä¸®), ï¿½ï¿½ï¿½ï¿½ï¿½Ì»ï¿½
-    // 1. Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-    // 2. UI ï¿½ï¿½ï¿½ï¿½
+
+    private bool m_isStartBattle;
+
+    // BattleField ¼¼ÆÃ
+    // 0. ¼¼ÀÌºê µ¥ÀÌÅÍ ·ÎµåÇÏ¿© card, Item(ÀÎº¥Åä¸®), »óÅÂÀÌ»ó
+    // 1. Ä«µå ¼¼ÆÃ
+    // 2. UI ¼¼ÆÃ
     public void Start()
     {
         SaveDataBuffer.Instance.TryLoadData();
@@ -41,61 +41,73 @@ public class BattleField : MonoBehaviour
                 
         Vector2Int nowPlayerMapPos = SaveDataBuffer.Instance.Data.CurPlayerMapPos;
 
-        // TODO: ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½ï¿½ ï¿½Úµï¿½ 
+        // TODO: ³ªÁß¿¡ Àû¿ëÇØ¾ß ÇÒ ÄÚµå 
         //MapNode.EventNodeType nowEventType = SaveDataBuffer.Instance.Data.MapData.Nodes[nowPlayerMapPos.y]
         //    .Find(node => node.XPos == nowPlayerMapPos.x).EventNodeType;
 
-        // PlaceCards(nowEventType, playerTestCount, enemyTestCount, cardDatas);
+        // PlaceCards(nowEventType, cardDatas.Count, Random.Range(1, 5), cardDatas);
+        m_isStartBattle = false;
 
-        // ï¿½Ó½ï¿½ ï¿½Úµï¿½
+        // ÀÓ½Ã ÄÚµå
         PlaceCards(MapNode.EventNodeType.Combat_Common, playerTestCount, enemyTestCount, cardDatas);
    
     }
 
     /// <summary>
-    /// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½ GameObjectï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
+    /// ¿ùµå °ø°£¿¡ Ä«µå GameObject¸¦ ¹èÄ¡ÇÏ°í Á¤·ÄÇÏ´Â Àç»ç¿ë °¡´ÉÇÑ ÇÔ¼ö
     /// </summary>
     private void PlaceCards(MapNode.EventNodeType _eventType, int _friendlyCardCount, int _enemyCardCount, List<CardData> _playerCardDatas)
     {             
         if (_friendlyCardCount <= 0 || _enemyCardCount <= 0) return;
 
-        // ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        // ÇÃ·¹ÀÌ¾î Ä«µå ¼¼ÆÃ --> ÀÓÀÇ·Î µ¥ÀÌÅÍ ¼¼ÆÃ Áß 
         float totalWidth = (_friendlyCardCount - 1) * playerCardSpacing;
         Vector3 startPosition = playerFieldAnchor.position - new Vector3(totalWidth / 2f, 0, 0);
         
-        _playerCardDatas = new List<CardData>();
-
         for (int i = 0; i < _friendlyCardCount; i++)
         {
             CardData cd = new CardData();
+            cd.NPCLookTable = new Dictionary<CardData.NPCLookPartType, int>();
+            cd.ColorPalleteIndex = 0;
             _playerCardDatas.Add(cd);
-            cd.NPCLookTable = new Dictionary<NPCLookPartType, int>();
 
-            _playerCardDatas[i].NPCLookTable[NPCLookPartType.Face] = 0;
-            _playerCardDatas[i].NPCLookTable[NPCLookPartType.Eye] = 0;
-            _playerCardDatas[i].NPCLookTable[NPCLookPartType.Glasses] = 0;
+            _playerCardDatas[i].NPCLookTable[CardData.NPCLookPartType.Face] = 0;
+            _playerCardDatas[i].NPCLookTable[CardData.NPCLookPartType.Eye] = 0;
+            _playerCardDatas[i].NPCLookTable[CardData.NPCLookPartType.Glasses] = 0;
 
 
             Vector3 cardPosition = startPosition + new Vector3(i * playerCardSpacing, 0, 0);
             GameObject newCardObject = Instantiate(m_cardPrefab, cardPosition, playerFieldAnchor.rotation);
-            BattleCard newCard = newCardObject.AddComponent<BattleCard>();
+            BattleCard newCard = newCardObject.GetComponent<BattleCard>();
             newCard.Init(_playerCardDatas[i]);
             newCard.transform.SetParent(playerFieldAnchor);
             m_friendlyCardList.Add(newCard);
         }
 
         
-        // ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        // ¸ó½ºÅÍ Ä«µå ¼¼ÆÃ
         List<CardData> enemyDatas = new List<CardData>();
         int nowDay = SaveDataBuffer.Instance.Data.DPlusDay;
 
         switch (_eventType)
         {
             case MapNode.EventNodeType.Combat_Common:
-                // ï¿½Ï¹ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+                // ÀÏ¹Ý ¸ó½ºÅÍ »ý¼º ·ÎÁ÷
                 for (int i = 0; i < _enemyCardCount; i++)
                 {
                     CardData monsterData = new CardData();
+                    monsterData.BIsPlayer = false;
+                    monsterData.BIsTraitor = true;
+
+                    monsterData.NPCLookTable = new Dictionary<CardData.NPCLookPartType, int>();
+                    monsterData.ColorPalleteIndex = 0;
+                    enemyDatas.Add(monsterData);
+
+                    enemyDatas[i].NPCLookTable[CardData.NPCLookPartType.Face] = 1;
+                    enemyDatas[i].NPCLookTable[CardData.NPCLookPartType.Eye] = 1;
+                    enemyDatas[i].NPCLookTable[CardData.NPCLookPartType.Glasses] = 0;
+
+
                     for (int j = 0; j < nowDay; j++)
                     {
                         monsterData.Status.CurHP += Random.Range(1, MathUtility.CalculateValueByDay(nowDay));
@@ -103,31 +115,31 @@ public class BattleField : MonoBehaviour
                         monsterData.Status.AttackPower += Random.Range(1, MathUtility.CalculateValueByDay(nowDay));
                         monsterData.Status.Speed += Random.Range(1, MathUtility.CalculateValueByDay(nowDay));
                     }
-                    StatusInfo defaultStatus = CardData.DefaultStatus();
+                    CardData.StatusInfo defaultStatus = CardData.DefaultStatus();
                     monsterData.Status.CurHP = defaultStatus.CurHP;
                     monsterData.Status.DefencePower = defaultStatus.DefencePower;
                     monsterData.Status.AttackPower = defaultStatus.AttackPower;
                     monsterData.Status.Speed = defaultStatus.Speed;
-                    enemyDatas.Add(monsterData);
+                    // enemyDatas.Add(monsterData);
                 }
                 break;
             
             case MapNode.EventNodeType.Combat_MiddleBoss:
-                // TODO: ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-                Debug.Log("ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
+                // TODO: Áß°£ º¸½º »ý¼º ·ÎÁ÷ ±¸Çö
+                Debug.Log("Áß°£ º¸½º ÀüÅõ ¼¼ÆÃ");
                 break;
 
             case MapNode.EventNodeType.Combat_ChapterBoss:
-                // TODO: Ã©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-                Debug.Log("Ã©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
+                // TODO: Ã©ÅÍ º¸½º »ý¼º ·ÎÁ÷ ±¸Çö
+                Debug.Log("Ã©ÅÍ º¸½º ÀüÅõ ¼¼ÆÃ");
                 break;
             
             default:
-                Debug.LogError($"ï¿½ï¿½ï¿½Çµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½Ô´Ï´ï¿½: {_eventType}");
+                Debug.LogError($"Á¤ÀÇµÇÁö ¾ÊÀº ÀüÅõ Å¸ÀÔÀÔ´Ï´Ù: {_eventType}");
                 break;
         }
 
-        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½ ï¿½ï¿½Ä¡
+        // »ý¼ºµÈ µ¥ÀÌÅÍ ±â¹ÝÀ¸·Î ¸ó½ºÅÍ Ä«µå ¹èÄ¡
         if (enemyDatas.Count > 0)
         {
             totalWidth = (enemyDatas.Count - 1) * enemyCardSpacing;
@@ -137,7 +149,7 @@ public class BattleField : MonoBehaviour
             {
                 Vector3 cardPosition = startPosition + new Vector3(i * enemyCardSpacing, 0, 0);
                 GameObject newCardObject = Instantiate(m_cardPrefab, cardPosition, enemyFieldAnchor.rotation);
-                BattleCard newCard = newCardObject.AddComponent<BattleCard>();
+                BattleCard newCard = newCardObject.GetComponent<BattleCard>();
                 newCard.Init(enemyDatas[i]);
                 newCard.transform.SetParent(enemyFieldAnchor);
                 m_enemyCardList.Add(newCard);
@@ -146,121 +158,155 @@ public class BattleField : MonoBehaviour
     }
 
     /// <summary>
-    /// UI ï¿½ï¿½Æ° Å¬ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½
+    /// UI ¹öÆ° Å¬¸¯ ½Ã ÀüÅõ¸¦ ½ÃÀÛÇÏ´Â °ø°³ ¸Þ¼­µå
     /// </summary>
     public void OnCombatStartButtonClicked()
     {
-        Debug.Log("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ° Å¬ï¿½ï¿½ï¿½ï¿½!");
-        StartCoroutine(StartCombat());
+        if (!m_isStartBattle)
+        {
+            m_isStartBattle = true;
+            StartCoroutine(StartCombat());
+        }
     }
 
     /// <summary>
-    /// ï¿½Úµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ú·ï¿½Æ¾
+    /// ÀÚµ¿ ÀüÅõ¸¦ °ü¸®ÇÏ´Â ¸ÞÀÎ ÄÚ·çÆ¾
     /// </summary>
     private IEnumerator StartCombat()
     {
-        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½) ï¿½Ýºï¿½
+        // ÀüÅõ°¡ ³¡³¯ ¶§±îÁö (ÇÑÂÊ Áø¿µÀÌ ¸ðµÎ ¾²·¯Áú ¶§±îÁö) ¹Ýº¹
         while (m_friendlyCardList.Count > 0 && m_enemyCardList.Count > 0)
         {            
             List<BattleCard> nowBattleCard = new List<BattleCard>();
             nowBattleCard.AddRange(m_friendlyCardList);
             nowBattleCard.AddRange(m_enemyCardList);
 
-            // Speed ï¿½ï¿½ï¿½È¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+            // Speed ½ºÅÈ¿¡ µû¶ó ³»¸²Â÷¼øÀ¸·Î Á¤·Ä
             nowBattleCard.Sort((a, b) => b.GetSpeed().CompareTo(a.GetSpeed()));
 
-            // ï¿½ï¿½ï¿½Äµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+            // Á¤·ÄµÈ ¼ø¼­¿¡ µû¶ó °¢ Ä«µå °ø°Ý ½ÇÇà
             foreach (BattleCard attacker in nowBattleCard)
             {
-                // ï¿½ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ç³Ê¶Ù±ï¿½
+                // °ø°ÝÀÚ°¡ ÀüÅõ Áß¿¡ ¾²·¯Á³À¸¸é °Ç³Ê¶Ù±â
                 if (attacker == null || !attacker.gameObject.activeSelf)
                 {
                     continue;
                 }
 
-                // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ú·ï¿½Æ¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+                // °ø°Ý ½ÃÄö½º ÄÚ·çÆ¾À» ½ÇÇàÇÏ°í ³¡³¯ ¶§±îÁö ´ë±â
                 yield return StartCoroutine(AttackSequence(attacker));
 
-                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½ï¿½ï¿½ È®ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+                // ÇÑÂÊÀÌ Àü¸êÇß´ÂÁö È®ÀÎ ÈÄ ÀüÅõ Á¶±â Á¾·á
                 if (m_friendlyCardList.Count == 0 || m_enemyCardList.Count == 0)
                 {
                     break;
                 }
             }
             
-            // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+            // ÇÑ ÅÏÀÌ ³¡³­ ÈÄ Àá½Ã ´ë±â
             yield return new WaitForSeconds(0.5f);
         }
         
-        Debug.Log("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½!");        
+        Debug.Log("ÀüÅõ Á¾·á!");        
         // TODO:
-        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ Ã¢ Ç¥ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+        // ÀüÅõ °á°ú Ã¢ Ç¥½Ã, º¸»ó Áö±Þ µî
     }
-
+  
     /// <summary>
-    /// ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼Ç°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ú·ï¿½Æ¾
+    /// ´ÜÀÏ Ä«µåÀÇ °ø°Ý ¾Ö´Ï¸ÞÀÌ¼Ç°ú ·ÎÁ÷À» Ã³¸®ÇÏ´Â ÄÚ·çÆ¾
     /// </summary>
-    /// <param name="attacker">ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ Ä«ï¿½ï¿½</param>
+    /// <param name="attacker">°ø°ÝÇÏ´Â Ä«µå</param>
     private IEnumerator AttackSequence(BattleCard attacker)
     {
-        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
+        // °ø°Ý ´ë»ó ¼±Á¤
         bool isFriendly = m_friendlyCardList.Contains(attacker);
         List<BattleCard> targetList = isFriendly ? m_enemyCardList : m_friendlyCardList;
 
-        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-        if (targetList.Count == 0)
-        {
-            yield break;
-        }
+        if (targetList.Count == 0) yield break;
 
-        // ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         BattleCard target = targetList[Random.Range(0, targetList.Count)];
         Vector3 originalPosition = attacker.transform.position;
+        Vector3 originalScale = attacker.transform.localScale;
         Vector3 targetPosition = target.transform.position;
 
-        // ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½
-        float moveSpeed = 5f;
-        float retreatDistance = 0.5f;
+        // ¾Ö´Ï¸ÞÀÌ¼Ç ¿¬ÃâÀ» À§ÇÑ ¼³Á¤°ª 
+        float scaleAmount = 1.2f;         // ¾ó¸¶³ª Ä¿ÁúÁö
+        float retreatDistance = 0.5f;     // ÈÄÅð °Å¸® 
+        float retreatSpeed = 5f;
+        float scaleUpDuration = 0.15f;    // Ä¿Áö´Â µ¥ °É¸®´Â ½Ã°£
+        float attackDashDuration = 0.2f;  // Àû¿¡°Ô µ¹ÁøÇÏ´Â ½Ã°£
+        float impactPauseDuration = 0.1f; // Àû°ú ºÎµúÇûÀ» ¶§ Àá½Ã ¸ØÃß´Â ½Ã°£
+        float returnDuration = 0.4f;     // ¿ø·¡ ÀÚ¸®·Î µ¹¾Æ¿À´Â ½Ã°£
 
-        // ï¿½Ú·ï¿½ ï¿½ï¿½Â¦ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        // °ø°Ý ÁØºñ (»ìÂ¦ Ä¿Áö±â)
+        float elapsedTime = 0f;
+        Vector3 targetScale = originalScale * scaleAmount;
+        while (elapsedTime < scaleUpDuration)
+        {
+            // ¿ÀºêÁ§Æ®°¡ ÆÄ±«µÇ¾ú´ÂÁö È®ÀÎ
+            if (attacker == null || !attacker.gameObject.activeSelf)
+            {
+                yield break; // ÄÚ·çÆ¾ Á¾·á
+            }
+            
+            attacker.transform.localScale = Vector3.Lerp(originalScale, targetScale, elapsedTime / scaleUpDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        attacker.transform.localScale = targetScale;
+
+        // ÈÄÅðÇÏ¸ç °ø°Ý ÁØºñ
         Vector3 retreatPosition = originalPosition - (targetPosition - originalPosition).normalized * retreatDistance;
         while (Vector3.Distance(attacker.transform.position, retreatPosition) > 0.01f)
         {
-            attacker.transform.position = Vector3.Lerp(attacker.transform.position, retreatPosition, Time.deltaTime * moveSpeed);
+            attacker.transform.position = Vector3.Lerp(attacker.transform.position, retreatPosition, Time.deltaTime * retreatSpeed);
             yield return null;
         }
 
-        // Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-        while (Vector3.Distance(attacker.transform.position, targetPosition) > 0.5f) // ï¿½æµ¹ ï¿½Å¸ï¿½ ï¿½ï¿½ï¿½ï¿½
+        // Àû¿¡°Ô ºü¸£°Ô µ¹Áø
+        elapsedTime = 0f;
+        Vector3 startDashPosition = attacker.transform.position; // ÇöÀç À§Ä¡¿¡¼­ ½ÃÀÛ
+        while (elapsedTime < attackDashDuration)
+        {            
+            float t = elapsedTime / attackDashDuration;
+            float easedT = Mathf.Sin(t * Mathf.PI * 0.5f); 
+
+            attacker.transform.position = Vector3.Lerp(startDashPosition, targetPosition, easedT);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        attacker.transform.position = targetPosition;
+
+        // Å¸°Ý ¹× Àá½Ã ¸ØÃã 
+        target.TakeDamage(attacker.GetAttackPower());
+
+        yield return new WaitForSeconds(impactPauseDuration); 
+
+        // ¿ø·¡ À§Ä¡·Î º¹±Í ¹× Å©±â ¿ø·¡´ë·Î
+        elapsedTime = 0f;
+        Vector3 afterImpactPosition = attacker.transform.position;
+        while (elapsedTime < returnDuration)
         {
-            attacker.transform.position = Vector3.Lerp(attacker.transform.position, targetPosition, Time.deltaTime * moveSpeed);
+            float t = elapsedTime / returnDuration;
+            attacker.transform.position = Vector3.Lerp(afterImpactPosition, originalPosition, t);
+            attacker.transform.localScale = Vector3.Lerp(targetScale, originalScale, t);
+            elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½
-        Debug.Log($"{attacker.name}ï¿½ï¿½ {target.name}ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
-        target.TakeDamage(attacker.GetAttackPower()); 
-        
-        // TODO: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø½ï¿½Æ® Ç¥ï¿½ï¿½, ï¿½Ç°ï¿½ È¿ï¿½ï¿½ï¿½ï¿½, Å¸ï¿½Ý½ï¿½, ï¿½ï¿½ï¿½ï¿½Å·ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½È¿ï¿½ï¿½
+        // À§Ä¡ ¹× Å©±â º¸Á¤
+        attacker.transform.position = originalPosition;
+        attacker.transform.localScale = originalScale;
 
-        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-        while (Vector3.Distance(attacker.transform.position, originalPosition) > 0.01f)
+        // Á×Àº Ä«µå Ã³¸® (ÁÖ¼® ÇØÁ¦ ÇÊ¿ä)
+        if (target.IsDead())
         {
-            attacker.transform.position = Vector3.Lerp(attacker.transform.position, originalPosition, Time.deltaTime * moveSpeed);
-            yield return null;
+            targetList.Remove(target);
+            Destroy(target.gameObject); 
         }
-        attacker.transform.position = originalPosition; // ï¿½ï¿½È®ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½
-
-        // ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½ Ã³ï¿½ï¿½
-        // if (target.IsDead())
-        // {
-        //     targetList.Remove(target);
-        //     target.gameObject.SetActive(false);
-        // }
     }
 
-
-    // BattleField Å»ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ È£ï¿½ï¿½ï¿½ï¿½
+    // BattleField Å»ÃâÇÒ ¶§ È£ÃâÇÔ
     void ExitBattleField()
     {
         foreach (BattleCard card in m_friendlyCardList)
