@@ -11,6 +11,12 @@ public sealed class ChiefMapManager : SingleTonForGameObject<ChiefMapManager>
     }
     public void Start()
     {
+        // Test
+        if (!SaveDataBuffer.Instance.BHasValue)
+        {
+            SaveDataBuffer.Instance.ClearSaveData();
+        }
+
         RenderAll();
     }
 

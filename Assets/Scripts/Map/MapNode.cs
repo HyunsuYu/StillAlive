@@ -18,7 +18,7 @@ public sealed class MapNode : MonoBehaviour
 
 
     private EventNodeType m_eventNodeType;
-    private Vector2Int m_position;
+    [SerializeField] private Vector2Int m_position;
 
     [SerializeField] private GameObject m_gameObject_CurPosIcon;
     [SerializeField] private Sprite[] m_Icons;

@@ -33,7 +33,7 @@ public class MapGenerator : SingleTonForGameObject<MapGenerator>
     [SerializeField] private float m_pathLinkChanceWeight = 1.0f;
 
     private bool[,] m_nodePlane;
-  
+
     private Dictionary<int, List<MapData.Node>> m_nodes = new Dictionary<int, List<MapData.Node>>();
 
     //private Dictionary<Vector2Int, MapNode> m_mapNodeTable = new Dictionary<Vector2Int, MapNode>();
@@ -76,7 +76,7 @@ public class MapGenerator : SingleTonForGameObject<MapGenerator>
         int filledNodeCount = (int)((m_mapSize.x * m_mapSize.y) * m_nodeFillPercent);
 
         m_nodePlane[0, m_startNodeXPos] = true;
-    
+
         foreach (int endNodeXPos in m_endNodeXPoses)
         {
             m_nodePlane[m_mapSize.y - 1, endNodeXPos] = true;
@@ -122,7 +122,7 @@ public class MapGenerator : SingleTonForGameObject<MapGenerator>
                     m_nodePlane[(int)targetPos.y, (int)targetPos.x] = true;
                     nodePoses.Add(new Vector2Int((int)targetPos.x, (int)targetPos.y));
 
-                    if((int)targetPos.y > maxYPos)
+                    if ((int)targetPos.y > maxYPos)
                     {
                         maxYPos = (int)targetPos.y;
                     }
@@ -132,6 +132,7 @@ public class MapGenerator : SingleTonForGameObject<MapGenerator>
             }
         }
         #endregion
+        maxYPos++;
 
         #region Calculate Path
         for (int coord_y = 0; coord_y < m_mapSize.y; coord_y++)
@@ -185,11 +186,11 @@ public class MapGenerator : SingleTonForGameObject<MapGenerator>
                         EventNodeType = (MapNode.EventNodeType)UnityEngine.Random.Range(0, 4)
                     };
 
-                    if(coord_y - 1 == maxYPos / 2)
+                    if (coord_y == maxYPos / 2)
                     {
                         node.EventNodeType = MapNode.EventNodeType.Combat_MiddleBoss;
                     }
-                    else if(coord_y - 1 == maxYPos)
+                    else if (coord_y == maxYPos)
                     {
                         node.EventNodeType = MapNode.EventNodeType.Combat_ChapterBoss;
                     }
@@ -238,6 +239,8 @@ public class MapGenerator : SingleTonForGameObject<MapGenerator>
         }
         #endregion
 
+        Debug.Log("Max : " + maxYPos);
+
         SaveData curSaveData = SaveDataBuffer.Instance.Data;
         curSaveData.MapData = new MapData()
         {
@@ -245,7 +248,7 @@ public class MapGenerator : SingleTonForGameObject<MapGenerator>
             NodePlane = m_nodePlane,
             Nodes = m_nodes,
             MaxYPos = maxYPos,
-            DayOffset = (curSaveData.MapData.HasValue ? curSaveData.MapData.Value.DayOffset + 1 : 0)
+            //DayOffset = (curSaveData.MapData.HasValue ? curSaveData.MapData.Value.DayOffset + 1 : 0)
         };
         curSaveData.PassedWays.Add(curSaveData.CurPlayerMapPos);
         SaveDataBuffer.Instance.TrySetData(curSaveData);
