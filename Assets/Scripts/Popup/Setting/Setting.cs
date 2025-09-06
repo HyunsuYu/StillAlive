@@ -10,12 +10,6 @@ public class Setting : MonoBehaviour
         ChiefSettingManager.FromPage = m_CurPage;
     }
 
-    public void Update()
-    {
-        OpenSetting();
-        LoadTitle();
-    }
-
     public void OpenSetting()
     {
         SceneManager.LoadScene("Setting");

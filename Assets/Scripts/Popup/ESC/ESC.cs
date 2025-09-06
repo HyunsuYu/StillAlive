@@ -4,6 +4,7 @@ public class ESC : MonoBehaviour
 {
     public void Update()
     {
+        if (PopupManager.Instance.m_bisOtherPopupOpen) return;
         ESCPopup();
     }
 
@@ -11,15 +12,27 @@ public class ESC : MonoBehaviour
     {
         if(!PopupManager.Instance.m_bisESCOpen)
         {
-            PopupManager.Instance.ESCOpen();
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if (PopupManager.Instance.m_bisINVENOpen)
+                {
+                    PopupManager.Instance.INVENClose();
+                    PopupManager.Instance.m_bisINVENOpen = false;
+                }
 
-            PopupManager.Instance.m_bisESCOpen = true;
+                PopupManager.Instance.ESCOpen();
+
+                PopupManager.Instance.m_bisESCOpen = true;
+            }
         }
         else
         {
-            PopupManager.Instance.ESCClose();
+            if(Input.GetKeyDown(KeyCode.Escape))
+            {
+                PopupManager.Instance.ESCClose();
 
-            PopupManager.Instance.m_bisESCOpen = false;
+                PopupManager.Instance.m_bisESCOpen = false;
+            }
         }
     }
 }

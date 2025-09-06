@@ -7,9 +7,14 @@ public class PopupManager : SingleTonForGameObject<PopupManager>
     [SerializeField] private GameObject m_INVEN;
     [SerializeField] private GameObject m_RADIO;
     [SerializeField] private GameObject m_CONVERSATION;
+    [SerializeField] private GameObject m_INFOPENAL;
 
+    private static bool bisOtherPopupOpen = false;
     private static bool bisESCOpen = false;
     private static bool bisINVENOpen = false;
+    private static bool bisRADIOOpen = false;
+    private static bool bisCONVERSATIONOpen = false;
+    private static bool bisINFOPENALOpen = false;
 
     internal bool m_bisESCOpen
     {
@@ -23,6 +28,29 @@ public class PopupManager : SingleTonForGameObject<PopupManager>
         set { bisINVENOpen = value; }
     }
 
+    internal bool m_bisRADIOOpen
+    {
+        get { return bisRADIOOpen; }
+        set { bisRADIOOpen = value; }
+    }
+
+    internal bool m_bisCONVERSATIONOpen
+    {
+        get { return bisCONVERSATIONOpen; }
+        set { bisCONVERSATIONOpen = value; }
+    }
+
+    internal bool m_bisINFOPENALOpen
+    {
+        get { return bisINFOPENALOpen; }
+        set { bisINFOPENALOpen = value; }
+    }
+
+    internal bool m_bisOtherPopupOpen
+    {
+        get { return bisOtherPopupOpen; }
+        set { bisOtherPopupOpen = value; }
+    }
     public void Awake()
     {
         SetInstance(this);
@@ -53,6 +81,11 @@ public class PopupManager : SingleTonForGameObject<PopupManager>
         if(m_CONVERSATION != null)
         {
             m_CONVERSATION.SetActive(false);
+        }
+
+        if(m_INFOPENAL != null)
+        {
+            m_INFOPENAL.SetActive(false);
         }
     }
 
@@ -96,6 +129,15 @@ public class PopupManager : SingleTonForGameObject<PopupManager>
         m_CONVERSATION.SetActive(false);
     }
 
+    internal void INFOPENALOpen()
+    {
+        m_INFOPENAL.SetActive(true);
+    }
+
+    internal void INFOPENALClose()
+    {
+        m_INFOPENAL.SetActive(false);
+    }    
     protected override void Dispose(bool bisDisposing)
     {
         throw new System.NotImplementedException();
