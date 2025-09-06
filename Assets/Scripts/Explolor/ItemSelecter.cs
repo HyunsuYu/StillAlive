@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 class ItemSelecter : SingleTonForGameObject<ItemSelecter>
 {
-    static bool curSelectedIndex = false;
 
     public List<GameObject> itemSlots;
 
