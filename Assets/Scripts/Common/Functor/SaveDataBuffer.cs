@@ -54,8 +54,11 @@ public sealed class SaveDataBuffer : SingleTonForGameObject<SaveDataBuffer>
                 DPlusDay = 0,
                 Money = UnityEngine.Random.Range(0, 31),
                 PassedWays = new List<Vector2Int>(),
-                ConversationInfos = new List<string>(),
-                RadioInfos = new List<string>(),
+                IntelInfos = new SaveData.IntelnfoData()
+                {
+                    ConversationInfos = new Dictionary<int, string>(),
+                    RadioInfos = new List<string>()
+                },
                 CurPlayerMapPos = new Vector2Int(7, 0),
                 LastCombatEnemys = new List<CardData>(),
                 MapData = null
