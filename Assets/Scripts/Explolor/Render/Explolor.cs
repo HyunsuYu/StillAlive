@@ -1,20 +1,28 @@
+using CommonUtilLib.ThreadSafe;
+using TMPro;
+using UnityEditor;
 using UnityEngine;
 
-public class Explolor : MonoBehaviour
+public class Explolor : SingleTonForGameObject<Explolor>
 {
+    [Header("Windows")]
     [SerializeField] private GameObject SelecterWindow; // 선택 창
     [SerializeField] private GameObject CheckWindow; // 확인 창
+    [SerializeField] private GameObject EventWindow; // 이벤트 창
 
-    
+    [Header("Objects")]
+    [SerializeField] private GameObject[] ObjectBox;
+
+    [Header("Text")]
+    [SerializeField] private TMP_Text m_text_DPlusDay;
+
+
     private int selectedButton = 0; // 선택된 버튼 (1: 아이템, 2: 동료)
-
-
-    public int Day = 0; // 현재 날짜
+    static bool curCompleteWork = true;
 
     void Awake()
     {
-        CheckWindow.SetActive(false); // 시작 시 확인 창 비활성화
-        SelecterWindow.SetActive(true); // 시작 시 이벤트 창 비활성화
+        SetInstance(this);
     }
 
     public void OnItemButtonClick() //아이템 탐사 버튼을 눌렀을 때
@@ -51,17 +59,20 @@ public class Explolor : MonoBehaviour
 
     public void ItemCatch() //아이템 발견 함수
     {
-        int itemCount = ProbabilityUtillity.GetCount(Day);
-        
+        int itemCount = ProbabilityUtillity.GetCount(SaveDataBuffer.Instance.Data.DPlusDay);
+
         if (itemCount > 0)
         {
             Debug.Log($"아이템 {itemCount}개 발견!");
-            ItemTypes[] item = new ItemTypes[itemCount];
-
             for (int i = 0; i < itemCount; i++)
             {
-                
+                ObjectBox[i].SetActive(true);
             }
+
+            EventWindow.SetActive(true); // 이벤트 창 활성화
+
+            
+
         }
         else
         {
@@ -71,7 +82,7 @@ public class Explolor : MonoBehaviour
 
     public void colleagueCatch() //동료 발견 함수
     {
-        int ColleagueCount = ProbabilityUtillity.GetCount(Day);
+        int ColleagueCount = ProbabilityUtillity.GetCount(SaveDataBuffer.Instance.Data.DPlusDay);
         if (ColleagueCount > 0)
         {
             Debug.Log($"동료 {ColleagueCount}명 발견!");
@@ -85,6 +96,44 @@ public class Explolor : MonoBehaviour
         {
             Debug.Log("동료 발견 못함");
         }
+    }
+
+    public void onItemSelect(bool isSelect)
+    {
+        
+        if (isSelect)
+        {
+            this.GetComponent<SpriteRenderer>().color = new Color32(175, 175, 175,255);
+            isSelect = false;
+        }
+            
+        else
+        {
+            this.GetComponent<SpriteRenderer>().color = new Color32(81, 81, 81,255);
+            isSelect = true;
+        }
+            
+
+    }
+
+    internal void Render()
+    {
+        m_text_DPlusDay.text = "D+" + SaveDataBuffer.Instance.Data.DPlusDay.ToString();
+        if (curCompleteWork)
+        {
+            CheckWindow.SetActive(false); // 시작 시 확인 창 비활성화
+            SelecterWindow.SetActive(true); // 시작 시 이벤트 창 활성화
+            EventWindow.SetActive(false); // 시작 시 이벤트 창 비활성화
+            for (int i = 0; i < ObjectBox.Length; i++)
+            {
+                ObjectBox[i].SetActive(false);
+            }
+        }
+    }
+
+    protected override void Dispose(bool bisDisposing)
+    {
+        throw new System.NotImplementedException();
     }
 }
 
