@@ -2151,6 +2151,9 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1564585066}
   m_CullTransparentMesh: 1
+<<<<<<< HEAD
+>>>>>>> parent of 148dcb2 (4th)
+=======
 >>>>>>> parent of 148dcb2 (4th)
 --- !u!1 &1821727527
 GameObject:
@@ -2278,7 +2281,10 @@ Transform:
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 148dcb2 (4th)
 --- !u!1 &2088725864
 GameObject:
   m_ObjectHideFlags: 0
