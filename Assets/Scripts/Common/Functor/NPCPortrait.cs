@@ -1,11 +1,16 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
+using System.Collections;
 
 /// <summary>
-/// NPC 초상화를 관리하는 클래스. 각 부위별 Image를 직접 관리하고 파츠 교체 및 색상 변경 기능을 제공한다.
+/// 동적 머티리얼에 텍스처를 수동 할당하도록 수정된 최종 버전
 /// </summary>
 public class NPCPortrait : MonoBehaviour
 {
+    private const string MATERIAL_PATH = "LoadMaterials/PortraitMaterial";
+    // private const string ENEMY_MATERIAL_PATH = "LoadMaterials/EnemyPortraitMaterial";
+
     [Header("부위별 Image 설정")]
     [SerializeField] private Image topImage;
     [SerializeField] private Image faceImage;
@@ -23,28 +28,28 @@ public class NPCPortrait : MonoBehaviour
     private CardData m_cardData;
     public CardData GetCardData => m_cardData;
 
-    /// <summary>
-    /// 초상화를 설정합니다.
-    /// </summary>
-    /// <param name="cardData">설정할 카드 데이터</param>
+    private Dictionary<CardData.NPCLookPartType, Material> m_partMaterials;
+
     public void SetupPortrait(CardData cardData)
     {
         m_cardData = cardData;
 
         if (this.m_lookPartData == null || m_cardData.NPCLookTable == null)
         {
-            Debug.LogError("NPCPortrait: lookPartData가 설정되지 않았습니다.");
             return;
         }
 
-        foreach (var part in m_cardData.NPCLookTable)
-        {
-            SetPartSprite(part.Key, part.Value);
-        }
+        CreatePartMaterials();
+        SetAllPartSprites();
+        ApplyAllPartColors();
+    }
+
+    public void ApplyAllPartColors()
+    {
+        if (m_cardData.ColorPalleteIndex < 0 || m_cardData.ColorPalleteIndex >= m_lookPartData.ColorPalettes.Length) return;
 
         NPCLookPart.ColorPalette palette = m_lookPartData.ColorPalettes[m_cardData.ColorPalleteIndex];
 
-        // 각 부위별로 다른 색상 팔레트 적용
         ApplyPartColor(CardData.NPCLookPartType.Top, palette.TopColors);
         ApplyPartColor(CardData.NPCLookPartType.Face, palette.FacesColors);
         ApplyPartColor(CardData.NPCLookPartType.FrontHair, palette.FrontHairsColors);
@@ -54,13 +59,33 @@ public class NPCPortrait : MonoBehaviour
         ApplyPartColor(CardData.NPCLookPartType.Glasses, palette.GlassesColors);
         ApplyPartColor(CardData.NPCLookPartType.Cap, palette.CapsColors);
     }
+    private void SetAllPartSprites()
+    {
+        foreach (var partInfo in m_cardData.NPCLookTable)
+        {
+            SetPartSprite(partInfo.Key, partInfo.Value);
+        }
+    }
+    private void CreatePartMaterials()
+    {
+        string materialPath = MATERIAL_PATH;
+        Material originalMaterial = Resources.Load<Material>(materialPath);
+        if (originalMaterial == null) return;
 
+        m_partMaterials = new Dictionary<CardData.NPCLookPartType, Material>();
 
-    /// <summary>
-    /// 특정 부위의 스프라이트를 설정합니다.
-    /// </summary>
-    /// <param name="partType">부위 타입</param>
-    /// <param name="spriteIndex">스프라이트 인덱스</param>
+        foreach (CardData.NPCLookPartType partType in System.Enum.GetValues(typeof(CardData.NPCLookPartType)))
+        {
+            Image targetImage = GetImageByPartType(partType);
+            if (targetImage != null)
+            {
+                Material partMaterial = Instantiate(originalMaterial);
+                targetImage.material = partMaterial;
+                m_partMaterials[partType] = partMaterial;
+            }
+        }
+    }
+
     public void SetPartSprite(CardData.NPCLookPartType partType, int spriteIndex)
     {
         Image targetImage = GetImageByPartType(partType);
@@ -69,83 +94,96 @@ public class NPCPortrait : MonoBehaviour
         if (targetImage != null && spriteArray != null && spriteIndex >= 0 && spriteIndex < spriteArray.Length)
         {
             targetImage.sprite = spriteArray[spriteIndex];
+            targetImage.enabled = targetImage.sprite != null;
+      
+            if (m_partMaterials.TryGetValue(partType, out Material partMaterial) && targetImage.sprite != null)
+            {
+                partMaterial.SetTexture("_MainTex", targetImage.sprite.texture);
+            }
+        }
+        else if (targetImage != null)
+        {
+            targetImage.enabled = false;
         }
     }
 
-    /// <summary>
-    /// 특정 부위의 색상만 변경합니다.
-    /// </summary>
-    /// <param name="partType">부위 타입</param>
-    /// <param name="colors">적용할 색상</param>
     public void ApplyPartColor(CardData.NPCLookPartType partType, NPCLookPart.ColorPalette.LookPartColors colors)
     {
-        Image targetImage = GetImageByPartType(partType);
-        
-        if (targetImage != null && targetImage.material != null)
+        if (m_partMaterials != null && m_partMaterials.TryGetValue(partType, out Material partMaterial))
         {
-            Material mat = targetImage.material;
-            mat.SetColor("_ColorR", colors.RedRegionColor);
-            mat.SetColor("_ColorG", colors.GreenRegionColor);
-            mat.SetColor("_ColorB", colors.BlueRegionColor);
-            mat.SetColor("_ColorRG", colors.RedGreenRegionColor);
-            mat.SetColor("_ColorRB", colors.RedBlueRegionColor);
-            mat.SetColor("_ColorGB", colors.GreenBlueRegionColor);
-            mat.SetColor("_ColorRGB", colors.RedGreenBlueRegionColor);
+            partMaterial.SetColor("_ColorR", colors.RedRegionColor);
+            partMaterial.SetColor("_ColorG", colors.GreenRegionColor);
+            partMaterial.SetColor("_ColorB", colors.BlueRegionColor);
+            partMaterial.SetColor("_ColorRG", colors.RedGreenRegionColor);
+            partMaterial.SetColor("_ColorRB", colors.RedBlueRegionColor);
+            partMaterial.SetColor("_ColorGB", colors.GreenBlueRegionColor);
+            partMaterial.SetColor("_ColorRGB", colors.RedGreenBlueRegionColor);
         }
     }
 
-    /// <summary>
-    /// 부위 타입에 따라 해당하는 Image를 반환합니다.
-    /// </summary>
     private Image GetImageByPartType(CardData.NPCLookPartType partType)
     {
         switch (partType)
         {
-            case CardData.NPCLookPartType.Top: 
-                return topImage;
-            case CardData.NPCLookPartType.Face: 
-                return faceImage;
-            case CardData.NPCLookPartType.FrontHair: 
-                return frontHairImage;
-            case CardData.NPCLookPartType.BackHair: 
-                return backHairImage;
-            case CardData.NPCLookPartType.Eye: 
-                return eyeImage;
-            case CardData.NPCLookPartType.Mouth: 
-                return mouthImage;
-            case CardData.NPCLookPartType.Glasses: 
-                return glassesImage;
-            case CardData.NPCLookPartType.Cap: 
-                return capImage;
+            case CardData.NPCLookPartType.Top: return topImage;
+            case CardData.NPCLookPartType.Face: return faceImage;
+            case CardData.NPCLookPartType.FrontHair: return frontHairImage;
+            case CardData.NPCLookPartType.BackHair: return backHairImage;
+            case CardData.NPCLookPartType.Eye: return eyeImage;
+            case CardData.NPCLookPartType.Mouth: return mouthImage;
+            case CardData.NPCLookPartType.Glasses: return glassesImage;
+            case CardData.NPCLookPartType.Cap: return capImage;
             default: return null;
         }
     }
 
-    /// <summary>
-    /// 부위 타입에 따라 해당하는 스프라이트 배열을 반환합니다.
-    /// </summary>
     private Sprite[] GetSpriteArrayByPartType(CardData.NPCLookPartType partType)
     {
         switch (partType)
         {
-            case CardData.NPCLookPartType.Top: 
-                return m_lookPartData.Tops;
-            case CardData.NPCLookPartType.Face: 
-                return m_lookPartData.Faces;
-            case CardData.NPCLookPartType.FrontHair: 
-                return m_lookPartData.FrontHairs;
-            case CardData.NPCLookPartType.BackHair: 
-                return m_lookPartData.BackHairs;
-            case CardData.NPCLookPartType.Eye: 
-                return m_lookPartData.Eyes;
-            case CardData.NPCLookPartType.Mouth: 
-                return m_lookPartData.Mouths;
-            case CardData.NPCLookPartType.Glasses: 
-                return m_lookPartData.Glasses;
-            case CardData.NPCLookPartType.Cap: 
-                return m_lookPartData.Caps;
-            default: 
-                return null;
+            case CardData.NPCLookPartType.Top: return m_lookPartData.Tops;
+            case CardData.NPCLookPartType.Face: return m_lookPartData.Faces;
+            case CardData.NPCLookPartType.FrontHair: return m_lookPartData.FrontHairs;
+            case CardData.NPCLookPartType.BackHair: return m_lookPartData.BackHairs;
+            case CardData.NPCLookPartType.Eye: return m_lookPartData.Eyes;
+            case CardData.NPCLookPartType.Mouth: return m_lookPartData.Mouths;
+            case CardData.NPCLookPartType.Glasses: return m_lookPartData.Glasses;
+            case CardData.NPCLookPartType.Cap: return m_lookPartData.Caps;
+            default: return null;
+        }
+    }
+
+    public IEnumerator PlayHitEffect(float duration = 0.15f)
+    {
+        if (m_partMaterials != null)
+        {
+            foreach (var material in m_partMaterials.Values)
+            {
+                if (material != null && material.HasProperty("_Color"))
+                {
+                    material.SetColor("_Color", Color.red);
+                }
+            }
+            yield return new WaitForSeconds(duration);
+            foreach (var material in m_partMaterials.Values)
+            {
+                if (material != null && material.HasProperty("_Color"))
+                {
+                    material.SetColor("_Color", Color.white);
+                }
+            }
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (m_partMaterials != null)
+        {
+            foreach (var material in m_partMaterials.Values)
+            {
+                if (material != null) Destroy(material);
+            }
+            m_partMaterials.Clear();
         }
     }
 }
