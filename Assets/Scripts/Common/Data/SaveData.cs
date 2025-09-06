@@ -26,7 +26,8 @@ public struct SaveData
 
     public int Money;
 
-    public IntelnfoData Intelnfos;
+    public List<string> RadioInfos;
+    public List<string> ConversationInfos;
 
     public List<CardData> LastCombatEnemys;
 

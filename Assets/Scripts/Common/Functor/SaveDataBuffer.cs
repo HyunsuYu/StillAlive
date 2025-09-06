@@ -49,17 +49,16 @@ public sealed class SaveDataBuffer : SingleTonForGameObject<SaveDataBuffer>
             {
                 CardDatas = new System.Collections.Generic.List<CardData>(),
                 ItemAmountTable = new System.Collections.Generic.Dictionary<int, int>(),
-                MapData = null,
-                CurPlayerMapPos = new Vector2Int(7, 0),
+                //MapData = 
+                //CurPlayerMapPos = 
                 DPlusDay = 0,
                 Money = UnityEngine.Random.Range(0, 31),
                 PassedWays = new List<Vector2Int>(),
-                Intelnfos = new SaveData.IntelnfoData()
-                {
-                    ConversationInfos = new Dictionary<int, string>(),
-                    RadioInfos = new List<string>()
-                },
-                LastCombatEnemys = new List<CardData>()
+                ConversationInfos = new List<string>(),
+                RadioInfos = new List<string>(),
+                CurPlayerMapPos = new Vector2Int(7, 0),
+                LastCombatEnemys = new List<CardData>(),
+                MapData = null
             };
         }
     }
@@ -92,6 +91,7 @@ public sealed class SaveDataBuffer : SingleTonForGameObject<SaveDataBuffer>
 
         return true;
     }
+
     internal bool TrySaveData()
     {
         if (m_curSaveData == null)
