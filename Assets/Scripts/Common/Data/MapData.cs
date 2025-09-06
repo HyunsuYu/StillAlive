@@ -19,5 +19,4 @@ public struct MapData
     public Vector2Int MapSize;
 
     public int MaxYPos;
-    public int DayOffset;
 }
