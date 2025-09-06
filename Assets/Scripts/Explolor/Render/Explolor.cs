@@ -9,15 +9,27 @@ public class Explolor : SingleTonForGameObject<Explolor>
     [SerializeField] private GameObject SelecterWindow; // 선택 창
     [SerializeField] private GameObject CheckWindow; // 확인 창
     [SerializeField] private GameObject EventWindow; // 이벤트 창
+    [SerializeField] private GameObject ItemWindow;
+    [SerializeField] private GameObject ColleagueWindow;
 
     [Header("Objects")]
-    [SerializeField] private GameObject[] ObjectBox;
+    [SerializeField] private GameObject[] ItemBox;
+    [SerializeField] private GameObject[] ColleagueBox;
+    [SerializeField] private GameObject[] MyTeamBox;
 
     [Header("Text")]
     [SerializeField] private TMP_Text m_text_DPlusDay;
 
+    public enum ExplolorState
+    {
+        None = 0,
+        Selecter = 1,
+        ItemEvent = 2,
+        ColleagueEvent = 3
+    }
 
-    private int selectedButton = 0; // 선택된 버튼 (1: 아이템, 2: 동료)
+
+    ExplolorState exState = ExplolorState.None;
     static bool curCompleteWork = true;
 
     void Awake()
@@ -27,34 +39,34 @@ public class Explolor : SingleTonForGameObject<Explolor>
 
     public void OnItemButtonClick() //아이템 탐사 버튼을 눌렀을 때
     {
-        selectedButton = 1;
+        exState = ExplolorState.ItemEvent;
         CheckWindow.SetActive(true);
     }
     public void OnColleagueButtonClick() //동료 탐사 버튼을 눌렀을 때
     {
-        selectedButton = 2;
+        exState = ExplolorState.ColleagueEvent;
         CheckWindow.SetActive(true);
     }
 
     public void OnConfirmButtonClick() //확인 버튼을 눌렀을 때
     {
-        if (selectedButton == 1)
+        if (exState == ExplolorState.ItemEvent)
         {
             ItemCatch();
         }
-        else if (selectedButton == 2)
+        else if (exState == ExplolorState.ColleagueEvent)
         {
             colleagueCatch();
         }
         CheckWindow.SetActive(false); // 확인 창 비활성화
         SelecterWindow.SetActive(false); // 선택 창 비활성화
-        selectedButton = 0; // 선택된 버튼 초기화
+        exState = ExplolorState.None; // 선택된 버튼 초기화
     }
 
     public void OnCancelButtonClick()  //취소 버튼을 눌렀을 때
     {
         CheckWindow.SetActive(false); // 확인 창 비활성화
-        selectedButton = 0; // 선택된 버튼 초기화
+        exState = ExplolorState.None; // 선택된 버튼 초기화
     }
 
     public void ItemCatch() //아이템 발견 함수
@@ -66,12 +78,13 @@ public class Explolor : SingleTonForGameObject<Explolor>
             Debug.Log($"아이템 {itemCount}개 발견!");
             for (int i = 0; i < itemCount; i++)
             {
-                ObjectBox[i].SetActive(true);
+                ItemBox[i].SetActive(true);
             }
 
             EventWindow.SetActive(true); // 이벤트 창 활성화
+            ItemWindow.SetActive(true);
 
-            
+
 
         }
         else
@@ -90,30 +103,20 @@ public class Explolor : SingleTonForGameObject<Explolor>
             {
                 // 동료 발견 시 추가 행동을 여기에 작성
                 Debug.Log($"동료{i} 획득!");
+                ColleagueBox[i].SetActive(true);
             }
+            for (int i = 0; i < SaveDataBuffer.Instance.Data.CardDatas.Count; i++)
+            {
+                MyTeamBox[i].SetActive(true);
+            }
+            EventWindow.SetActive(true); // 이벤트 창 활성화
+            ColleagueWindow.SetActive(true);
+
         }
         else
         {
             Debug.Log("동료 발견 못함");
         }
-    }
-
-    public void onItemSelect(bool isSelect)
-    {
-        
-        if (isSelect)
-        {
-            this.GetComponent<SpriteRenderer>().color = new Color32(175, 175, 175,255);
-            isSelect = false;
-        }
-            
-        else
-        {
-            this.GetComponent<SpriteRenderer>().color = new Color32(81, 81, 81,255);
-            isSelect = true;
-        }
-            
-
     }
 
     internal void Render()
@@ -124,9 +127,15 @@ public class Explolor : SingleTonForGameObject<Explolor>
             CheckWindow.SetActive(false); // 시작 시 확인 창 비활성화
             SelecterWindow.SetActive(true); // 시작 시 이벤트 창 활성화
             EventWindow.SetActive(false); // 시작 시 이벤트 창 비활성화
-            for (int i = 0; i < ObjectBox.Length; i++)
+            ItemWindow.SetActive(false);
+            ColleagueWindow.SetActive(false);
+            for (int i = 0; i < ItemBox.Length; i++)
             {
-                ObjectBox[i].SetActive(false);
+                ItemBox[i].SetActive(false);
+            }
+            for(int i = 0; i < ColleagueBox.Length; i++)
+            {
+                ColleagueBox[i].SetActive(false);
             }
         }
     }

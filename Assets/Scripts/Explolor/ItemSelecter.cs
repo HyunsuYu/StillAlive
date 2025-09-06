@@ -7,6 +7,10 @@ class ItemSelecter : SingleTonForGameObject<ItemSelecter>
     {
         SetInstance(this);
     }
+
+  
+
+
     protected override void Dispose(bool bisDisposing)
     {
         throw new System.NotImplementedException();
