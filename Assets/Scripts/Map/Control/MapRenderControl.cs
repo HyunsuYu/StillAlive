@@ -100,7 +100,16 @@ public sealed class MapRenderControl : SingleTonForGameObject<MapRenderControl>
                     {
                         case MapNode.EventNodeType.Combat_Common:
                         case MapNode.EventNodeType.Combat_MiddleBoss:
+                            SceneManager.LoadScene("Combat");
+                            break;
+
                         case MapNode.EventNodeType.Combat_ChapterBoss:
+                            MapGenerator.Instance.GenerateMap();
+                            curSaveData = SaveDataBuffer.Instance.Data;
+                            curSaveData.CurPlayerMapPos = new Vector2Int(7, 0);
+                            SaveDataBuffer.Instance.TrySetData(curSaveData);
+                            SaveDataBuffer.Instance.TrySaveData();
+
                             SceneManager.LoadScene("Combat");
                             break;
 

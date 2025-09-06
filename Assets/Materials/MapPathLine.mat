@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: MapPathLine
-  m_Shader: {fileID: 4800000, guid: f04a5edb579a8dc4f9f149e43608dca3, type: 3}
+  m_Shader: {fileID: 4800000, guid: 4b582271cc8c6044ab429f80ce12f9e7, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []

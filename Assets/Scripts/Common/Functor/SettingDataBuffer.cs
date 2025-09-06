@@ -16,6 +16,25 @@ public sealed class SettingDataBuffer : SingleTonForGameObject<SettingDataBuffer
     public void Awake()
     {
         SetInstance(this);
+
+        TryLoadData();
+    }
+
+    internal SettingData SettingData
+    {
+        get
+        {
+            if(!m_settingData.HasValue)
+            {
+                throw new Exception("Setting Data is Empty");
+            }
+
+            return m_settingData.Value;
+        }
+        set
+        {
+            m_settingData = value;
+        }
     }
 
     private string SettingDataPath
@@ -38,7 +57,7 @@ public sealed class SettingDataBuffer : SingleTonForGameObject<SettingDataBuffer
                     BIsFullScreen = true,
                     BIsVSync = true,
 
-                    TextSize = 25,
+                    TextSize = 25.0f,
                     TextBoxOpacity = 0.8f,
 
                     BIsTextEffect = true,
