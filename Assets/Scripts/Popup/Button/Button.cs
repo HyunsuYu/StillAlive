@@ -19,16 +19,4 @@ public class Button : MonoBehaviour
         }
     }
     #endregion
-
-    #region SETTING
-    public void OpenSetting()
-    {
-        PopupManager.Instance.SETTINGOpen();
-    }
-
-    public void CloseSetting()
-    {
-        PopupManager.Instance.SETTINGClose();
-    }
-    #endregion
 }

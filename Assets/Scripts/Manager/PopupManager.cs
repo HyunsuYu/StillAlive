@@ -5,7 +5,8 @@ public class PopupManager : SingleTonForGameObject<PopupManager>
 {
     [SerializeField] private GameObject m_ESC;
     [SerializeField] private GameObject m_INVEN;
-    [SerializeField] private GameObject m_SETTING;
+    [SerializeField] private GameObject m_RADIO;
+    [SerializeField] private GameObject m_CONVERSATION;
 
     private static bool bisESCOpen = false;
     private static bool bisINVENOpen = false;
@@ -44,9 +45,14 @@ public class PopupManager : SingleTonForGameObject<PopupManager>
             m_INVEN.SetActive(false);
         }
 
-        if(m_SETTING != null)
+        if(m_RADIO != null)
         {
-            m_SETTING.SetActive(false);
+            m_RADIO.SetActive(false);
+        }    
+
+        if(m_CONVERSATION != null)
+        {
+            m_CONVERSATION.SetActive(false);
         }
     }
 
@@ -69,14 +75,25 @@ public class PopupManager : SingleTonForGameObject<PopupManager>
     {
         m_INVEN.SetActive(false);
     }
-    internal void SETTINGOpen()
+
+    internal void RADIOOpen()
     {
-        m_SETTING.SetActive(true);
+        m_RADIO.SetActive(true);
     }
 
-    internal void SETTINGClose()
+    internal void RADIOClose()
     {
-        m_SETTING.SetActive(false);
+        m_RADIO.SetActive(false);
+    }
+
+    internal void CONVERSATIONOpen()
+    {
+        m_CONVERSATION.SetActive(true);
+    }
+
+    internal void CONVERSATIONClose()
+    {
+        m_CONVERSATION.SetActive(false);
     }
 
     protected override void Dispose(bool bisDisposing)
