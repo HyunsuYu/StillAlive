@@ -2152,6 +2152,9 @@ CanvasRenderer:
   m_GameObject: {fileID: 1564585066}
   m_CullTransparentMesh: 1
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of 148dcb2 (4th)
+=======
 >>>>>>> parent of 148dcb2 (4th)
 =======
 >>>>>>> parent of 148dcb2 (4th)
@@ -2282,7 +2285,10 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 148dcb2 (4th)
 =======
 >>>>>>> parent of 148dcb2 (4th)
 --- !u!1 &2088725864
