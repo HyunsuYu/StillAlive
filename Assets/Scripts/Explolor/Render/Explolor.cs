@@ -124,10 +124,11 @@ public class Explolor : SingleTonForGameObject<Explolor>
                 // newColleague.NPCLookTable = ...;
 
                 GameObject colleagueGO = ColleagueBox[i];
-                BattleCard card = colleagueGO.GetComponent<BattleCard>();
+                GameObject cardObj = Resources.Load<GameObject>("Prefabs/BattleScene/BattleCard_UI");
+                BattleCard card  = Instantiate(cardObj.gameObject, colleagueGO.transform)?.GetComponent<BattleCard>();
                 if (card != null)
                 {
-                    card.Init(newColleague);
+                    card.Init(newColleague, true);
                     colleagueGO.SetActive(true);
                 }
             }

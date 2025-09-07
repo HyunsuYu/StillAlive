@@ -19,7 +19,7 @@ public class BattleCard : MonoBehaviour
 
     private BattleField m_battleField;
 
-    public void Init(CardData _data)
+    public void Init(CardData _data, bool isUI = false)
     {
         m_myData = _data;
 
@@ -30,8 +30,10 @@ public class BattleCard : MonoBehaviour
         }
 
         m_canvas = GetComponentInChildren<Canvas>();
-
-        m_canvas.worldCamera = Camera.main;
+        if (m_canvas != null && !isUI)
+        {
+            m_canvas.worldCamera = Camera.main;
+        }
         // 기존 초상화가 있다면 파괴
         if (m_portraitInstance != null)
         {
@@ -51,7 +53,8 @@ public class BattleCard : MonoBehaviour
 
             m_portraitInstance.transform.position = portraitPos.position;
             m_portraitInstance.transform.rotation = portraitPos.rotation;
-            m_portraitInstance.transform.localScale = new Vector3(0.02f, 0.02f);
+             if(!isUI)
+                m_portraitInstance.transform.localScale = new Vector3(0.02f, 0.02f);
         }
         else
         {
