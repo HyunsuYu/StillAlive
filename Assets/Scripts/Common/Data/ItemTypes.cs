@@ -35,4 +35,13 @@ public class ItemTypes : ScriptableObject
 
 
     public ItemData[] ItemDatas;
+
+
+    internal static int ItemCount
+    {
+        get
+        {
+            return 8;
+        }
+    }
 }
