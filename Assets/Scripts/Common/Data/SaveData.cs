@@ -31,8 +31,6 @@ public struct SaveData
 
     public int DPlusDay;
 
-    public int Money;
-
     public IntelnfoData IntelInfos;
 
     public List<CardData> LastCombatEnemys;
