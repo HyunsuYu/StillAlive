@@ -45,7 +45,7 @@ public sealed class SaveDataBuffer : SingleTonForGameObject<SaveDataBuffer>
     {
         get
         {
-            return new SaveData()
+            var tempSaveData = new SaveData()
             {
                 CardDatas = new System.Collections.Generic.List<CardData>(),
                 ItemAmountTable = new System.Collections.Generic.Dictionary<int, int>(),
@@ -64,6 +64,12 @@ public sealed class SaveDataBuffer : SingleTonForGameObject<SaveDataBuffer>
                 LastCombatEnemys = new List<CardData>(),
                 MapData = null
             };
+            for(int index = 0; index < ItemTypes.ItemCount; index++)
+            {
+                tempSaveData.ItemAmountTable.Add(index, 0);
+            }
+
+            return tempSaveData;
         }
     }
 
@@ -79,6 +85,7 @@ public sealed class SaveDataBuffer : SingleTonForGameObject<SaveDataBuffer>
     {
         if (!File.Exists(SaveDataPath))
         {
+            ClearSaveData();
             return false;
         }
 
