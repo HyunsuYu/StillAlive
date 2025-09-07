@@ -63,6 +63,30 @@ public sealed class ChiefMapManager : SingleTonForGameObject<ChiefMapManager>
         //}
         //#endregion
 
+        var aliveCardIndexes = SaveDataInterface.GetAliveCardIndexes();
+        foreach (int cardIndex in aliveCardIndexes)
+        {
+            var curCardData = curSaveData.CardDatas[cardIndex];
+            switch(curCardData.Diseases)
+            {
+                case CardData.DiseasesType.Tetanus:
+                    curCardData.Status.CurHP--;
+                    break;
+
+                case CardData.DiseasesType.Zombie:
+                    curCardData.Status.CurHP--;
+                    curCardData.Status.MaxHP--;
+                    curCardData.Status.AttackPower--;
+                    curCardData.Status.DefencePower--;
+                    curCardData.Status.Speed--;
+                    break;
+            }
+
+            curSaveData.CardDatas[cardIndex] = curCardData;
+        }
+        SaveDataBuffer.Instance.TrySetData(curSaveData);
+        SaveDataBuffer.Instance.TrySaveData();
+
         RenderAll();
 
         #region Late Night
@@ -70,8 +94,6 @@ public sealed class ChiefMapManager : SingleTonForGameObject<ChiefMapManager>
         if (curSaveData.DPlusDay != curSaveData.LightActionAppliedDay)
         {
             bool bisSomeoneHit = false;
-
-            var aliveCardIndexes = SaveDataInterface.GetAliveCardIndexes();
             foreach(int cardIndex in aliveCardIndexes)
             {
                 var curCardData = curSaveData.CardDatas[cardIndex];
