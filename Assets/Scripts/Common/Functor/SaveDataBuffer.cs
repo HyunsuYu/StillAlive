@@ -58,7 +58,7 @@ public sealed class SaveDataBuffer : SingleTonForGameObject<SaveDataBuffer>
                 IntelInfos = new SaveData.IntelnfoData()
                 {
                     ConversationInfos = new List<SaveData.IntelnfoData.SingleConversationInfo>(),
-                    RadioInfos = new List<string>()
+                    RadioInfos = new List<SaveData.IntelnfoData.SingleRadioInfo>()
                 },
                 CurPlayerMapPos = new Vector2Int(7, 0),
                 LastCombatEnemys = new List<CardData>(),

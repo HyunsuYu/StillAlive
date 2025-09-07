@@ -8,9 +8,9 @@ public sealed class RadioIntelItem : MonoBehaviour
     [SerializeField] private TMP_Text m_text_RadioSpeak;
 
 
-    internal void Init(in int targetDPlusDay)
+    internal void Init(in SaveData.IntelnfoData.SingleRadioInfo targetSingleRadioIntelInfo)
     {
-        m_text_DPlusDay.text = $"D+{targetDPlusDay} :";
-        m_text_RadioSpeak.text = SaveDataBuffer.Instance.Data.IntelInfos.RadioInfos[targetDPlusDay];
+        m_text_DPlusDay.text = $"D+{targetSingleRadioIntelInfo.GeneratedDay} :";
+        m_text_RadioSpeak.text = targetSingleRadioIntelInfo.SpeakText;
     }
 }

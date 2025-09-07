@@ -35,6 +35,8 @@ public sealed class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandl
     public void OnEndDrag(PointerEventData eventData)
     {
         InventoryPopupControl.Instance.BisItemDragging = false;
+
+        InventoryPopupControl.Instance.InvokeEndDragEvent();
     }
 
     internal void Render()

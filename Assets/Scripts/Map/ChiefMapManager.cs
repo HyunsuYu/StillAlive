@@ -37,7 +37,7 @@ public sealed class ChiefMapManager : SingleTonForGameObject<ChiefMapManager>
     private int m_selectedTemplateIndex = -1;
     private int m_curRadioSpeakIndex = 0;
 
-    private EnterancePopupPhase m_curPhase;
+    private EnterancePopupPhase m_curPhase = EnterancePopupPhase.None;
 
 
     public void Awake()
@@ -46,8 +46,6 @@ public sealed class ChiefMapManager : SingleTonForGameObject<ChiefMapManager>
     }
     public void Start()
     {
-        m_curPhase = EnterancePopupPhase.LateNight;
-
         SaveData curSaveData = SaveDataBuffer.Instance.Data;
 
         //#region For Dummy Data
@@ -97,18 +95,26 @@ public sealed class ChiefMapManager : SingleTonForGameObject<ChiefMapManager>
 
             if(bisSomeoneHit)
             {
+                m_curPhase = EnterancePopupPhase.LateNight;
                 m_layout_LateNight.SetActive(true);
             }
 
             curSaveData.LightActionAppliedDay = curSaveData.DPlusDay;
+
+            SaveDataBuffer.Instance.TrySetData(curSaveData);
+            SaveDataBuffer.Instance.TrySaveData();
         }
-        SaveDataBuffer.Instance.TrySetData(curSaveData);
-        SaveDataBuffer.Instance.TrySaveData();
         #endregion
 
         #region Radio
-        if (!SaveDataBuffer.Instance.Data.ItemAmountTable.ContainsKey(0) || SaveDataBuffer.Instance.Data.ItemAmountTable[0] > 0)
+        if (SaveDataBuffer.Instance.Data.ItemAmountTable[0] > 0)
         {
+            if(m_curPhase == EnterancePopupPhase.None)
+            {
+                m_curPhase = EnterancePopupPhase.Radio;
+                m_layout_Radio.SetActive(true);
+            }
+            
             var aliveCardDatas = SaveDataInterface.GetAliveCardInfos();
 
             foreach (CardData cardData in aliveCardDatas)
@@ -133,20 +139,26 @@ public sealed class ChiefMapManager : SingleTonForGameObject<ChiefMapManager>
 
                 m_text_RadioSpeak.text = m_radioTemplates_NoTraiter[m_selectedTemplateIndex].SpeakTexts[0];
             }
+            m_curRadioSpeakIndex = 1;
         }
         #endregion
     }
     public void Update()
     {
+        if(m_curPhase == EnterancePopupPhase.None)
+        {
+            return;
+        }
+
         if(m_curPhase == EnterancePopupPhase.LateNight && (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)))
         {
+            Debug.Log("A");
             m_layout_LateNight.SetActive(false);
 
             if (SaveDataBuffer.Instance.Data.ItemAmountTable[0] > 0)
             {
                 m_curPhase = EnterancePopupPhase.Radio;
-                m_curRadioSpeakIndex = 1;
-                Invoke(nameof(ActiveRadioLayout), 2.0f);
+                Invoke(nameof(ActiveRadioLayout), 1.0f);
             }
             else
             {
@@ -155,13 +167,15 @@ public sealed class ChiefMapManager : SingleTonForGameObject<ChiefMapManager>
         }
         else if(m_curPhase == EnterancePopupPhase.Radio && m_layout_Radio.activeSelf && (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)))
         {
+            Debug.Log("B");
             if (m_radioSelectedTraiterCardData.HasValue)
             {
                 m_curRadioSpeakIndex++;
-                if(m_radioTemplates_WithTraiter[m_selectedTemplateIndex].SpeakTexts.Length >= m_curRadioSpeakIndex)
+                if(m_curRadioSpeakIndex >= m_radioTemplates_WithTraiter[m_selectedTemplateIndex].SpeakTexts.Length - 1)
                 {
                     m_curPhase = EnterancePopupPhase.None;
                     m_layout_Radio.SetActive(false);
+                    return;
                 }
 
                 m_text_RadioSpeak.text = m_radioTemplates_WithTraiter[m_selectedTemplateIndex].SpeakTexts[m_curRadioSpeakIndex];
@@ -169,10 +183,11 @@ public sealed class ChiefMapManager : SingleTonForGameObject<ChiefMapManager>
             else
             {
                 m_curRadioSpeakIndex++;
-                if (m_radioTemplates_NoTraiter[m_selectedTemplateIndex].SpeakTexts.Length >= m_curRadioSpeakIndex)
+                if (m_curRadioSpeakIndex >= m_radioTemplates_NoTraiter[m_selectedTemplateIndex].SpeakTexts.Length - 1)
                 {
                     m_curPhase = EnterancePopupPhase.None;
                     m_layout_Radio.SetActive(false);
+                    return;
                 }
 
                 m_text_RadioSpeak.text = m_radioTemplates_NoTraiter[m_selectedTemplateIndex].SpeakTexts[m_curRadioSpeakIndex];
