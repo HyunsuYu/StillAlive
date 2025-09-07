@@ -51,7 +51,16 @@ public sealed class IntelInfosPopupControl : MonoBehaviour
             Destroy(m_transform_RadioIntelItemParent.GetChild(index));
         }
 
+        var radioIntelInfos = SaveDataBuffer.Instance.Data.IntelInfos.RadioInfos;
+        for(int index = 0; index < radioIntelInfos.Count; index++)
+        {
+            Instantiate(m_prefab_RadioIntelItem, m_transform_RadioIntelItemParent).GetComponent<RadioIntelItem>().Init(radioIntelInfos[index]);
 
+            if(index != radioIntelInfos.Count - 1)
+            {
+                Instantiate(m_prefab_Line, m_transform_RadioIntelItemParent);
+            }
+        }
         #endregion
     }
     public void OpenConversationIntelTab()

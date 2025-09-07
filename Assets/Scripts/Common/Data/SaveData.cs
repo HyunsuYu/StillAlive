@@ -7,6 +7,11 @@ public struct SaveData
 {
     public struct IntelnfoData
     {
+        public struct SingleRadioInfo
+        {
+            public int GeneratedDay;
+            public string SpeakText;
+        }
         public struct SingleConversationInfo
         {
             public int SpeakerCardIndex;
@@ -14,7 +19,7 @@ public struct SaveData
         }
 
 
-        public List<string> RadioInfos;
+        public List<SingleRadioInfo> RadioInfos;
         public List<SingleConversationInfo> ConversationInfos;
     }
 
