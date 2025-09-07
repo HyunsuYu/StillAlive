@@ -9,7 +9,7 @@ using UnityEngine.UI;
 /// </summary>
 public class ConversationField : MonoBehaviour
 {
-    private enum ConversationState { Inactive, DialogueTyping, DialogueFinished, Voting }
+    private enum ConversationState { Inactive, GeneratingDialogue, DialogueTyping, DialogueFinished, Voting }
     private ConversationState m_currentState;
 
     [Header("핵심 컴포넌트")]
@@ -32,7 +32,7 @@ public class ConversationField : MonoBehaviour
 
     private void OnEnable()
     {
-        m_conversationTeam.OnDialogueStartRequested += StartDialogue;
+        m_conversationTeam.OnDialogueStartRequested += OnDialogueStartRequested;
         m_conversationTeam.OnDialogueEnded += CloseDialogue;
 
         m_dialogueScreenButton.onClick.AddListener(OnScreenClicked);
@@ -42,7 +42,7 @@ public class ConversationField : MonoBehaviour
 
     private void OnDisable()
     {
-        m_conversationTeam.OnDialogueStartRequested -= StartDialogue;
+        m_conversationTeam.OnDialogueStartRequested -= OnDialogueStartRequested;
         m_conversationTeam.OnDialogueEnded -= CloseDialogue;
 
         m_dialogueScreenButton.onClick.RemoveListener(OnScreenClicked);
@@ -107,7 +107,7 @@ public class ConversationField : MonoBehaviour
     {
         m_currentState = newState;
 
-        bool isDialogueActive = (newState == ConversationState.DialogueTyping || newState == ConversationState.DialogueFinished);
+        bool isDialogueActive = (newState == ConversationState.GeneratingDialogue || newState == ConversationState.DialogueTyping || newState == ConversationState.DialogueFinished);
         m_contextPanel.SetActive(isDialogueActive);
         m_dialogueScreenButton.gameObject.SetActive(isDialogueActive);
 
@@ -115,20 +115,24 @@ public class ConversationField : MonoBehaviour
         m_kickOutButton.gameObject.SetActive(isVotingActive);
         m_skipButton.gameObject.SetActive(isVotingActive);
 
-        m_conversationTeam.SwitchState(isVotingActive ? ConversationTeam.TeamState.Voting : ConversationTeam.TeamState.Selection);
+        if (newState == ConversationState.Inactive)
+            m_conversationTeam.SwitchState(ConversationTeam.TeamState.Selection);
+        else if (newState == ConversationState.Voting)
+            m_conversationTeam.SwitchState(ConversationTeam.TeamState.Voting);
     }
 
-    private void StartDialogue(CardData cardData)
+    private void OnDialogueStartRequested(CardData cardData)
     {
-        SwitchState(ConversationState.DialogueTyping);
+        SwitchState(ConversationState.GeneratingDialogue);
         m_dialogueText.text = "생각 중...";
-        ReplicateInterface.Instance.TryGetSpeakText(in cardData);
+        ReplicateInterface.Instance.TryGetSpeakText(cardData);
     }
 
     public void OnLLMResponseArrived()
     {
-        if (m_currentState != ConversationState.DialogueTyping) return;
+        if (m_currentState != ConversationState.GeneratingDialogue) return;
 
+        SwitchState(ConversationState.DialogueTyping);
         if (m_typingCoroutine != null) StopCoroutine(m_typingCoroutine);
         m_typingCoroutine = StartCoroutine(TypeText(ReplicateInterface.Instance.Output));
     }
@@ -154,29 +158,25 @@ public class ConversationField : MonoBehaviour
     {
         if (m_currentState == ConversationState.DialogueTyping)
         {
-            if (m_typingCoroutine != null)
-            {
-                StopCoroutine(m_typingCoroutine);
-                m_typingCoroutine = null;
-            }
+            if (m_typingCoroutine != null) StopCoroutine(m_typingCoroutine);
+            m_typingCoroutine = null;
             m_dialogueText.text = ReplicateInterface.Instance.Output;
             OnDialogueFinished();
         }
         else if (m_currentState == ConversationState.DialogueFinished)
         {
-            CloseDialogue();
             SwitchState(ConversationState.Voting);
         }
     }
 
     public void CloseDialogue()
-    {
+    {  
         m_contextPanel.SetActive(false);
         m_dialogueText.text = "";
 
         if (m_currentState != ConversationState.Voting)
         {
-            m_conversationTeam.SwitchState(ConversationTeam.TeamState.Selection);
+            SwitchState(ConversationState.Inactive);
         }
     }
 

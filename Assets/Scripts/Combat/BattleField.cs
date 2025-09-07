@@ -234,11 +234,6 @@ public class BattleField : MonoBehaviour
         }
     }
 
-    public void OnInventoryButtonClicked()
-    {
-
-    }
-
     public void OnInfoButtonClicked()
     {
 

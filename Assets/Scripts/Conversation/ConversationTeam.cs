@@ -6,22 +6,22 @@ using UnityEngine.EventSystems;
 
 /// <summary>
 /// 대화 씬에서 팀원 초상화들의 상호작용을 '상태'에 따라 관리하는 최종 버전.
-/// (Selection, InDialogue, Voting)
+/// Horizontal Layout Group 사용을 전제로 배치 로직을 제거했습니다.
 /// </summary>
 public class ConversationTeam : MonoBehaviour
 {
     public enum TeamState { Selection, InDialogue, Voting }
     private TeamState m_currentState;
 
-    // 이벤트 
-    public event Action<CardData> OnDialogueStartRequested; // 대화 시작 요청
-    public event Action OnDialogueEnded;                    // 대화 종료
+    public event Action<CardData> OnDialogueStartRequested;
+    public event Action OnDialogueEnded;
 
     [Header("UI 및 프리팹 설정")]
+    [Tooltip("초상화들이 생성될 부모 Transform")]
     [SerializeField] private Transform m_teamPortraitsContainer;
 
     [Header("연출 설정")]
-    [SerializeField] private float m_hoverScale = 1.1f;
+    [SerializeField] private float m_hoverScale = 1.2f;
     [SerializeField] private float m_normalScale = 1.0f;
     [SerializeField] private float m_configPortraitsScale = 1f;
     [SerializeField] private Color m_hoverColor = Color.white;
@@ -32,21 +32,14 @@ public class ConversationTeam : MonoBehaviour
     private List<(NPCPortrait portrait, CardData cardData)> m_teamMembers;
     private NPCPortrait m_currentHoveredPortrait;
     private NPCPortrait m_currentDialogueSelection;
-
     private List<NPCPortrait> m_kickoutSelection;
 
-    /// <summary>
-    /// 카드 데이터 리스트를 기반으로 팀 초상화들을 초기화합니다.
-    /// </summary>
     public void Init(List<CardData> cardDatas)
     {
-        // 기존 초상화 정리
         if (m_teamMembers != null)
         {
             foreach (var member in m_teamMembers)
-            {
                 if (member.portrait != null) Destroy(member.portrait.gameObject);
-            }
         }
 
         m_teamMembers = new List<(NPCPortrait portrait, CardData cardData)>();
@@ -58,25 +51,25 @@ public class ConversationTeam : MonoBehaviour
             if (portraitObj != null)
             {
                 NPCPortrait portrait = portraitObj.GetComponent<NPCPortrait>();
-                portrait.transform.SetParent(m_teamPortraitsContainer, false);
                 portrait.transform.localScale = Vector3.one * m_configPortraitsScale;
                 SetupPortraitEvents(portrait);
                 m_teamMembers.Add((portrait, cardDatas[i]));
             }
         }
 
-        SwitchState(TeamState.Selection); 
+        SwitchState(TeamState.Selection);
     }
 
     public void SwitchState(TeamState newState)
     {
         m_currentState = newState;
-        m_currentDialogueSelection = null;
+        if (newState != TeamState.InDialogue)
+        {
+            m_currentDialogueSelection = null;
+        }
         m_kickoutSelection.Clear();
         UpdateAllPortraitAppearances();
     }
-
-    // 이벤트 핸들러들
 
     private void OnPortraitHoverEnter(NPCPortrait portrait)
     {
@@ -96,21 +89,21 @@ public class ConversationTeam : MonoBehaviour
         {
             case TeamState.Selection:
                 m_currentDialogueSelection = portrait;
-                OnDialogueStartRequested?.Invoke(GetCardDataByPortrait(portrait));
+                OnDialogueStartRequested.Invoke(GetCardDataByPortrait(portrait));
                 SwitchState(TeamState.InDialogue);
-                break;
+                return;
 
             case TeamState.Voting:
                 if (m_kickoutSelection.Contains(portrait))
                     m_kickoutSelection.Remove(portrait);
                 else
-                    m_kickoutSelection.Add(portrait);
-                UpdateAllPortraitAppearances();
+                    m_kickoutSelection.Add(portrait);     
                 break;
 
-            case TeamState.InDialogue:
+            case TeamState.InDialogue:    
                 break;
         }
+        UpdateAllPortraitAppearances();
     }
 
     private void UpdateAllPortraitAppearances()
@@ -127,21 +120,31 @@ public class ConversationTeam : MonoBehaviour
                     else
                         SetPortraitAppearance(member.portrait, m_normalScale, m_darkColor);
                     break;
-
                 case TeamState.InDialogue:
                     if (member.portrait == m_currentDialogueSelection)
                         SetPortraitAppearance(member.portrait, m_hoverScale, m_selectedColor);
                     else
                         SetPortraitAppearance(member.portrait, m_normalScale, m_darkColor);
                     break;
-
                 case TeamState.Voting:
-                    if (m_kickoutSelection.Contains(member.portrait))
-                        SetPortraitAppearance(member.portrait, m_hoverScale, m_votingSelectedColor);
-                    else if (member.portrait == m_currentHoveredPortrait)
-                        SetPortraitAppearance(member.portrait, m_hoverScale, m_hoverColor);
+                    bool isHovered = member.portrait == m_currentHoveredPortrait;
+                    bool isSelected = m_kickoutSelection.Contains(member.portrait);
+     
+                    float targetScale = (isSelected || isHovered) ? m_hoverScale : m_normalScale;
+                    
+                    Color targetColor;
+                    if (isSelected)
+                    {
+                        targetColor = m_votingSelectedColor;                     }
+                    else if (isHovered)
+                    {
+                        targetColor = m_hoverColor;
+                    }
                     else
-                        SetPortraitAppearance(member.portrait, m_normalScale, m_selectedColor);
+                    {
+                        targetColor = m_selectedColor; 
+                    }
+                    SetPortraitAppearance(member.portrait, targetScale, targetColor);
                     break;
             }
         }
@@ -152,10 +155,8 @@ public class ConversationTeam : MonoBehaviour
         portrait.transform.localScale = Vector3.one * m_configPortraitsScale * scaleMultiplier;
         Image[] images = portrait.GetComponentsInChildren<Image>();
         foreach (Image img in images)
-        {
             if (img.material != null && img.material.HasProperty("_Color"))
                 img.material.SetColor("_Color", color);
-        }
     }
 
     private void SetupPortraitEvents(NPCPortrait portrait)
