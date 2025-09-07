@@ -107,7 +107,7 @@ public sealed class ChiefMapManager : SingleTonForGameObject<ChiefMapManager>
         #endregion
 
         #region Radio
-        if (SaveDataBuffer.Instance.Data.ItemAmountTable[0] > 0)
+        if (!SaveDataBuffer.Instance.Data.ItemAmountTable.ContainsKey(0) || SaveDataBuffer.Instance.Data.ItemAmountTable[0] > 0)
         {
             var aliveCardDatas = SaveDataInterface.GetAliveCardInfos();
 
