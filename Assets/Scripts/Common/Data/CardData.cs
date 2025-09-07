@@ -96,10 +96,10 @@ public struct CardData
         {
             return false;
         }
-        else if (!obj_0.NPCLookTable.Equals(obj_1.ColorPalleteIndex))
-        {
-            return false;
-        }
+        //else if (!obj_0.NPCLookTable.Equals(obj_1.ColorPalleteIndex))
+        //{
+        //    return false;
+        //}
         else if(obj_0.ColorPalleteIndex != obj_1.ColorPalleteIndex)
         {
             return false;
@@ -124,10 +124,10 @@ public struct CardData
         {
             return false;
         }
-        else if (!obj_0.Items.Equals(obj_1.ColorPalleteIndex))
-        {
-            return false;
-        }
+        //else if (!obj_0.Items.Equals(obj_1.ColorPalleteIndex))
+        //{
+        //    return false;
+        //}
 
         return true;
     }
