@@ -72,12 +72,12 @@ public sealed class MapRenderControl : SingleTonForGameObject<MapRenderControl>
         {
             List<Vector2Int> linkedNodePoses = GetCurNextLinkedNodePoses();
 
-            string log = string.Empty;
-            foreach(var nodePoses in linkedNodePoses)
-            {
-                log += nodePoses.ToString() + "\n";
-            }
-            Debug.Log(log);
+            //string log = string.Empty;
+            //foreach(var nodePoses in linkedNodePoses)
+            //{
+            //    log += nodePoses.ToString() + "\n";
+            //}
+            //Debug.Log(log);
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit[] hits = Physics.RaycastAll(ray);
@@ -183,7 +183,7 @@ public sealed class MapRenderControl : SingleTonForGameObject<MapRenderControl>
             MapGenerator.Instance.GenerateMap();
         }
 
-        Debug.Log(SaveDataBuffer.Instance.Data.CurPlayerMapPos);
+        //Debug.Log(SaveDataBuffer.Instance.Data.CurPlayerMapPos);
 
         MapData mapData = SaveDataBuffer.Instance.Data.MapData.Value;
 
