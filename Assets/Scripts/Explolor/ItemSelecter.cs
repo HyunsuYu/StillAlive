@@ -1,6 +1,7 @@
 using CommonUtilLib.ThreadSafe;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 class ItemSelecter : SingleTonForGameObject<ItemSelecter>
@@ -56,13 +57,39 @@ class ItemSelecter : SingleTonForGameObject<ItemSelecter>
             }
             */
 
-            if(isSelected)
+            if (isSelected)
             {
                 slot.GetComponent<Image>().color = new Color32(85, 85, 85, 255);
             }
             else
                 slot.GetComponent<Image>().color = new Color32(160, 160, 160, 255);
         }
+    }
+
+    public void TrashItem()
+    {
+        foreach (var item in _selectedItems)
+        {
+            itemSlots.Remove(item);
+            Destroy(item);
+        }
+        _selectedItems.Clear();
+        UpdateAllItemVisuals();
+    }
+
+    public void GetItem()
+    {
+        SaveData curSaveData = SaveDataBuffer.Instance.Data;
+        foreach (var item in _selectedItems)
+        {
+            curSaveData.ItemAmountTable[Explolor.Instance.ItemId[itemSlots.IndexOf(item)]]++;
+        }
+        SaveDataBuffer.Instance.TrySetData(curSaveData);
+        SaveDataBuffer.Instance.TrySaveData();
+
+        _selectedItems.Clear();
+        UpdateAllItemVisuals();
+        SceneManager.LoadScene("Map");
     }
 
     /// <summary>
@@ -74,7 +101,18 @@ class ItemSelecter : SingleTonForGameObject<ItemSelecter>
         UpdateAllItemVisuals();
     }
 
+    public void ShowAllItems()
+    {
+        Debug.Log("--- 내 인벤토리 ---");
+        foreach (KeyValuePair<int, int> item in SaveDataBuffer.Instance.Data.ItemAmountTable)
+        {
+            // item.Key는 아이템 ID, item.Value는 수량입니다.
+            Debug.Log($"아이템: {item.Key}, 수량: {item.Value}");
 
+        }
+        Debug.Log(Explolor.Instance.ItemId[0].ToString());
+        Debug.Log("-----------------");
+    }
     protected override void Dispose(bool bisDisposing)
     {
         throw new System.NotImplementedException();

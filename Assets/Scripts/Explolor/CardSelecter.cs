@@ -1,5 +1,6 @@
 using CommonUtilLib.ThreadSafe;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -52,10 +53,43 @@ public class CardSelecter : SingleTonForGameObject<CardSelecter>
             //선택된 카드의 색상 변경
             if (isSelected)
             {
-                slot.GetComponent<Image>().color = new Color32(85, 85, 85, 255);
+                //slot.GetComponent<Image>().color = new Color32(85, 85, 85, 255);
+                if (slot.GetComponentInChildren<BattleCard>() != null)
+                {
+                    slot.GetComponentInChildren<BattleCard>().GetComponentInChildren<Image>().color = new Color32(85, 85, 85, 255);
+                }
             }
             else
-                slot.GetComponent<Image>().color = new Color32(160, 160, 160, 255);
+            {
+                //slot.GetComponent<Image>().color = new Color32(160, 160, 160, 255);
+                if (slot.GetComponentInChildren<BattleCard>() != null)
+                {
+                    slot.GetComponentInChildren<BattleCard>().GetComponentInChildren<Image>().color = new Color32(160, 160, 160, 255);
+                }
+            }
+        }
+
+        foreach (var Myteam in MyTeams)
+        {
+            // 이 슬롯이 현재 선택된 카드 리스트에 포함되어 있는지 확인
+            bool isSelected = _selectedCard.Contains(Myteam);
+            //선택된 카드의 색상 변경
+            if (isSelected)
+            {
+                Myteam.GetComponent<Image>().color = new Color32(85, 85, 85, 255);
+                if (Myteam.GetComponentInChildren<BattleCard>() != null)
+                {
+                    Myteam.GetComponentInChildren<BattleCard>().GetComponentInChildren<Image>().color = new Color32(85, 85, 85, 255);
+                }
+            }
+            else
+            {
+                Myteam.GetComponent<Image>().color = new Color32(160, 160, 160, 255);
+                if (Myteam.GetComponentInChildren<BattleCard>() != null)
+                {
+                    Myteam.GetComponentInChildren<BattleCard>().GetComponentInChildren<Image>().color = new Color32(160, 160, 160, 255);
+                }
+            }
         }
     }
 
@@ -63,25 +97,31 @@ public class CardSelecter : SingleTonForGameObject<CardSelecter>
     {
         foreach (var card in _selectedCard)
         {
-            if (MyTeams.Contains(card))
+            if (CardSlots.Contains(card))
             {
-                MyTeams.Remove(card);
+                ClearSelection();
+                return;
             }
 
-            BattleCard battleCard = card.GetComponent<BattleCard>();
-            if(battleCard != null)
+            BattleCard battleCard = card.GetComponentInChildren<BattleCard>();
+            if (battleCard != null)
             {
+                SaveData curSaveData = SaveDataBuffer.Instance.Data;
                 CardData removeColleague = battleCard.MyData;
-                SaveDataBuffer.Instance.Data.CardDatas.Remove(removeColleague);
+                removeColleague.Status.CurHP = 0; // 체력을 0으로 설정하여 제거 표시
+                Debug.Log(SaveDataInterface.GetCardIndex(battleCard.MyData));
+                curSaveData.CardDatas[SaveDataInterface.GetCardIndex(battleCard.MyData)] = removeColleague;
+                SaveDataBuffer.Instance.TrySetData(curSaveData);
+                SaveDataBuffer.Instance.TrySaveData();
             }
             else
             {
                 Debug.LogError("선택된 카드에 BattleCard 컴포넌트가 없습니다.");
             }
         }
-        
+
         SaveDataBuffer.Instance.TrySaveData();
-        foreach(var card in _selectedCard)
+        foreach (var card in _selectedCard)
         {
             card.SetActive(false);
         }
@@ -90,25 +130,29 @@ public class CardSelecter : SingleTonForGameObject<CardSelecter>
 
     public void GetCard() // 선택된 카드 팀에 추가
     {
-        if(_selectedCard.Count ==0)
+        if (_selectedCard.Count == 0)
         {
             return;
         }
 
         foreach (var card in _selectedCard)
         {
-            if(SaveDataBuffer.Instance.Data.CardDatas.Count >= 3)
+            if (SaveDataInterface.GetAliveCardInfos().Count() >= 4)
             {
                 Debug.Log("팀 인원 초과");
-                break;
+                return;
             }
 
             BattleCard battleCard = card.GetComponent<BattleCard>();
-                CardData newColleague = battleCard.MyData;
-                SaveDataBuffer.Instance.Data.CardDatas.Add(newColleague);
-                Debug.Log("팀에 추가됨" + newColleague.Status.AttackPower.ToString());
-                SaveDataBuffer.Instance.TrySaveData();
-           
+            if(card.GetComponent<BattleCard>() == null)
+            {
+                battleCard = card.GetComponentInChildren<BattleCard>();
+            }
+            CardData newColleague = battleCard.MyData;
+            SaveDataBuffer.Instance.Data.CardDatas.Add(newColleague);
+            Debug.Log("팀에 추가됨" + newColleague.Status.AttackPower.ToString());
+            SaveDataBuffer.Instance.TrySaveData();
+
         }
         ClearSelection();
         Explolor.Instance.exState = Explolor.ExplolorState.None;
