@@ -88,4 +88,51 @@ public struct CardData
     public LastNightState LastNight;
 
     public List<AttachedItemData> Items;
+
+
+    public static bool operator ==(in CardData obj_0, in CardData obj_1)
+    {
+        if(obj_0.BIsPlayer !=  obj_1.BIsPlayer)
+        {
+            return false;
+        }
+        else if (!obj_0.NPCLookTable.Equals(obj_1.ColorPalleteIndex))
+        {
+            return false;
+        }
+        else if(obj_0.ColorPalleteIndex != obj_1.ColorPalleteIndex)
+        {
+            return false;
+        }
+        else if (obj_0.BIsMonster != obj_1.BIsMonster)
+        {
+            return false;
+        }
+        else if (obj_0.BIsTraitor != obj_1.BIsTraitor)
+        {
+            return false;
+        }
+        else if (obj_0.Diseases != obj_1.Diseases)
+        {
+            return false;
+        }
+        else if (obj_0.Personality != obj_1.Personality)
+        {
+            return false;
+        }
+        else if (obj_0.LastNight != obj_1.LastNight)
+        {
+            return false;
+        }
+        else if (!obj_0.Items.Equals(obj_1.ColorPalleteIndex))
+        {
+            return false;
+        }
+
+        return true;
+    }
+    public static bool operator !=(in CardData obj_0, in CardData obj_1)
+    {
+        return !(obj_0 == obj_1);
+    }
 }
