@@ -14,11 +14,21 @@ public sealed class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandl
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        if(m_itemIndex == 0)
+        {
+            return;
+        }
+
         InventoryPopupControl.Instance.DraggingItemIndex = m_itemIndex;
         InventoryPopupControl.Instance.BisItemDragging = true;
     }
     public void OnDrag(PointerEventData eventData)
     {
+        if (m_itemIndex == 0)
+        {
+            return;
+        }
+
         InventoryPopupControl.Instance.DraggingItemIndex = m_itemIndex;
         InventoryPopupControl.Instance.BisItemDragging = true;
     }

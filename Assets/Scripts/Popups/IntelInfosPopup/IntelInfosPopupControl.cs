@@ -25,6 +25,11 @@ public sealed class IntelInfosPopupControl : MonoBehaviour
     [SerializeField] private Transform m_transform_ConversationIntelItemParent;
 
 
+    public void Start()
+    {
+        OpenRadioIntelTab();
+    }
+
     #region Unity Callbacks
     public void OpenAndClosePopup()
     {
@@ -38,6 +43,16 @@ public sealed class IntelInfosPopupControl : MonoBehaviour
 
         m_layout_RadioIntelParent.SetActive(true);
         m_layout_ConversationIntelParent.SetActive(false);
+
+        #region Render Radio
+        int childCount = m_transform_RadioIntelItemParent.childCount;
+        for(int index = childCount - 1; index >= 0; index--)
+        {
+            Destroy(m_transform_RadioIntelItemParent.GetChild(index));
+        }
+
+
+        #endregion
     }
     public void OpenConversationIntelTab()
     {
