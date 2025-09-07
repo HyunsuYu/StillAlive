@@ -38,8 +38,11 @@ public sealed class ReplicateInterface : SingleTonForGameObject<ReplicateInterfa
 
     [SerializeField] private UnityEvent m_responseArrived;
 
+<<<<<<< Updated upstream
     [SerializeField] private string m_key;
 
+=======
+>>>>>>> Stashed changes
 
     public void Awake()
     {
@@ -50,8 +53,11 @@ public sealed class ReplicateInterface : SingleTonForGameObject<ReplicateInterfa
         if(m_bisRequestProcessing && m_bisResponsed)
         {
             m_responseArrived.Invoke();
+<<<<<<< Updated upstream
             m_bisRequestProcessing = false;
             m_bisResponsed = false;
+=======
+>>>>>>> Stashed changes
         }
     }
 
@@ -106,6 +112,7 @@ public sealed class ReplicateInterface : SingleTonForGameObject<ReplicateInterfa
                 switch(selectedPart)
                 {
                     case CardData.NPCLookPartType.Top:
+<<<<<<< Updated upstream
                         prompt += $"{m_npcLookPark.Tops[attacher.Value.NPCLookTable[CardData.NPCLookPartType.Top]].Description}을(를) 가지고 있는 것을 보았다";
                         break;
 
@@ -135,6 +142,37 @@ public sealed class ReplicateInterface : SingleTonForGameObject<ReplicateInterfa
 
                     case CardData.NPCLookPartType.BackHair:
                         prompt += $"{m_npcLookPark.BackHairs[attacher.Value.NPCLookTable[CardData.NPCLookPartType.BackHair]].Description}을(를) 가지고 있는 것을 보았다";
+=======
+                        prompt += $"{m_npcLookPark.Tops[targetCardData.NPCLookTable[CardData.NPCLookPartType.Top]].Description}을(를) 가지고 있는 것을 보았다";
+                        break;
+
+                    case CardData.NPCLookPartType.Face:
+                        prompt += $"{m_npcLookPark.Faces[targetCardData.NPCLookTable[CardData.NPCLookPartType.Face]].Description}을(를) 가지고 있는 것을 보았다";
+                        break;
+
+                    case CardData.NPCLookPartType.Eye:
+                        prompt += $"{m_npcLookPark.Eyes[targetCardData.NPCLookTable[CardData.NPCLookPartType.Eye]].Description}을(를) 가지고 있는 것을 보았다";
+                        break;
+
+                    case CardData.NPCLookPartType.Mouth:
+                        prompt += $"{m_npcLookPark.Mouths[targetCardData.NPCLookTable[CardData.NPCLookPartType.Mouth]].Description}을(를) 가지고 있는 것을 보았다";
+                        break;
+
+                    case CardData.NPCLookPartType.Glasses:
+                        prompt += $"{m_npcLookPark.Glasses[targetCardData.NPCLookTable[CardData.NPCLookPartType.Glasses]].Description}을(를) 가지고 있는 것을 보았다";
+                        break;
+
+                    case CardData.NPCLookPartType.Cap:
+                        prompt += $"{m_npcLookPark.Caps[targetCardData.NPCLookTable[CardData.NPCLookPartType.Cap]].Description}을(를) 가지고 있는 것을 보았다";
+                        break;
+
+                    case CardData.NPCLookPartType.FrontHair:
+                        prompt += $"{m_npcLookPark.FrontHairs[targetCardData.NPCLookTable[CardData.NPCLookPartType.FrontHair]].Description}을(를) 가지고 있는 것을 보았다";
+                        break;
+
+                    case CardData.NPCLookPartType.BackHair:
+                        prompt += $"{m_npcLookPark.BackHairs[targetCardData.NPCLookTable[CardData.NPCLookPartType.BackHair]].Description}을(를) 가지고 있는 것을 보았다";
+>>>>>>> Stashed changes
                         break;
                 }
                 break;
@@ -144,6 +182,7 @@ public sealed class ReplicateInterface : SingleTonForGameObject<ReplicateInterfa
                 switch (selectedPart)
                 {
                     case CardData.NPCLookPartType.Top:
+<<<<<<< Updated upstream
                         prompt += $"{m_npcLookPark.Tops[attacher.Value.NPCLookTable[CardData.NPCLookPartType.Top]].Description}을(를) 가지고 있는 것을 보았다";
                         break;
 
@@ -173,6 +212,37 @@ public sealed class ReplicateInterface : SingleTonForGameObject<ReplicateInterfa
 
                     case CardData.NPCLookPartType.BackHair:
                         prompt += $"{m_npcLookPark.BackHairs[attacher.Value.NPCLookTable[CardData.NPCLookPartType.BackHair]].Description}을(를) 가지고 있는 것을 보았다";
+=======
+                        prompt += $"{m_npcLookPark.Tops[targetCardData.NPCLookTable[CardData.NPCLookPartType.Top]].Description}을(를) 가지고 있는 것을 보았다";
+                        break;
+
+                    case CardData.NPCLookPartType.Face:
+                        prompt += $"{m_npcLookPark.Faces[targetCardData.NPCLookTable[CardData.NPCLookPartType.Face]].Description}을(를) 가지고 있는 것을 보았다";
+                        break;
+
+                    case CardData.NPCLookPartType.Eye:
+                        prompt += $"{m_npcLookPark.Eyes[targetCardData.NPCLookTable[CardData.NPCLookPartType.Eye]].Description}을(를) 가지고 있는 것을 보았다";
+                        break;
+
+                    case CardData.NPCLookPartType.Mouth:
+                        prompt += $"{m_npcLookPark.Mouths[targetCardData.NPCLookTable[CardData.NPCLookPartType.Mouth]].Description}을(를) 가지고 있는 것을 보았다";
+                        break;
+
+                    case CardData.NPCLookPartType.Glasses:
+                        prompt += $"{m_npcLookPark.Glasses[targetCardData.NPCLookTable[CardData.NPCLookPartType.Glasses]].Description}을(를) 가지고 있는 것을 보았다";
+                        break;
+
+                    case CardData.NPCLookPartType.Cap:
+                        prompt += $"{m_npcLookPark.Caps[targetCardData.NPCLookTable[CardData.NPCLookPartType.Cap]].Description}을(를) 가지고 있는 것을 보았다";
+                        break;
+
+                    case CardData.NPCLookPartType.FrontHair:
+                        prompt += $"{m_npcLookPark.FrontHairs[targetCardData.NPCLookTable[CardData.NPCLookPartType.FrontHair]].Description}을(를) 가지고 있는 것을 보았다";
+                        break;
+
+                    case CardData.NPCLookPartType.BackHair:
+                        prompt += $"{m_npcLookPark.BackHairs[targetCardData.NPCLookTable[CardData.NPCLookPartType.BackHair]].Description}을(를) 가지고 있는 것을 보았다";
+>>>>>>> Stashed changes
                         break;
                 }
                 break;
