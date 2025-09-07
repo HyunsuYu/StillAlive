@@ -107,7 +107,7 @@ public class CardSelecter : SingleTonForGameObject<CardSelecter>
 
             if(battleCard != null)
             {
-                CardData newColleague = battleCard.Data;
+                CardData newColleague = battleCard.MyData;
                 SaveDataBuffer.Instance.Data.CardDatas.Add(newColleague);
                 Debug.Log("ÆÀ¿¡ Ãß°¡µÊ" + newColleague.Status.AttackPower.ToString());
                 SaveDataBuffer.Instance.TrySaveData();
