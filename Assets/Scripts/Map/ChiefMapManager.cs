@@ -74,8 +74,12 @@ public sealed class ChiefMapManager : SingleTonForGameObject<ChiefMapManager>
             var aliveCardIndexes = SaveDataInterface.GetAliveCardIndexes();
             foreach(int cardIndex in aliveCardIndexes)
             {
+                var curCardData = curSaveData.CardDatas[cardIndex];
+                curCardData.LastNight = CardData.LastNightState.Peace;
+                curSaveData.CardDatas[cardIndex] = curCardData;
+
                 // Attack Someone
-                if(SaveDataInterface.GetCardData(cardIndex).BIsTraitor && UnityEngine.Random.Range(0, 2) == 0)
+                if (SaveDataInterface.GetCardData(cardIndex).BIsTraitor && UnityEngine.Random.Range(0, 2) == 0)
                 {
                     int randomTargetCardIndex = -1;
                     while(true)
