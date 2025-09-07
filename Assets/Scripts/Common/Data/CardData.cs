@@ -17,6 +17,12 @@ public struct CardData
         BackHair
     }
 
+    public struct AttachedItemData
+    {
+        public int ItemIndex;
+        public int CurDuruvility;
+    }
+
     public enum DiseasesType : byte
     {
         None        = 0b0000_0000,
@@ -80,5 +86,5 @@ public struct CardData
     public CardPersonality Personality;
     public LastNightState LastNight;
 
-    public List<int> ItemIndexes;
+    public List<AttachedItemData> Items;
 }

@@ -30,6 +30,7 @@ public struct SaveData
     public Vector2Int CurPlayerMapPos;
 
     public int DPlusDay;
+    public int LightActionAppliedDay;
 
     public IntelnfoData IntelInfos;
 

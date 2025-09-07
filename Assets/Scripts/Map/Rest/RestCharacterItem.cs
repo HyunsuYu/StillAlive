@@ -1,5 +1,6 @@
-using UnityEngine;
 using TMPro;
+using UnityEngine;
+using static NPCLookPart;
 
 
 public sealed class RestCharacterItem : MonoBehaviour
@@ -17,13 +18,18 @@ public sealed class RestCharacterItem : MonoBehaviour
     [SerializeField] private float m_animationDelay;
     [SerializeField] private float m_HPTextChangeDelay;
 
+    private int m_cardIndex;
+
 
     internal void Init(in int cardIndex)
     {
-        CardData cardData = SaveDataBuffer.Instance.Data.CardDatas[cardIndex];
-        //CharacterPortraitHelper.CreatePortrait(cardData, m_transform_CharacterPortraitParent);
+        m_cardIndex = cardIndex;
 
-        m_text_PrevHP.text = $"{cardData.Status.CurHP}/{cardData.Status.MaxHP}";
+        CardData cardData = SaveDataBuffer.Instance.Data.CardDatas[m_cardIndex];
+        var portraitRectTransform = CharacterPortraitHelper.CreatePortrait(cardData, m_transform_CharacterPortraitParent).GetComponent<RectTransform>();
+        portraitRectTransform.localScale = new Vector3(2.0f, 2.0f, 1.0f);
+
+        m_text_PrevHP.text = $"{cardData.Status.CurHP} / {cardData.Status.MaxHP}";
 
         int addTargetHP = UnityEngine.Random.Range(1, 6);
         m_text_HPAddAmount.text = addTargetHP.ToString();
@@ -41,11 +47,17 @@ public sealed class RestCharacterItem : MonoBehaviour
 
     private void PlayAnimation()
     {
-        m_animator_TextAdd.Play("HPAdd");
+        m_animator_TextAdd.SetTrigger("HPAdd");
     }
     private void DisplayAddedHP()
     {
-        m_text_PrevHP.text = m_text_HPAddAmount.text;
+        SaveData curSaveData = SaveDataBuffer.Instance.Data;
+        var curCardData = curSaveData.CardDatas[m_cardIndex];
+        curCardData.Status.CurHP = m_targetHPValue;
+        curSaveData.CardDatas[m_cardIndex] = curCardData;
+        SaveDataBuffer.Instance.TrySetData(curSaveData);
+
+        m_text_PrevHP.text = $"{SaveDataBuffer.Instance.Data.CardDatas[m_cardIndex].Status.CurHP} / {SaveDataBuffer.Instance.Data.CardDatas[m_cardIndex].Status.MaxHP}";
         m_text_HPAddAmount.gameObject.SetActive(false);
     }
 }

@@ -30,6 +30,8 @@ public sealed class MapRenderControl : SingleTonForGameObject<MapRenderControl>
     [Header("UIs")]
     [SerializeField] private TMP_Text m_text_DPlusDay;
 
+    [SerializeField] private SimpleCollegueItem[] m_simpleCollegueItems;
+
 
     public void Awake()
     {
@@ -174,7 +176,6 @@ public sealed class MapRenderControl : SingleTonForGameObject<MapRenderControl>
         return linkedNodePoses;
     }
 
-
     internal void Render()
     {
         if(!SaveDataBuffer.Instance.Data.MapData.HasValue)
@@ -250,6 +251,17 @@ public sealed class MapRenderControl : SingleTonForGameObject<MapRenderControl>
         };
 
         m_text_DPlusDay.text = "D+" + SaveDataBuffer.Instance.Data.DPlusDay.ToString();
+
+        var aliveCards = SaveDataInterface.GetAliveCardInfos();
+        for(int index = 0; index < m_simpleCollegueItems.Length; index++)
+        {
+            m_simpleCollegueItems[index].gameObject.SetActive(false);
+            if (index < aliveCards.Count)
+            {
+                m_simpleCollegueItems[index].Render(aliveCards[index]);
+                m_simpleCollegueItems[index].gameObject.SetActive(true);
+            }
+        }
     }
 
     protected override void Dispose(bool bisDisposing)

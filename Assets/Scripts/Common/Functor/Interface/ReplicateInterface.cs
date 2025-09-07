@@ -38,6 +38,8 @@ public sealed class ReplicateInterface : SingleTonForGameObject<ReplicateInterfa
 
     [SerializeField] private UnityEvent m_responseArrived;
 
+    [SerializeField] private string m_key;
+
 
     public void Awake()
     {
@@ -196,7 +198,7 @@ public sealed class ReplicateInterface : SingleTonForGameObject<ReplicateInterfa
         {
             request.method = "POST";
             request.downloadHandler = new DownloadHandlerBuffer();
-            request.SetRequestHeader("Authorization", "Bearer " + "r8_JRKzchgHmJn2sSewlnGKGBGBmWeZHi54Mghvm");
+            request.SetRequestHeader("Authorization", "Bearer " + m_key);
             request.SetRequestHeader("Content-Type", "application/json");
             request.SetRequestHeader("Prefer", "wait");
 
