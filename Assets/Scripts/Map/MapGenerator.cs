@@ -93,16 +93,11 @@ public class MapGenerator : SingleTonForGameObject<MapGenerator>
                     y = UnityEngine.Random.Range(0, m_mapSize.y)
                 };
 
-                // Check Shape
-                // f(x) = (x - m_startNodeXPos) & f(x) = -(x - m_startNodeXPos)
-
-                //        ġ
                 if (targetPos.y < (targetPos.x - m_startNodeXPos) || targetPos.y < -(targetPos.x - m_startNodeXPos))
                 {
                     continue;
                 }
 
-                // f(x) = (x - m_endNodeXPoses[n]) + m_mapSize.y & f(x) = -(x - m_endNodeXPoses[n])
                 bool bisValidEndShape = false;
                 foreach (int endNodeXPos in m_endNodeXPoses)
                 {
@@ -238,8 +233,6 @@ public class MapGenerator : SingleTonForGameObject<MapGenerator>
             m_nodes[nodePos.y].Find(node => node.XPos == nodePos.x).LinkedNodePoses.Add(targetNodePos);
         }
         #endregion
-
-        Debug.Log("Max : " + maxYPos);
 
         SaveData curSaveData = SaveDataBuffer.Instance.Data;
         curSaveData.MapData = new MapData()

@@ -12,4 +12,56 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b58e65fa71399e44ba49e3db41fd3f6f, type: 3}
   m_Name: ItemTypes
   m_EditorClassIdentifier: 
-  ItemDatas: []
+  ItemDatas:
+  - Name: "\uB77C\uB514\uC624"
+    ItemSprite: {fileID: 21300000, guid: 103efc30d6f5b284cb0502abd0d00414, type: 3}
+    MaxDurability: 1
+    BufInfos: []
+  - Name: "\uBC29\uB9DD\uC774"
+    ItemSprite: {fileID: 21300000, guid: 78fb347af3200674ba3c4f23c8ea5162, type: 3}
+    MaxDurability: 5
+    BufInfos:
+    - BufEffect: 1
+      BufDegree: 2
+  - Name: "\uCD1D"
+    ItemSprite: {fileID: 21300000, guid: e9b7c1122eceb234db5b224bbf3b2139, type: 3}
+    MaxDurability: 3
+    BufInfos:
+    - BufEffect: 1
+      BufDegree: 4
+  - Name: "\uD3ED\uD0C4"
+    ItemSprite: {fileID: 21300000, guid: c84b07bfe66cbdc4c8841681e2cb40de, type: 3}
+    MaxDurability: 1
+    BufInfos:
+    - BufEffect: 3
+      BufDegree: 0
+    - BufEffect: 1
+      BufDegree: 6
+  - Name: "\uBC31\uC2E0"
+    ItemSprite: {fileID: 21300000, guid: ebf67deabf27bf8419ffaac4123bcd62, type: 3}
+    MaxDurability: 1
+    BufInfos:
+    - BufEffect: 0
+      BufDegree: 1
+    - BufEffect: 4
+      BufDegree: 1
+  - Name: "\uAD6C\uAE09 \uC0C1\uC790"
+    ItemSprite: {fileID: 21300000, guid: 722f9086721054546812a4f8e06547aa, type: 3}
+    MaxDurability: 1
+    BufInfos:
+    - BufEffect: 5
+      BufDegree: 1
+  - Name: "\uC544\uB4DC\uB808\uB0A0\uB9B0 \uC8FC\uC0AC\uAE30"
+    ItemSprite: {fileID: 21300000, guid: b08d2644eb7a0574e8524e08225ae25f, type: 3}
+    MaxDurability: 1
+    BufInfos:
+    - BufEffect: 0
+      BufDegree: -1
+    - BufEffect: 1
+      BufDegree: 2
+  - Name: "\uBE75"
+    ItemSprite: {fileID: 21300000, guid: 8a93a17b443911941b4ee0acdc90ccbf, type: 3}
+    MaxDurability: 1
+    BufInfos:
+    - BufEffect: 0
+      BufDegree: 2
