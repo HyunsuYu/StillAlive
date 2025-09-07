@@ -5,6 +5,11 @@ public class BattleCard : MonoBehaviour
 {
     private CardData m_myData;
 
+    public CardData Data
+    {
+        get { return m_myData; }
+    }
+
     [SerializeField] private Transform portraitPos;
     private NPCPortrait m_portraitInstance; // 생성된 초상화 인스턴스
 

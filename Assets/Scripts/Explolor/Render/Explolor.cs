@@ -1,6 +1,7 @@
 using CommonUtilLib.ThreadSafe;
+using NUnit.Framework;
+using System.Collections.Generic;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
 
 public class Explolor : SingleTonForGameObject<Explolor>
@@ -19,6 +20,8 @@ public class Explolor : SingleTonForGameObject<Explolor>
 
     [Header("Text")]
     [SerializeField] private TMP_Text m_text_DPlusDay;
+
+    public List<CardData> ColleaugueCards;
 
     public enum ExplolorState
     {
@@ -40,28 +43,21 @@ public class Explolor : SingleTonForGameObject<Explolor>
     public void OnItemButtonClick() //아이템 탐사 버튼을 눌렀을 때
     {
         exState = ExplolorState.ItemEvent;
-        CheckWindow.SetActive(true);
-    }
-    public void OnColleagueButtonClick() //동료 탐사 버튼을 눌렀을 때
-    {
-        exState = ExplolorState.ColleagueEvent;
-        CheckWindow.SetActive(true);
-    }
-
-    public void OnConfirmButtonClick() //확인 버튼을 눌렀을 때
-    {
-        if (exState == ExplolorState.ItemEvent)
-        {
-            ItemCatch();
-        }
-        else if (exState == ExplolorState.ColleagueEvent)
-        {
-            colleagueCatch();
-        }
+        ItemCatch();
         CheckWindow.SetActive(false); // 확인 창 비활성화
         SelecterWindow.SetActive(false); // 선택 창 비활성화
         exState = ExplolorState.None; // 선택된 버튼 초기화
     }
+
+    public void OnColleagueButtonClick() //동료 탐사 버튼을 눌렀을 때
+    {
+        exState = ExplolorState.ColleagueEvent;
+        colleagueCatch();
+        CheckWindow.SetActive(false); // 확인 창 비활성화
+        SelecterWindow.SetActive(false); // 선택 창 비활성화
+        exState = ExplolorState.None; // 선택된 버튼 초기화
+    }
+
 
     public void OnCancelButtonClick()  //취소 버튼을 눌렀을 때
     {
@@ -84,8 +80,6 @@ public class Explolor : SingleTonForGameObject<Explolor>
             EventWindow.SetActive(true); // 이벤트 창 활성화
             ItemWindow.SetActive(true);
 
-
-
         }
         else
         {
@@ -96,27 +90,55 @@ public class Explolor : SingleTonForGameObject<Explolor>
     public void colleagueCatch() //동료 발견 함수
     {
         int ColleagueCount = ProbabilityUtillity.GetCount(SaveDataBuffer.Instance.Data.DPlusDay);
-        if (ColleagueCount > 0)
-        {
-            Debug.Log($"동료 {ColleagueCount}명 발견!");
-            for (int i = 0; i < ColleagueCount; i++)
-            {
-                // 동료 발견 시 추가 행동을 여기에 작성
-                Debug.Log($"동료{i} 획득!");
-                ColleagueBox[i].SetActive(true);
-            }
-            for (int i = 0; i < SaveDataBuffer.Instance.Data.CardDatas.Count; i++)
-            {
-                MyTeamBox[i].SetActive(true);
-            }
-            EventWindow.SetActive(true); // 이벤트 창 활성화
-            ColleagueWindow.SetActive(true);
+        SpawnCards(ColleagueCount);
+    }
 
+    private void SpawnCards(int count)
+    {
+        // 모든 카드 UI를 미리 비활성화
+        foreach (var box in ColleagueBox) box.SetActive(false);
+        foreach (var box in MyTeamBox) box.SetActive(false);
+
+        if (count > 0)
+        {
+            Debug.Log($"동료 {count}명 발견!");
+            // 1. 새로 발견한 동료 (임시 데이터) 표시
+            for (int i = 0; i < count; i++)
+            {
+                CardData newColleague = new CardData();
+                newColleague.Status = CardData.DefaultStatus();
+                // To-Do: 외형 데이터도 여기서 생성하면 좋습니다.
+                // newColleague.NPCLookTable = ...;
+
+                GameObject colleagueGO = ColleagueBox[i];
+                BattleCard card = colleagueGO.GetComponent<BattleCard>();
+                if (card != null)
+                {
+                    card.Init(newColleague);
+                    colleagueGO.SetActive(true);
+                }
+            }
         }
         else
         {
             Debug.Log("동료 발견 못함");
         }
+
+        // 2. 현재 내 팀 (영구 데이터) 표시
+        var currentTeam = SaveDataBuffer.Instance.Data.CardDatas;
+        for (int j = 0; j < currentTeam.Count && j < MyTeamBox.Length; j++)
+        {
+            GameObject myTeamGO = MyTeamBox[j];
+            BattleCard card = myTeamGO.GetComponent<BattleCard>();
+            if (card != null)
+            {
+                card.Init(currentTeam[j]);
+                myTeamGO.SetActive(true);
+            }
+        }
+
+        EventWindow.SetActive(true);
+        ColleagueWindow.SetActive(true);
     }
 
     internal void Render()
@@ -133,12 +155,17 @@ public class Explolor : SingleTonForGameObject<Explolor>
             {
                 ItemBox[i].SetActive(false);
             }
-            for(int i = 0; i < ColleagueBox.Length; i++)
+            for (int i = 0; i < ColleagueBox.Length; i++)
             {
                 ColleagueBox[i].SetActive(false);
             }
+            for (int i = 0; i < MyTeamBox.Length; i++)
+            {
+                MyTeamBox[i].SetActive(false);
+            }
         }
     }
+
 
     protected override void Dispose(bool bisDisposing)
     {
