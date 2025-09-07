@@ -72,11 +72,11 @@ public class CardSelecter : SingleTonForGameObject<CardSelecter>
             if (battleCard != null)
             {
                 SaveData curSaveData = SaveDataBuffer.Instance.Data;
-                curSaveData.CardDatas[]
-
                 CardData removeColleague = battleCard.MyData;
                 removeColleague.Status.CurHP = 0; // 체력을 0으로 설정하여 제거 표시
-                SaveDataBuffer.Instance.TrySetData()
+                Debug.Log(SaveDataInterface.GetCardIndex(battleCard.MyData));
+                curSaveData.CardDatas[SaveDataInterface.GetCardIndex(battleCard.MyData)] = removeColleague;
+                SaveDataBuffer.Instance.TrySetData(curSaveData);
                 SaveDataBuffer.Instance.TrySaveData();
             }
             else
