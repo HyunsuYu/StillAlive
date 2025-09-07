@@ -77,7 +77,8 @@ public class NPCPortrait : MonoBehaviour
 
     private void SetupAllPartSprites(CardData _cardData)
     {
-        if (_cardData.ColorPalleteIndex < 0 || _cardData.ColorPalleteIndex >= m_lookPartData.ColorPalettes.Length) return;
+        if (_cardData.ColorPalleteIndex < 0 || _cardData.ColorPalleteIndex >= m_lookPartData.ColorPalettes.Length) 
+            return;
 
         foreach (var partInfo in _cardData.NPCLookTable)
         {
@@ -100,7 +101,8 @@ public class NPCPortrait : MonoBehaviour
     {
         string materialPath = MATERIAL_PATH;
         Material originalMaterial = Resources.Load<Material>(materialPath);
-        if (originalMaterial == null) return;
+        if (originalMaterial == null) 
+            return;
 
         m_partMaterials = new Dictionary<CardData.NPCLookPartType, Material>();
 
@@ -170,7 +172,8 @@ public class NPCPortrait : MonoBehaviour
             default: return null;
         }
         
-        if (partDataArray == null) return null;
+        if (partDataArray == null)
+            return null;
         
         // PartData[]에서 Sprite[] 추출
         Sprite[] spriteArray = new Sprite[partDataArray.Length];
@@ -215,22 +218,14 @@ public class NPCPortrait : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 특정 부위의 Description을 가져옵니다.
-    /// </summary>
-    /// <param name="cardData">카드 데이터</param>
-    /// <param name="partType">부위 타입</param>
-    /// <returns>해당 부위의 Description, 없으면 null</returns>
     public string GetPartDescription(CardData cardData, CardData.NPCLookPartType partType)
     {
         if (cardData.NPCLookTable == null || m_lookPartData == null)
             return null;
 
-        // NPCLookTable에서 해당 부위의 인덱스 가져오기
         if (!cardData.NPCLookTable.TryGetValue(partType, out int partIndex))
             return null;
 
-        // 해당 부위의 PartData 배열 가져오기
         NPCLookPart.PartData[] partDataArray = GetPartDataArrayByType(partType);
         if (partDataArray == null || partIndex < 0 || partIndex >= partDataArray.Length)
             return null;

@@ -4462,6 +4462,21 @@ MonoBehaviour:
   m_itemType: {fileID: 11400000, guid: e29018be1bbab8d47869d9a488faf38c, type: 2}
   m_spriteRenderer_DraggingItemIcon: {fileID: 1555953377}
   m_bisCombatScene: 1
+  m_onDragEnd:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1864601840}
+        m_TargetAssemblyTypeName: BattleField, Assembly-CSharp
+        m_MethodName: HandleItemDrop
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!95 &1776295602
 Animator:
   serializedVersion: 7
@@ -5708,7 +5723,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -870, y: 460}
+  m_AnchoredPosition: {x: -870, y: 480}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2070345013
