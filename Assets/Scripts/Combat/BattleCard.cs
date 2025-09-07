@@ -104,7 +104,7 @@ public class BattleCard : MonoBehaviour
         {
             m_myData.Status.CurHP = 0;
         }
-        Debug.Log($"{name}이(가) {finalDamage}의 피해를 입었습니다. 남은 체력: {m_myData.Status.CurHP}");
+        // Debug.Log($"{name}이(가) {finalDamage}의 피해를 입었습니다. 남은 체력: {m_myData.Status.CurHP}");
 
         // 피격 효과 재생
         if (m_portraitInstance != null)

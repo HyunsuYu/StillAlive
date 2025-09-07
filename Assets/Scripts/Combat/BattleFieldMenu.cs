@@ -21,7 +21,7 @@ public class BattleFieldMenu : MonoBehaviour
     private List<GameObject> m_teamMemberUIs;// 생성된 팀원 UI들
 
     private void Start()
-    {      
+    {
         m_dayText.text = $"D - {SaveDataBuffer.Instance.Data.DPlusDay}";
         m_coinText.text = SaveDataBuffer.Instance.Data.Money.ToString();
 
@@ -76,10 +76,10 @@ public class BattleFieldMenu : MonoBehaviour
         if (teamCard == null || index < 0 || index >= m_teamMemberUIs.Count) return;
 
         GameObject memberUI = m_teamMemberUIs[index];
-        if (memberUI == null) 
+        if (memberUI == null)
             return;
 
-        if(isRemove)
+        if (isRemove)
         {
             Destroy(memberUI);
             return;
@@ -87,15 +87,14 @@ public class BattleFieldMenu : MonoBehaviour
 
         // HP바 업데이트
         Slider hpBar = memberUI.GetComponentInChildren<Slider>();
-        if (hpBar != null)
+
+        float hpRatio = (float)teamCard.GetCurrentHP() / teamCard.GetMaxHP();
+        if (hpRatio <= 0f)
         {
-            float hpRatio = (float)teamCard.GetCurrentHP() / teamCard.GetMaxHP();
-            if(hpRatio <= 0f)
-            {
-                hpBar.value = 0f;
-            }
-            hpBar.value = hpRatio;
-        }  
+            hpBar.value = 0f;
+        }
+        hpBar.value = hpRatio;
+
 
         //// HP 텍스트 업데이트
         //TMP_Text hpText = memberUI.GetComponentInChildren<TMP_Text>();
@@ -104,7 +103,7 @@ public class BattleFieldMenu : MonoBehaviour
         //    hpText.text = $"{teamCard.GetCurrentHP()}/{teamCard.GetMaxHP()}";
         //}        
     }
-    
+
     /// <summary>
     /// 팀원의 초상화를 생성, 원본 카드의 초상화 클론 사용
     /// </summary>
@@ -113,7 +112,7 @@ public class BattleFieldMenu : MonoBehaviour
     private void CreateTeamMemberPortrait(BattleCard teamCard, GameObject memberUI)
     {
         Transform portraitParent = memberUI.transform;
-        if (portraitParent == null) 
+        if (portraitParent == null)
             return;
 
         // 원본 카드의 초상화 인스턴스 가져오기
