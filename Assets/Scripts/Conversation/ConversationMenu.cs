@@ -22,7 +22,7 @@ public class ConversationMenu : MonoBehaviour
     private void Start()
     {
         m_dayText.text = $"D - {SaveDataBuffer.Instance.Data.DPlusDay}";
-        m_coinText.text = SaveDataBuffer.Instance.Data.Money.ToString();
+        //  m_coinText.text = SaveDataBuffer.Instance.Data.Money.ToString();
     }
 
     public void ConsumeCoin(int _amount)
@@ -34,12 +34,12 @@ public class ConversationMenu : MonoBehaviour
     /// 팀 전체 상태창을 초기화 세팅을 합니다.
     /// </summary>
     /// <param name="teamPortrait">팀 카드 리스트</param>
-    public void InitTeamStatus(List<NPCPortrait> portraits, List<CardData> datas)
+    public void InitTeamStatus(List<CardData> datas)
     {
         m_teamMemberUIs = new List<GameObject>();
 
-        int memberCount = portraits.Count;
-     
+        int memberCount = datas.Count;
+
         // 각 팀원에 대해 UI 생성 및 위치 설정
         for (int i = 0; i < memberCount; i++)
         {
@@ -54,28 +54,21 @@ public class ConversationMenu : MonoBehaviour
 
             Transform portraitParent = memberUI.transform;
 
-          
-            if (portraits[i] != null)
-            {
-                // 원본 초상화를 클론하여 UI에 배치
-                GameObject portraitClone = Instantiate(portraits[i].gameObject, portraitParent);
-                portraitClone.transform.localScale = new Vector3(1f, 1f, 1f);
-                // HP바 업데이트
-                Slider hpBar = memberUI.GetComponentInChildren<Slider>();
+            // 원본 초상화를 클론하여 UI에 배치
+            GameObject portraitObj = CharacterPortraitHelper.CreatePortrait(datas[i], portraitParent);
 
-                float hpRatio = (float)datas[i].Status.CurHP / datas[i].Status.MaxHP;
-                if (hpRatio <= 0f)
-                {
-                    hpBar.value = 0f;
-                }
-                hpBar.value = hpRatio;
-            }
-            else
+            // HP바 업데이트
+            Slider hpBar = memberUI.GetComponentInChildren<Slider>();
+
+            float hpRatio = (float)datas[i].Status.CurHP / datas[i].Status.MaxHP;
+            if (hpRatio <= 0f)
             {
-                Debug.LogError("Portrait 비어있음");
+                hpBar.value = 0f;
             }
+            hpBar.value = hpRatio;
+
         }
-      
+
 
     }
 

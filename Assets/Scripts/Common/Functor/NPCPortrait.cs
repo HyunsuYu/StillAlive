@@ -30,10 +30,31 @@ public class NPCPortrait : MonoBehaviour
     [SerializeField] private NPCLookPart m_lookPartData;
     public NPCLookPart GetLookPartData => m_lookPartData;
 
+    private Dictionary<CardData.NPCLookPartType, Image> m_partImageMap;
     private Dictionary<CardData.NPCLookPartType, Material> m_partMaterials;
 
     public void Init(CardData cardData)
     {
+        m_partImageMap = new Dictionary<CardData.NPCLookPartType, Image>
+        {
+            { CardData.NPCLookPartType.Top,       topImage },
+            { CardData.NPCLookPartType.Face,      faceImage },
+            { CardData.NPCLookPartType.FrontHair, frontHairImage },
+            { CardData.NPCLookPartType.BackHair,  backHairImage },
+            { CardData.NPCLookPartType.Eye,       eyeImage },
+            { CardData.NPCLookPartType.Mouth,     mouthImage },
+            { CardData.NPCLookPartType.Glasses,   glassesImage },
+            { CardData.NPCLookPartType.Cap,       capImage }
+        };
+
+        foreach (var partImage in m_partImageMap.Values)
+        {
+            if (partImage != null)
+            {
+                partImage.alphaHitTestMinimumThreshold = 0.5f;
+            }
+        }
+
         CreatePartMaterials();
         SetupAllPartSprites(cardData);
     }
@@ -67,36 +88,37 @@ public class NPCPortrait : MonoBehaviour
 
         m_partMaterials = new Dictionary<CardData.NPCLookPartType, Material>();
 
-        foreach (CardData.NPCLookPartType partType in System.Enum.GetValues(typeof(CardData.NPCLookPartType)))
+        foreach (var pair in m_partImageMap)
         {
-            Image targetImage = GetImageByPartType(partType);
-            if (targetImage != null)
+            if (pair.Value != null) 
             {
                 Material partMaterial = Instantiate(originalMaterial);
-                targetImage.material = partMaterial;
-                m_partMaterials[partType] = partMaterial;
+                pair.Value.material = partMaterial;
+                m_partMaterials[pair.Key] = partMaterial;
             }
         }
     }
 
     public void SetPartSprite(CardData.NPCLookPartType partType, int spriteIndex)
     {
-        Image targetImage = GetImageByPartType(partType);
-        Sprite[] spriteArray = GetSpriteArrayByPartType(partType);
+        if (m_partImageMap.TryGetValue(partType, out Image targetImage))
+        {
+            Sprite[] spriteArray = GetSpriteArrayByPartType(partType); // 이 switch는 데이터 구조상 유지
 
-        if (targetImage != null && spriteArray != null && spriteIndex >= 0 && spriteIndex < spriteArray.Length)
-        {
-            targetImage.sprite = spriteArray[spriteIndex];
-            targetImage.enabled = targetImage.sprite != null;
-      
-            if (m_partMaterials.TryGetValue(partType, out Material partMaterial) && targetImage.sprite != null)
+            if (spriteArray != null && spriteIndex >= 0 && spriteIndex < spriteArray.Length)
             {
-                partMaterial.SetTexture("_MainTex", targetImage.sprite.texture);
+                targetImage.sprite = spriteArray[spriteIndex];
+                targetImage.enabled = targetImage.sprite != null;
+
+                if (m_partMaterials.TryGetValue(partType, out Material partMaterial) && targetImage.sprite != null)
+                {
+                    partMaterial.SetTexture("_MainTex", targetImage.sprite.texture);
+                }
             }
-        }
-        else if (targetImage != null)
-        {
-            targetImage.enabled = false;
+            else
+            {
+                targetImage.enabled = false;
+            }
         }
     }
 
@@ -113,23 +135,7 @@ public class NPCPortrait : MonoBehaviour
             partMaterial.SetColor("_ColorGB", colors.GreenBlueRegionColor);
             partMaterial.SetColor("_ColorRGB", colors.RedGreenBlueRegionColor);
         }
-    }
-
-    private Image GetImageByPartType(CardData.NPCLookPartType partType)
-    {
-        switch (partType)
-        {
-            case CardData.NPCLookPartType.Top: return topImage;
-            case CardData.NPCLookPartType.Face: return faceImage;
-            case CardData.NPCLookPartType.FrontHair: return frontHairImage;
-            case CardData.NPCLookPartType.BackHair: return backHairImage;
-            case CardData.NPCLookPartType.Eye: return eyeImage;
-            case CardData.NPCLookPartType.Mouth: return mouthImage;
-            case CardData.NPCLookPartType.Glasses: return glassesImage;
-            case CardData.NPCLookPartType.Cap: return capImage;
-            default: return null;
-        }
-    }
+    }  
 
     private Sprite[] GetSpriteArrayByPartType(CardData.NPCLookPartType partType)
     {

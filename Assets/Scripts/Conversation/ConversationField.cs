@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 /// <summary>
@@ -11,11 +12,16 @@ public class ConversationField : MonoBehaviour
     [SerializeField] private ConversationTeam m_conversationTeam;
 
     [SerializeField] private int testCardCount;
+
+    List<CardData> cardDatas;
+
+    [SerializeField] private TMP_Text testTMP;
+
     private void Start()
     {
         SaveDataBuffer.Instance.TryLoadData();
     
-        List<CardData> cardDatas = SaveDataBuffer.Instance.Data.CardDatas;
+       cardDatas = SaveDataBuffer.Instance.Data.CardDatas;
 
         if (cardDatas.Count == 0)
         {
@@ -29,6 +35,9 @@ public class ConversationField : MonoBehaviour
                 cd.Status.MaxHP += 1;
                 cd.Status.CurHP += 1;
 
+                if(i == 1)
+                    cd.BIsTraitor = true;
+
                 cardDatas.Add(cd);
 
                 cardDatas[i].NPCLookTable[CardData.NPCLookPartType.Face] = Random.Range(0, 3);
@@ -41,8 +50,18 @@ public class ConversationField : MonoBehaviour
             }
         }
 
-        List<NPCPortrait> npcPortraits = m_conversationTeam.Init(cardDatas);
+        m_conversationTeam.Init(cardDatas);
+        m_conversationMenu.InitTeamStatus(cardDatas);
+    }
 
-        m_conversationMenu.InitTeamStatus(npcPortraits, cardDatas);
+    public void TestSample()
+    {
+        ReplicateInterface.Instance.TryGetSpeakText(cardDatas[0]);
+        Debug.Log("Clicked");
+    }
+
+    public void TestSampleResult()
+    {
+        testTMP.text = ReplicateInterface.Instance.Output;
     }
 }
