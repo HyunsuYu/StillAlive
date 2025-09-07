@@ -194,7 +194,7 @@ public sealed class ReplicateInterface : SingleTonForGameObject<ReplicateInterfa
         {
             request.method = "POST";
             request.downloadHandler = new DownloadHandlerBuffer();
-            request.SetRequestHeader("Authorization", "Bearer " + "r8_UQzxIo57rX4PecVxDUlBGkb7DstGWeS00FGJ7");
+            request.SetRequestHeader("Authorization", "Bearer " + "r8_UEIt2I44PJMxd3Acmj5809l0pPmBde7201YQo");
             request.SetRequestHeader("Content-Type", "application/json");
             request.SetRequestHeader("Prefer", "wait");
 

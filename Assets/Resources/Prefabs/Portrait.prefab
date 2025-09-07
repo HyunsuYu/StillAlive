@@ -552,8 +552,8 @@ MonoBehaviour:
   mouthImage: {fileID: 8889705664822463759}
   glassesImage: {fileID: 4747369010513459343}
   capImage: {fileID: 1896133086388865772}
-  partsContainer: {fileID: 0}
-  mainPlayerImage: {fileID: 0}
+  partsContainer: {fileID: 8725644295884031868}
+  mainPlayerImage: {fileID: 3166520155649875619}
   m_lookPartData: {fileID: 11400000, guid: 22015ccad53dee4468c159e52f80242b, type: 2}
 --- !u!1 &5924572059535271789
 GameObject:
