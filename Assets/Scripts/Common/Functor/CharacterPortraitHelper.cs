@@ -34,7 +34,7 @@ public static class CharacterPortraitHelper
             npcPortrait = portraitInstance.AddComponent<NPCPortrait>();
         }
 
-        npcPortrait.SetupPortrait(cardData);
+        npcPortrait.Init(cardData);
 
         return portraitInstance;
     }
@@ -42,16 +42,15 @@ public static class CharacterPortraitHelper
     /// <summary>
     /// NPCPortrait 컴포넌트를 통해 특정 부위의 색상을 변경
     /// </summary>
-    public static void ApplyPartColor(GameObject portraitInstance, CardData.NPCLookPartType partType)
+    public static void ApplyPartColor(GameObject portraitInstance, CardData.NPCLookPartType partType,CardData _cardData)
     {
         NPCPortrait npcPortrait = portraitInstance.GetComponent<NPCPortrait>();
         if (npcPortrait != null)
         {
-            NPCLookPart lookPartData = npcPortrait.GetLookPartData;
-            CardData cardData = npcPortrait.GetCardData;
-            if (lookPartData != null && cardData.ColorPalleteIndex >= 0 && cardData.ColorPalleteIndex < lookPartData.ColorPalettes.Length)
+            NPCLookPart lookPartData = npcPortrait.GetLookPartData;           
+            if (lookPartData != null && _cardData.ColorPalleteIndex >= 0 && _cardData.ColorPalleteIndex < lookPartData.ColorPalettes.Length)
             {
-                NPCLookPart.ColorPalette palette = lookPartData.ColorPalettes[cardData.ColorPalleteIndex];
+                NPCLookPart.ColorPalette palette = lookPartData.ColorPalettes[_cardData.ColorPalleteIndex];
                 NPCLookPart.ColorPalette.LookPartColors? colors = GetColorsByPartType(palette, partType);
                 if (colors.HasValue)
                 {

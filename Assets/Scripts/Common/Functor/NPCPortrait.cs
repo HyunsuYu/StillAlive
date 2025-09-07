@@ -25,30 +25,24 @@ public class NPCPortrait : MonoBehaviour
     [SerializeField] private NPCLookPart m_lookPartData;
     public NPCLookPart GetLookPartData => m_lookPartData;
 
-    private CardData m_cardData;
-    public CardData GetCardData => m_cardData;
-
     private Dictionary<CardData.NPCLookPartType, Material> m_partMaterials;
 
-    public void SetupPortrait(CardData cardData)
+    public void Init(CardData cardData)
     {
-        m_cardData = cardData;
-
-        if (this.m_lookPartData == null || m_cardData.NPCLookTable == null)
-        {
-            return;
-        }
-
         CreatePartMaterials();
-        SetAllPartSprites();
-        ApplyAllPartColors();
+        SetupAllPartSprites(cardData);
     }
 
-    public void ApplyAllPartColors()
+    private void SetupAllPartSprites(CardData _cardData)
     {
-        if (m_cardData.ColorPalleteIndex < 0 || m_cardData.ColorPalleteIndex >= m_lookPartData.ColorPalettes.Length) return;
+        if (_cardData.ColorPalleteIndex < 0 || _cardData.ColorPalleteIndex >= m_lookPartData.ColorPalettes.Length) return;
 
-        NPCLookPart.ColorPalette palette = m_lookPartData.ColorPalettes[m_cardData.ColorPalleteIndex];
+        foreach (var partInfo in _cardData.NPCLookTable)
+        {
+            SetPartSprite(partInfo.Key, partInfo.Value);
+        }
+
+        NPCLookPart.ColorPalette palette = m_lookPartData.ColorPalettes[_cardData.ColorPalleteIndex];
 
         ApplyPartColor(CardData.NPCLookPartType.Top, palette.TopColors);
         ApplyPartColor(CardData.NPCLookPartType.Face, palette.FacesColors);
@@ -59,13 +53,7 @@ public class NPCPortrait : MonoBehaviour
         ApplyPartColor(CardData.NPCLookPartType.Glasses, palette.GlassesColors);
         ApplyPartColor(CardData.NPCLookPartType.Cap, palette.CapsColors);
     }
-    private void SetAllPartSprites()
-    {
-        foreach (var partInfo in m_cardData.NPCLookTable)
-        {
-            SetPartSprite(partInfo.Key, partInfo.Value);
-        }
-    }
+ 
     private void CreatePartMaterials()
     {
         string materialPath = MATERIAL_PATH;
@@ -107,6 +95,7 @@ public class NPCPortrait : MonoBehaviour
         }
     }
 
+    // 각각 파츠마다 컬러 부여
     public void ApplyPartColor(CardData.NPCLookPartType partType, NPCLookPart.ColorPalette.LookPartColors colors)
     {
         if (m_partMaterials != null && m_partMaterials.TryGetValue(partType, out Material partMaterial))
@@ -153,6 +142,7 @@ public class NPCPortrait : MonoBehaviour
         }
     }
 
+    // 히트 이펙트
     public IEnumerator PlayHitEffect(float duration = 0.15f)
     {
         if (m_partMaterials != null)

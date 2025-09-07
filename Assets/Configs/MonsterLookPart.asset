@@ -10,37 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e021099486563da47adf853b0726a3f9, type: 3}
-  m_Name: NPCLookPart
+  m_Name: MonsterLookPart
   m_EditorClassIdentifier: 
-  MainCharacter: {fileID: 21300000, guid: a8c0f0032ff6a054195c2b72bd9f6727, type: 3}
-  Tops:
-  - {fileID: 21300000, guid: 5f97892838bcc5a44b142ef3318c18ad, type: 3}
-  - {fileID: 21300000, guid: 245f71b523ab14c459da15df24d399ac, type: 3}
-  - {fileID: 21300000, guid: 7fa6998c541bf934caa7495e1344d0aa, type: 3}
-  Faces:
-  - {fileID: 21300000, guid: f3c8ae697a873e24a9f880575c18f0d8, type: 3}
-  - {fileID: 21300000, guid: 046124bee567a134ab72b02695566e09, type: 3}
-  - {fileID: 21300000, guid: 3928cc913d4ea9145b21cdec4dfd97bb, type: 3}
-  Eyes:
-  - {fileID: 21300000, guid: 56abef148f6389649b7935d9ce0313ee, type: 3}
-  - {fileID: 21300000, guid: cb4b9ddbfe83b644daecbba0586b5373, type: 3}
-  - {fileID: 21300000, guid: fbef349614aeac5478f673a07d59fa5d, type: 3}
-  Mouths:
-  - {fileID: 21300000, guid: 1c358fa7f997e47459e37389b9da59e5, type: 3}
-  - {fileID: 21300000, guid: cd9098134089ad64ba5939f189961057, type: 3}
-  - {fileID: 21300000, guid: ddc14b6e3c22e8f4eb37a94d80696b21, type: 3}
-  Glasses:
-  - {fileID: 21300000, guid: c68c24a42ff38444499cd967f81cf4de, type: 3}
-  Caps:
-  - {fileID: 21300000, guid: af079873a571ab8449e2ac2215b15a0b, type: 3}
-  FrontHairs:
-  - {fileID: 21300000, guid: 104dbbc2d59e6e8449f99467ccd100a6, type: 3}
-  - {fileID: 21300000, guid: 708eb24939418a644a2ee5d23d838f44, type: 3}
-  - {fileID: 21300000, guid: 6a8756ee75c2c9f4ebfdae68112efb47, type: 3}
-  BackHairs:
-  - {fileID: 21300000, guid: 2a031aeda4489a04d9bf54fcf41f0ee8, type: 3}
-  - {fileID: 21300000, guid: 9075bb900cebe2d43bd4cf5b250574da, type: 3}
-  - {fileID: 21300000, guid: e46865143153d2d4a86e4b26c14153dd, type: 3}
+  MainCharacter: {fileID: 0}
+  Tops: []
+  Faces: []
+  Eyes: []
+  Mouths: []
+  Glasses: []
+  Caps: []
+  FrontHairs: []
+  BackHairs: []
   ColorPalettes:
   - TopColors:
       RedRegionColor: {r: 0, g: 0, b: 0, a: 0}
@@ -51,17 +31,17 @@ MonoBehaviour:
       GreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
       RedGreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
     FacesColors:
-      RedRegionColor: {r: 1, g: 0, b: 0.6810403, a: 1}
-      BlueRegionColor: {r: 0.80599844, g: 1, b: 0.043396115, a: 1}
-      GreenRegionColor: {r: 1, g: 0.87358487, b: 0.87358487, a: 1}
-      RedGreenRegionColor: {r: 0.061840296, g: 1, b: 0, a: 1}
-      RedBlueRegionColor: {r: 0, g: 1, b: 0.110455275, a: 0}
-      GreenBlueRegionColor: {r: 0, g: 1, b: 0.049730778, a: 0}
-      RedGreenBlueRegionColor: {r: 0.103773475, g: 1, b: 0.14105585, a: 0}
+      RedRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      BlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      GreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedGreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      GreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedGreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
     EyesColors:
       RedRegionColor: {r: 0, g: 0, b: 0, a: 0}
       BlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
-      GreenRegionColor: {r: 0.035848916, g: 1, b: 0.9185071, a: 1}
+      GreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
       RedGreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
       RedBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
       GreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
@@ -75,9 +55,9 @@ MonoBehaviour:
       GreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
       RedGreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
     GlassesColors:
-      RedRegionColor: {r: 0, g: 0.37000203, b: 1, a: 1}
-      BlueRegionColor: {r: 0, g: 0.59276533, b: 1, a: 1}
-      GreenRegionColor: {r: 0, g: 0.2644081, b: 1, a: 1}
+      RedRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      BlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      GreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
       RedGreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
       RedBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
       GreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}

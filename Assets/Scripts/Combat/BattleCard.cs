@@ -13,14 +13,22 @@ public class BattleCard : MonoBehaviour
     [SerializeField] private TMP_Text m_defenceText;
     [SerializeField] private TMP_Text m_speedText;
     [SerializeField] private TMP_Text m_atkText;
-
     [SerializeField] private Transform portraitPos;
+
     private NPCPortrait m_portraitInstance; // 생성된 초상화 인스턴스
+
+    private BattleField m_battleField;
 
     public void Init(CardData _data)
     {
         m_myData = _data;
-        
+
+        m_battleField = GetComponentInParent<BattleField>();
+        if (m_battleField == null)
+        {
+            m_battleField = FindFirstObjectByType<BattleField>();
+        }
+
         m_canvas = GetComponentInChildren<Canvas>();
 
         m_canvas.worldCamera = Camera.main;
@@ -35,17 +43,25 @@ public class BattleCard : MonoBehaviour
 
         // CharacterPortraitHelper를 사용하여 초상화 생성 (Resources에서 자동 로드)
         m_portraitInstance = CharacterPortraitHelper.CreatePortrait(m_myData).GetComponent<NPCPortrait>();
-        
+
         if (m_portraitInstance != null)
         {
             // 생성된 초상화를 이 오브젝트의 자식으로 설정
-            m_portraitInstance.transform.SetParent(m_canvas.transform);
+            m_portraitInstance.transform.SetParent(portraitPos.transform);
+
             m_portraitInstance.transform.position = portraitPos.position;
+            m_portraitInstance.transform.rotation = portraitPos.rotation;
+            m_portraitInstance.transform.localScale = new Vector3(0.02f, 0.02f);
         }
         else
         {
             Debug.LogWarning("BattleCard: 초상화 생성에 실패했습니다. Resources 폴더에 'Portrait' 프리팹과 'NPCLookPart' 에셋이 있는지 확인해주세요.");
         }
+
+        m_hpText.text = m_myData.Status.CurHP.ToString();
+        m_defenceText.text = m_myData.Status.DefencePower.ToString();
+        m_speedText.text = m_myData.Status.Speed.ToString();
+        m_atkText.text = m_myData.Status.AttackPower.ToString();
     }
 
     public int GetSpeed()
@@ -56,6 +72,26 @@ public class BattleCard : MonoBehaviour
     public int GetAttackPower()
     {
         return m_myData.Status.AttackPower;
+    }
+
+    public int GetCurrentHP()
+    {
+        return m_myData.Status.CurHP;
+    }
+
+    public int GetMaxHP()
+    {
+        return m_myData.Status.MaxHP;
+    }
+
+    public NPCPortrait GetPortraitInstance()
+    {
+        return m_portraitInstance;
+    }
+
+    public bool IsTraitor()
+    {
+        return m_myData.BIsTraitor;
     }
 
     public void TakeDamage(int damage)
@@ -75,22 +111,14 @@ public class BattleCard : MonoBehaviour
         {
             StartCoroutine(m_portraitInstance.PlayHitEffect());
         }
+
+        // UI 업데이트 (HP바와 텍스트)
+        m_battleField.UpdateTeamMemberStatusUI(this);      
     }
 
     public bool IsDead()
     {
         return m_myData.Status.CurHP <= 0;
-    }
-   
-    /// <summary>
-    /// 특정 부위의 색상만 변경합니다.
-    /// </summary>
-    public void ChangePartColor(CardData.NPCLookPartType partType)
-    {
-        if (m_portraitInstance != null)
-        {
-            CharacterPortraitHelper.ApplyPartColor(m_portraitInstance.gameObject, partType);
-        }
     }
 
     private void OnDestroy()
