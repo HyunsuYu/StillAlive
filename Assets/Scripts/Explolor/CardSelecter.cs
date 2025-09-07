@@ -71,7 +71,7 @@ public class CardSelecter : SingleTonForGameObject<CardSelecter>
             BattleCard battleCard = card.GetComponent<BattleCard>();
             if(battleCard != null)
             {
-                CardData removeColleague = battleCard.Data;
+                CardData removeColleague = battleCard.MyData;
                 SaveDataBuffer.Instance.Data.CardDatas.Remove(removeColleague);
             }
             else
