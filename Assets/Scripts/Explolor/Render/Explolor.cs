@@ -165,10 +165,10 @@ public class Explolor : SingleTonForGameObject<Explolor>
 
 
         var currentTeam = SaveDataInterface.GetAliveCardInfos(); // 살아있는 카드 데이터들을 가져옴
-        for (int j = 0; j < currentTeam.Count && j < MyTeamBox.Length; j++)
+        for (int j = 0; j < currentTeam.Count;j++)
         {
             GameObject myTeamGO = MyTeamBox[j];
-            BattleCard card = myTeamGO.GetComponent<BattleCard>();
+            BattleCard card = myTeamGO.GetComponentInChildren<BattleCard>();
             if (card != null)
             {
                 card.Init(currentTeam[j],true);

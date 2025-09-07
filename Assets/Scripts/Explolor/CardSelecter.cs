@@ -53,7 +53,7 @@ public class CardSelecter : SingleTonForGameObject<CardSelecter>
             //선택된 카드의 색상 변경
             if (isSelected)
             {
-                slot.GetComponent<Image>().color = new Color32(85, 85, 85, 255);
+                //slot.GetComponent<Image>().color = new Color32(85, 85, 85, 255);
                 if (slot.GetComponentInChildren<BattleCard>() != null)
                 {
                     slot.GetComponentInChildren<BattleCard>().GetComponentInChildren<Image>().color = new Color32(85, 85, 85, 255);
@@ -61,7 +61,7 @@ public class CardSelecter : SingleTonForGameObject<CardSelecter>
             }
             else
             {
-                slot.GetComponent<Image>().color = new Color32(160, 160, 160, 255);
+                //slot.GetComponent<Image>().color = new Color32(160, 160, 160, 255);
                 if (slot.GetComponentInChildren<BattleCard>() != null)
                 {
                     slot.GetComponentInChildren<BattleCard>().GetComponentInChildren<Image>().color = new Color32(160, 160, 160, 255);
@@ -144,6 +144,10 @@ public class CardSelecter : SingleTonForGameObject<CardSelecter>
             }
 
             BattleCard battleCard = card.GetComponent<BattleCard>();
+            if(card.GetComponent<BattleCard>() == null)
+            {
+                battleCard = card.GetComponentInChildren<BattleCard>();
+            }
             CardData newColleague = battleCard.MyData;
             SaveDataBuffer.Instance.Data.CardDatas.Add(newColleague);
             Debug.Log("팀에 추가됨" + newColleague.Status.AttackPower.ToString());
