@@ -146,7 +146,8 @@ public class BattleField : MonoBehaviour
                 {
                     CardData monsterData = new CardData();
                     monsterData.BIsPlayer = false;
-                    monsterData.BIsTraitor = true;
+                    monsterData.BIsTraitor = false;
+                    monsterData.BIsMonster = true; 
 
                     monsterData.NPCLookTable = new Dictionary<CardData.NPCLookPartType, int>();
                     monsterData.ColorPalleteIndex = 0;
@@ -232,11 +233,6 @@ public class BattleField : MonoBehaviour
         {
             StartCoroutine(StartCombat());
         }
-    }
-
-    public void OnInventoryButtonClicked()
-    {
-
     }
 
     public void OnInfoButtonClicked()

@@ -9,7 +9,7 @@ public class ConversationMenu : MonoBehaviour
     [SerializeField] private Button m_infoBT;
     [SerializeField] private Button m_invenBT;
 
-    //[SerializeField] private TMP_Text m_coinText;
+    [SerializeField] private TMP_Text m_coinText;
     [SerializeField] private TMP_Text m_dayText;
 
     [Header("팀 상태창")]
@@ -22,9 +22,7 @@ public class ConversationMenu : MonoBehaviour
     private void Start()
     {
         m_dayText.text = $"D - {SaveDataBuffer.Instance.Data.DPlusDay}";
-        //m_coinText.text = SaveDataBuffer.Instance.Data.Money.ToString();
-
-        m_teamMemberUIs = new List<GameObject>();
+        //  m_coinText.text = SaveDataBuffer.Instance.Data.Money.ToString();
     }
 
     public void ConsumeCoin(int _amount)
@@ -36,14 +34,15 @@ public class ConversationMenu : MonoBehaviour
     /// 팀 전체 상태창을 초기화 세팅을 합니다.
     /// </summary>
     /// <param name="teamPortrait">팀 카드 리스트</param>
-    public void InitTeamStatus(List<NPCPortrait> portraits, List<CardData> datas)
+    public void InitTeamStatus(List<CardData> datas)
     {
-        int memberCount = portraits.Count;
-     
+        m_teamMemberUIs = new List<GameObject>();
+
+        int memberCount = datas.Count;
+
         // 각 팀원에 대해 UI 생성 및 위치 설정
         for (int i = 0; i < memberCount; i++)
         {
-
             // m_teamStatusParent의 중심에서 시작해서 오른쪽으로 간격만큼 배치
             Vector3 memberUIPosition = new Vector3(i * m_teamUISpacing, 0, 0);
 
@@ -53,31 +52,23 @@ public class ConversationMenu : MonoBehaviour
 
             memberUI.transform.localPosition = memberUIPosition;
 
-            // 초상화 생성
             Transform portraitParent = memberUI.transform;
 
-          
-            if (portraits[i] != null)
-            {
-                // 원본 초상화를 클론하여 UI에 배치
-                Instantiate(portraits[i].gameObject, portraitParent);
+            // 원본 초상화를 클론하여 UI에 배치
+            GameObject portraitObj = CharacterPortraitHelper.CreatePortrait(datas[i], portraitParent);
 
-                // HP바 업데이트
-                Slider hpBar = memberUI.GetComponentInChildren<Slider>();
+            // HP바 업데이트
+            Slider hpBar = memberUI.GetComponentInChildren<Slider>();
 
-                float hpRatio = (float)datas[i].Status.CurHP / datas[i].Status.MaxHP;
-                if (hpRatio <= 0f)
-                {
-                    hpBar.value = 0f;
-                }
-                hpBar.value = hpRatio;
-            }
-            else
+            float hpRatio = (float)datas[i].Status.CurHP / datas[i].Status.MaxHP;
+            if (hpRatio <= 0f)
             {
-                Debug.LogError("Portrait 비어있음");
+                hpBar.value = 0f;
             }
+            hpBar.value = hpRatio;
+
         }
-      
+
 
     }
 
