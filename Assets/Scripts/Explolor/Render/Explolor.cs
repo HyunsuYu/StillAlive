@@ -32,7 +32,7 @@ public class Explolor : SingleTonForGameObject<Explolor>
     }
 
 
-    ExplolorState exState = ExplolorState.None;
+    public ExplolorState exState = ExplolorState.None;
     static bool curCompleteWork = true;
 
     void Awake()
@@ -67,6 +67,12 @@ public class Explolor : SingleTonForGameObject<Explolor>
 
     public void ItemCatch() //아이템 발견 함수
     {
+        if(exState != ExplolorState.ItemEvent)
+        {
+            Debug.LogWarning("ItemCatch 호출 오류: 현재 상태가 ItemEvent가 아닙니다.");
+
+            return;
+        }
         int itemCount = ProbabilityUtillity.GetCount(SaveDataBuffer.Instance.Data.DPlusDay);
 
         if (itemCount > 0)
@@ -89,6 +95,11 @@ public class Explolor : SingleTonForGameObject<Explolor>
 
     public void colleagueCatch() //동료 발견 함수
     {
+        if (exState != ExplolorState.ColleagueEvent)
+        {
+            Debug.LogWarning("colleagueCatch 호출 오류: 현재 상태가 ColleagueEvent가 아닙니다.");
+            return;
+        }
         int ColleagueCount = ProbabilityUtillity.GetCount(SaveDataBuffer.Instance.Data.DPlusDay);
         SpawnCards(ColleagueCount);
     }
@@ -107,6 +118,8 @@ public class Explolor : SingleTonForGameObject<Explolor>
             {
                 CardData newColleague = new CardData();
                 newColleague.Status = CardData.DefaultStatus();
+                newColleague.NPCLookTable = new Dictionary<CardData.NPCLookPartType, int>();
+                newColleague.NPCLookTable[CardData.NPCLookPartType.Top] = Random.Range(0, 3);
                 // To-Do: 외형 데이터도 여기서 생성하면 좋습니다.
                 // newColleague.NPCLookTable = ...;
 
@@ -139,6 +152,7 @@ public class Explolor : SingleTonForGameObject<Explolor>
 
         EventWindow.SetActive(true);
         ColleagueWindow.SetActive(true);
+        exState = ExplolorState.None; // 상태 초기화
     }
 
     internal void Render()
@@ -163,6 +177,7 @@ public class Explolor : SingleTonForGameObject<Explolor>
             {
                 MyTeamBox[i].SetActive(false);
             }
+            exState = ExplolorState.None; // 상태 초기화     
         }
     }
 

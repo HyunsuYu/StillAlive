@@ -439,7 +439,7 @@ MonoBehaviour:
   mouthImage: {fileID: 8889705664822463759}
   glassesImage: {fileID: 4747369010513459343}
   capImage: {fileID: 1896133086388865772}
-  m_lookPartData: {fileID: 0}
+  m_lookPartData: {fileID: 11400000, guid: 22015ccad53dee4468c159e52f80242b, type: 2}
 --- !u!1 &7455238749695969983
 GameObject:
   m_ObjectHideFlags: 0

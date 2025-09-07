@@ -66,11 +66,25 @@ public class CardSelecter : SingleTonForGameObject<CardSelecter>
             if (MyTeams.Contains(card))
             {
                 MyTeams.Remove(card);
-                SaveDataBuffer.Instance.Data.CardDatas.Remove(card.GetComponent<CardData>());
-                Destroy(card);
+            }
+
+            BattleCard battleCard = card.GetComponent<BattleCard>();
+            if(battleCard != null)
+            {
+                CardData removeColleague = battleCard.Data;
+                SaveDataBuffer.Instance.Data.CardDatas.Remove(removeColleague);
+            }
+            else
+            {
+                Debug.LogError("선택된 카드에 BattleCard 컴포넌트가 없습니다.");
             }
         }
+        
         SaveDataBuffer.Instance.TrySaveData();
+        foreach(var card in _selectedCard)
+        {
+            card.SetActive(false);
+        }
         ClearSelection();
     }
 
@@ -95,6 +109,8 @@ public class CardSelecter : SingleTonForGameObject<CardSelecter>
             {
                 CardData newColleague = battleCard.Data;
                 SaveDataBuffer.Instance.Data.CardDatas.Add(newColleague);
+                Debug.Log("팀에 추가됨" + newColleague.Status.AttackPower.ToString());
+                SaveDataBuffer.Instance.TrySaveData();
             }
             else
             {
@@ -102,6 +118,7 @@ public class CardSelecter : SingleTonForGameObject<CardSelecter>
             }
         }
         ClearSelection();
+        Explolor.Instance.exState = Explolor.ExplolorState.None;
         SceneManager.LoadScene("Map");
     }
 
