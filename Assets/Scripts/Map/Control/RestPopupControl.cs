@@ -31,7 +31,7 @@ public sealed class RestPopupControl : SingleTonForGameObject<RestPopupControl>
             }
         }
 
-        for(int index = 0; index < m_restCharacterItems.Length; index++)
+        for (int index = 0; index < m_restCharacterItems.Length; index++)
         {
             m_restCharacterItems[index].gameObject.SetActive(false);
             if(index < alivedCards.Count)

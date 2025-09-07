@@ -45,7 +45,7 @@ public sealed class ReplicateInterface : SingleTonForGameObject<ReplicateInterfa
     }
     public void FixedUpdate()
     {
-        if(m_bisRequestProcessing && m_bisResponsed)
+        if (m_bisRequestProcessing && m_bisResponsed)
         {
             m_responseArrived.Invoke();
             m_bisRequestProcessing = false;
@@ -78,9 +78,9 @@ public sealed class ReplicateInterface : SingleTonForGameObject<ReplicateInterfa
 
         CardData? attacher = null;
         List<CardData> aliveCards = SaveDataInterface.GetAliveCardInfos();
-        foreach(CardData cardData in aliveCards)
+        foreach (CardData cardData in aliveCards)
         {
-            if(cardData.BIsTraitor)
+            if (cardData.BIsTraitor)
             {
                 attacher = cardData;
                 break;
@@ -101,7 +101,7 @@ public sealed class ReplicateInterface : SingleTonForGameObject<ReplicateInterfa
 
             case CardData.LastNightState.AttackedPerson:
                 prompt += $"당신은 지난 밤에 공격받은 인간으로서, 피의자가 ";
-                switch(selectedPart)
+                switch (selectedPart)
                 {
                     case CardData.NPCLookPartType.Top:
                         prompt += $"{m_npcLookPark.Tops[attacher.Value.NPCLookTable[CardData.NPCLookPartType.Top]].Description}을(를) 가지고 있는 것을 보았다";
@@ -212,7 +212,7 @@ public sealed class ReplicateInterface : SingleTonForGameObject<ReplicateInterfa
 
                         ReplicateOutput output = JsonConvert.DeserializeObject<ReplicateOutput>(jsonResponse);
 
-                        foreach(string singleOutput in output.output)
+                        foreach (string singleOutput in output.output)
                         {
                             m_llmResponse += singleOutput;
                         }
