@@ -84,9 +84,9 @@ MonoBehaviour:
       RedGreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
       RedBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
       GreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
-      RedGreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedGreenBlueRegionColor: {r: 0.7294118, g: 0.4392157, b: 0.40784314, a: 1}
     FacesColors:
-      RedRegionColor: {r: 1, g: 0, b: 0.6810403, a: 1}
+      RedRegionColor: {r: 0.9254902, g: 0.9019608, b: 0.8901961, a: 1}
       BlueRegionColor: {r: 0.80599844, g: 1, b: 0.043396115, a: 1}
       GreenRegionColor: {r: 1, g: 0.87358487, b: 0.87358487, a: 1}
       RedGreenRegionColor: {r: 0.061840296, g: 1, b: 0, a: 1}
@@ -96,15 +96,15 @@ MonoBehaviour:
     EyesColors:
       RedRegionColor: {r: 0, g: 0, b: 0, a: 0}
       BlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
-      GreenRegionColor: {r: 0.035848916, g: 1, b: 0.9185071, a: 1}
+      GreenRegionColor: {r: 0.3207547, g: 0.3207547, b: 0.3207547, a: 1}
       RedGreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
       RedBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
       GreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
       RedGreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
     MouthsColors:
       RedRegionColor: {r: 0, g: 0, b: 0, a: 0}
-      BlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
-      GreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      BlueRegionColor: {r: 1, g: 0.435849, b: 0.435849, a: 0}
+      GreenRegionColor: {r: 1, g: 0.2356893, b: 0.1566037, a: 0}
       RedGreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
       RedBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
       GreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
@@ -124,7 +124,7 @@ MonoBehaviour:
       RedGreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
       RedBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
       GreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
-      RedGreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedGreenBlueRegionColor: {r: 0.8986967, g: 0.9245283, b: 0, a: 0}
     FrontHairsColors:
       RedRegionColor: {r: 0, g: 0, b: 0, a: 0}
       BlueRegionColor: {r: 0, g: 0, b: 0, a: 0}

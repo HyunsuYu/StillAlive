@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using System;
+using System.Linq;
 
 public class BattleField : MonoBehaviour
 {
@@ -61,6 +62,7 @@ public class BattleField : MonoBehaviour
     [SerializeField] private BattleFieldMenu m_battleFieldMenu;
     [SerializeField] private BattleResult m_battleResult;
 
+    private BattleCard m_traitorCard = null;
     private bool m_isAppearTraitor;
 
     // BattleField 세팅
@@ -74,24 +76,49 @@ public class BattleField : MonoBehaviour
         m_teamCardList = new List<BattleCard>();
         m_enemyCardList = new List<BattleCard>();
 
-        List<CardData> cardDatas = SaveDataBuffer.Instance.Data.CardDatas;
+        List<CardData> cardDatas = SaveDataBuffer.Instance.Data.CardDatas.FindAll( h => h.Status.CurHP > 0);
 
         Vector2Int nowPlayerMapPos = SaveDataBuffer.Instance.Data.CurPlayerMapPos;
 
-        // TODO: 나중에 적용해야 할 코드 
-        //MapNode.EventNodeType nowEventType = SaveDataBuffer.Instance.Data.MapData.Nodes[nowPlayerMapPos.y]
-        //    .Find(node => node.XPos == nowPlayerMapPos.x).EventNodeType;
+        MapNode.EventNodeType nowEventType = MapNode.EventNodeType.Combat_Common;
+        if (SaveDataBuffer.Instance.Data.MapData.HasValue)
+        {
+            MapData mapData = SaveDataBuffer.Instance.Data.MapData.Value;
 
-        // PlaceCards(nowEventType, cardDatas.Count, Random.Range(1, 5), cardDatas);
+            nowEventType = mapData.Nodes[nowPlayerMapPos.y]
+                .Find(node => node.XPos == nowPlayerMapPos.x).EventNodeType;
+        }
+
+        PlaceCards(nowEventType, cardDatas.Count, UnityEngine.Random.Range(1, 5), cardDatas);
         m_isBattleEnd = false;
-        m_isAppearTraitor = false;
-
-        // 임시 코드
-        PlaceCards(MapNode.EventNodeType.Combat_Common, m_playerTestCount, m_enemyTestCount, cardDatas);
-
+        m_isAppearTraitor = false;      
+     
         // 팀 상태창 초기화
         m_battleFieldMenu.InitTeamStatus(m_teamCardList);
     }
+
+
+    public void HandleItemDrop()
+    {
+        int draggedItemIndex = InventoryPopupControl.Instance.DraggingItemIndex;
+        if (draggedItemIndex <= 0)
+            return;
+
+        int layerMask = 1 << LayerMask.NameToLayer("BattleCard");
+        Vector2 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+        RaycastHit2D hit = Physics2D.Raycast(worldPoint, Vector2.zero, 100f, layerMask);
+        if (hit.collider != null)
+        {
+            BattleCard targetCard = hit.collider.GetComponent<BattleCard>();
+
+            if (targetCard != null && m_teamCardList.Contains(targetCard))
+            {
+                targetCard.ApplyItem(draggedItemIndex);
+            }
+        }
+    }
+
 
     /// <summary>
     /// 월드 공간에 카드 GameObject를 배치하고 정렬하는 재사용 가능한 함수
@@ -100,36 +127,35 @@ public class BattleField : MonoBehaviour
     {
         if (_friendlyCardCount <= 0 || _enemyCardCount <= 0) return;
 
-        // 플레이어 카드 세팅 --> 임의로 데이터 세팅 중 
+        // 플레이어 카드 세팅
         float totalWidth = (_friendlyCardCount - 1) * m_teamCardSpacing;
         Vector3 startPosition = m_teamFieldAnchor.position - new Vector3(totalWidth / 2f, 0, 0);
 
         for (int i = 0; i < _friendlyCardCount; i++)
         {
-            CardData cd = new CardData();
-            cd.NPCLookTable = new Dictionary<CardData.NPCLookPartType, int>();
-            cd.ColorPalleteIndex = 0;
-            cd.Status = CardData.DefaultStatus();
-            cd.Status.MaxHP += 1;
-            cd.Status.CurHP += 1;
+            //CardData cd = new CardData();
+            //cd.NPCLookTable = new Dictionary<CardData.NPCLookPartType, int>();
+            //cd.ColorPalleteIndex = 0;
+            //cd.Status = CardData.DefaultStatus();
+            //cd.Status.MaxHP += 1;
+            //cd.Status.CurHP += 1;
 
-            // 배신자 로직 테스트
-            if(i==1)
-            {
-                cd.BIsTraitor = true;
-            }
+            //// 배신자 로직 테스트
+            //if(i==1)
+            //{
+            //    cd.BIsTraitor = true;
+            //}
 
-            _playerCardDatas.Add(cd);
+            //_playerCardDatas.Add(cd);
 
-            _playerCardDatas[i].NPCLookTable[CardData.NPCLookPartType.Face] = 0;
-            _playerCardDatas[i].NPCLookTable[CardData.NPCLookPartType.Eye] = 0;
-            _playerCardDatas[i].NPCLookTable[CardData.NPCLookPartType.Glasses] = 0;            
+            //_playerCardDatas[i].NPCLookTable[CardData.NPCLookPartType.Face] = 0;
+            //_playerCardDatas[i].NPCLookTable[CardData.NPCLookPartType.Eye] = 0;
+            //_playerCardDatas[i].NPCLookTable[CardData.NPCLookPartType.Glasses] = 0;
 
             Vector3 cardPosition = startPosition + new Vector3(i * m_teamCardSpacing, 0, 0);
-            GameObject newCardObject = Instantiate(m_cardPrefab, cardPosition, m_teamFieldAnchor.rotation);
+            GameObject newCardObject = Instantiate(m_cardPrefab, cardPosition, m_teamFieldAnchor.rotation, m_teamFieldAnchor);
             BattleCard newCard = newCardObject.GetComponent<BattleCard>();
             newCard.Init(_playerCardDatas[i]);
-            newCard.transform.SetParent(m_teamFieldAnchor);
             m_teamCardList.Add(newCard);
         }
 
@@ -141,6 +167,8 @@ public class BattleField : MonoBehaviour
         switch (_eventType)
         {
             case MapNode.EventNodeType.Combat_Common:
+            case MapNode.EventNodeType.Combat_MiddleBoss:
+            case MapNode.EventNodeType.Combat_ChapterBoss:
                 // 일반 몬스터 생성 로직
                 for (int i = 0; i < _enemyCardCount; i++)
                 {
@@ -180,16 +208,6 @@ public class BattleField : MonoBehaviour
                     monsterData.Status.Speed = defaultStatus.Speed;
                     enemyDatas.Add(monsterData);
                 }
-                break;
-
-            case MapNode.EventNodeType.Combat_MiddleBoss:
-                // TODO: 중간 보스 생성 로직 구현
-                Debug.Log("중간 보스 전투 세팅");
-                break;
-
-            case MapNode.EventNodeType.Combat_ChapterBoss:
-                // TODO: 챕터 보스 생성 로직 구현
-                Debug.Log("챕터 보스 전투 세팅");
                 break;
 
             default:
@@ -286,7 +304,7 @@ public class BattleField : MonoBehaviour
         }
 
         m_battleResult.BattleFinished(resultText);
-
+        UpdateAndSaveDataAfterBattle();
         yield return new WaitForSeconds(2f);
 
         ExitBattleField();
@@ -344,8 +362,9 @@ public class BattleField : MonoBehaviour
             attacker.transform.localScale = originalScale;
 
             int index = m_teamCardList.IndexOf(attacker);
+            m_teamCardList.Remove(attacker);
             m_battleFieldMenu.UpdateTeamMemberStatus(attacker, index, true);
-            
+            m_traitorCard = attacker;
             // 일반 공격 대신 배신 시퀀스를 실행하고, 이 공격은 여기서 종료
             yield return StartCoroutine(TraitorSequence(attacker));
             yield break;
@@ -369,6 +388,13 @@ public class BattleField : MonoBehaviour
         // 타격 및 잠시 멈춤 
         target.TakeDamage(attacker.GetAttackPower());
 
+        if (isFriendly)
+        {
+            // 아이템 효과 처리
+            attacker.ProcessAttackEffects(target, m_enemyCardList, m_teamCardList);
+        }
+
+
         yield return new WaitForSeconds(impactPauseDuration);
 
         // 원래 위치로 복귀 및 크기 원래대로
@@ -391,9 +417,23 @@ public class BattleField : MonoBehaviour
         if (target.IsDead())
         {
             targetList.Remove(target);
-
-            Destroy(target.gameObject);
+            target.gameObject.SetActive(false);
         }
+    }
+    private void UpdateAndSaveDataAfterBattle()
+    {       
+        var survivors = m_teamCardList.Where(card => !card.IsDead());
+
+        List<CardData> finalPlayerDatas = new List<CardData>();
+        foreach (BattleCard survivor in survivors)
+        {
+            finalPlayerDatas.Add(survivor.GetFinalCardDataForSave());
+        }
+
+        SaveData currentSave = SaveDataBuffer.Instance.Data;
+        currentSave.CardDatas = finalPlayerDatas;
+        SaveDataBuffer.Instance.TrySetData(currentSave);
+        SaveDataBuffer.Instance.TrySaveData();
     }
 
     /// <summary>
@@ -487,6 +527,8 @@ public class BattleField : MonoBehaviour
             Destroy(card);
         }
         m_teamCardList.Clear();
-        m_enemyCardList.Clear();      
+        m_enemyCardList.Clear();
+
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Map");
     }
 }

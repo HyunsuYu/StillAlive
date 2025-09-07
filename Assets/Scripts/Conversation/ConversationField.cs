@@ -17,6 +17,7 @@ public class ConversationField : MonoBehaviour
     [SerializeField] private ConversationTeam m_conversationTeam;
 
     [Header("대화창 UI")]
+    [SerializeField] private GameObject m_contextBG;
     [SerializeField] private GameObject m_contextPanel;
     [SerializeField] private TMP_Text m_dialogueText;
     [SerializeField] private Button m_dialogueScreenButton; // 대화창 전체를 덮는 투명 버튼
@@ -53,8 +54,8 @@ public class ConversationField : MonoBehaviour
     private void Start()
     {
         SaveDataBuffer.Instance.TryLoadData();
-        List<CardData> cardDatas = SaveDataBuffer.Instance.Data.CardDatas;
-        
+        List<CardData> cardDatas = SaveDataBuffer.Instance.Data.CardDatas.FindAll(h => h.Status.CurHP > 0);
+
         List<CardData> useCardDatas = new List<CardData>();
         if (cardDatas.Count == 0)
         {
@@ -109,6 +110,7 @@ public class ConversationField : MonoBehaviour
 
         bool isDialogueActive = (newState == ConversationState.GeneratingDialogue || newState == ConversationState.DialogueTyping || newState == ConversationState.DialogueFinished);
         m_contextPanel.SetActive(isDialogueActive);
+        m_contextBG.SetActive(isDialogueActive);
         m_dialogueScreenButton.gameObject.SetActive(isDialogueActive);
 
         bool isVotingActive = (newState == ConversationState.Voting);
@@ -172,6 +174,7 @@ public class ConversationField : MonoBehaviour
     public void CloseDialogue()
     {  
         m_contextPanel.SetActive(false);
+        m_contextBG.SetActive(false);
         m_dialogueText.text = "";
 
         if (m_currentState != ConversationState.Voting)
@@ -183,8 +186,32 @@ public class ConversationField : MonoBehaviour
     private void OnKickOutButtonClicked()
     {
         List<NPCPortrait> kickedOutPortraits = m_conversationTeam.GetKickoutSelection();
-        Debug.Log($"{kickedOutPortraits.Count}명을 퇴출합니다.");
-        // TODO: SaveDataBuffer에서 kickedOutPortraits에 해당하는 CardData 제거
+        if (kickedOutPortraits.Count == 0)
+        {
+            return;
+        }
+        List<CardData> allPlayerDatas = SaveDataBuffer.Instance.Data.CardDatas;
+        
+        foreach (NPCPortrait portrait in kickedOutPortraits)
+        {
+            CardData kickedOutCardData = m_conversationTeam.GetCardDataByPortrait(portrait);
+            int indexToUpdate = allPlayerDatas.FindIndex(card => card.Equals(kickedOutCardData));
+
+            if (indexToUpdate != -1)
+            {
+                CardData dataToUpdate = allPlayerDatas[indexToUpdate];
+                dataToUpdate.Status.CurHP = 0; 
+                allPlayerDatas[indexToUpdate] = dataToUpdate; 
+            }
+        }
+
+        SaveData currentSave = SaveDataBuffer.Instance.Data;
+        currentSave.CardDatas = allPlayerDatas;
+        SaveDataBuffer.Instance.TrySetData(currentSave);
+        SaveDataBuffer.Instance.TrySaveData();
+
+        Debug.Log("퇴출된 동료 정보가 저장되었습니다.");
+
         EndScene();
     }
 
@@ -197,6 +224,6 @@ public class ConversationField : MonoBehaviour
     private void EndScene()
     {
         Debug.Log("대화 씬을 종료하고 다음 씬으로 넘어갑니다.");
-        // 예: UnityEngine.SceneManagement.SceneManager.LoadScene("NextSceneName");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Map");
     }
 }
