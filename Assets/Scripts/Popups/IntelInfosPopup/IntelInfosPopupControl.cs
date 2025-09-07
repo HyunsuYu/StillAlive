@@ -48,7 +48,7 @@ public sealed class IntelInfosPopupControl : MonoBehaviour
         int childCount = m_transform_RadioIntelItemParent.childCount;
         for(int index = childCount - 1; index >= 0; index--)
         {
-            Destroy(m_transform_RadioIntelItemParent.GetChild(index));
+            Destroy(m_transform_RadioIntelItemParent.GetChild(index).gameObject);
         }
 
         var radioIntelInfos = SaveDataBuffer.Instance.Data.IntelInfos.RadioInfos;
