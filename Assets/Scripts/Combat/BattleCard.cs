@@ -13,7 +13,8 @@ public class BattleCard : MonoBehaviour
     [SerializeField] private TMP_Text m_defenceText;
     [SerializeField] private TMP_Text m_speedText;
     [SerializeField] private TMP_Text m_atkText;
-    [SerializeField] private Transform portraitPos;
+    [SerializeField] private Transform m_portraitPos;
+    [SerializeField] private Transform m_itemContainer;
 
     private NPCPortrait m_portraitInstance; // 생성된 초상화 인스턴스
 
@@ -22,12 +23,6 @@ public class BattleCard : MonoBehaviour
     public void Init(CardData _data, bool isUI = false)
     {
         m_myData = _data;
-
-        m_battleField = GetComponentInParent<BattleField>();
-        if (m_battleField == null)
-        {
-            m_battleField = FindFirstObjectByType<BattleField>();
-        }
 
         m_canvas = GetComponentInChildren<Canvas>();
         if (m_canvas != null && !isUI)
@@ -49,16 +44,22 @@ public class BattleCard : MonoBehaviour
         if (m_portraitInstance != null)
         {
             // 생성된 초상화를 이 오브젝트의 자식으로 설정
-            m_portraitInstance.transform.SetParent(portraitPos.transform);
+            m_portraitInstance.transform.SetParent(m_portraitPos.transform);
 
-            m_portraitInstance.transform.position = portraitPos.position;
-            m_portraitInstance.transform.rotation = portraitPos.rotation;
-             if(!isUI)
+            m_portraitInstance.transform.position = m_portraitPos.position;
+            m_portraitInstance.transform.rotation = m_portraitPos.rotation;
+            if (!isUI)
                 m_portraitInstance.transform.localScale = new Vector3(0.02f, 0.02f);
         }
         else
         {
             Debug.LogWarning("BattleCard: 초상화 생성에 실패했습니다. Resources 폴더에 'Portrait' 프리팹과 'NPCLookPart' 에셋이 있는지 확인해주세요.");
+        }
+
+        m_battleField = FindFirstObjectByType<BattleField>();
+        if(m_battleField  )
+        {
+            m_itemContainer.gameObject.SetActive(true);
         }
 
         m_hpText.text = m_myData.Status.CurHP.ToString();
@@ -116,7 +117,7 @@ public class BattleCard : MonoBehaviour
         }
 
         // UI 업데이트 (HP바와 텍스트)
-        m_battleField.UpdateTeamMemberStatusUI(this);      
+        m_battleField.UpdateTeamMemberStatusUI(this);
     }
 
     public bool IsDead()
