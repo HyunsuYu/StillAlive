@@ -104,18 +104,11 @@ public class CardSelecter : SingleTonForGameObject<CardSelecter>
             }
 
             BattleCard battleCard = card.GetComponent<BattleCard>();
-
-            if(battleCard != null)
-            {
                 CardData newColleague = battleCard.MyData;
                 SaveDataBuffer.Instance.Data.CardDatas.Add(newColleague);
                 Debug.Log("팀에 추가됨" + newColleague.Status.AttackPower.ToString());
                 SaveDataBuffer.Instance.TrySaveData();
-            }
-            else
-            {
-                Debug.LogError("선택된 카드에 BattleCard 컴포넌트가 없습니다.");
-            }
+           
         }
         ClearSelection();
         Explolor.Instance.exState = Explolor.ExplolorState.None;
