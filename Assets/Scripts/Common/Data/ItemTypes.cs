@@ -1,7 +1,5 @@
 using System;
-
 using UnityEngine;
-
 
 [CreateAssetMenu(fileName = "ItemTypes", menuName = "StillAlive/ItemTypes")]
 public class ItemTypes : ScriptableObject

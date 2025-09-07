@@ -55,20 +55,14 @@ public class ConversationMenu : MonoBehaviour
             Transform portraitParent = memberUI.transform;
 
             // 원본 초상화를 클론하여 UI에 배치
-            GameObject portraitObj = CharacterPortraitHelper.CreatePortrait(datas[i], portraitParent);
+            CharacterPortraitHelper.CreatePortrait(datas[i], portraitParent);
 
             // HP바 업데이트
-            Slider hpBar = memberUI.GetComponentInChildren<Slider>();
+            TMP_Text hpText = memberUI.GetComponentInChildren<TMP_Text>();
 
-            float hpRatio = (float)datas[i].Status.CurHP / datas[i].Status.MaxHP;
-            if (hpRatio <= 0f)
-            {
-                hpBar.value = 0f;
-            }
-            hpBar.value = hpRatio;
+            hpText.text = $"{datas[i].Status.CurHP}/{datas[i].Status.MaxHP}";        
 
         }
-
 
     }
 

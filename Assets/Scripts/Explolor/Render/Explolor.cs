@@ -1,8 +1,11 @@
 using CommonUtilLib.ThreadSafe;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Explolor : SingleTonForGameObject<Explolor>
 {
@@ -20,8 +23,18 @@ public class Explolor : SingleTonForGameObject<Explolor>
 
     [Header("Text")]
     [SerializeField] private TMP_Text m_text_DPlusDay;
+    [SerializeField] private TMP_Text Durability;
+    [SerializeField] private TMP_Text Wreath;
+    [SerializeField] private TMP_Text DurabilityNum;
+    [SerializeField] private TMP_Text WreathNum;
+    [SerializeField] private TMP_Text Explain;
+
+
+    [SerializeField] private ItemTypes m_itemType;
 
     public List<CardData> ColleaugueCards;
+
+    public List<int> ItemId;
 
     public enum ExplolorState
     {
@@ -80,6 +93,15 @@ public class Explolor : SingleTonForGameObject<Explolor>
             Debug.Log($"아이템 {itemCount}개 발견!");
             for (int i = 0; i < itemCount; i++)
             {
+                int randomItemID = UnityEngine.Random.Range(0, ItemTypes.ItemCount);
+                if(randomItemID == 0 && SaveDataBuffer.Instance.Data.ItemAmountTable[0] > 0)
+                {
+                    randomItemID = UnityEngine.Random.Range(1, ItemTypes.ItemCount);
+                }
+
+                ItemId.Add(randomItemID);
+                
+                ItemBox[i].GetComponent<Image>().sprite = m_itemType.ItemDatas[randomItemID].ItemSprite;
                 ItemBox[i].SetActive(true);
             }
 
@@ -119,7 +141,7 @@ public class Explolor : SingleTonForGameObject<Explolor>
                 CardData newColleague = new CardData();
                 newColleague.Status = CardData.DefaultStatus();
                 newColleague.NPCLookTable = new Dictionary<CardData.NPCLookPartType, int>();
-                newColleague.NPCLookTable[CardData.NPCLookPartType.Top] = Random.Range(0, 3);
+                
                 // To-Do: 외형 데이터도 여기서 생성하면 좋습니다.
                 // newColleague.NPCLookTable = ...;
 
@@ -130,6 +152,7 @@ public class Explolor : SingleTonForGameObject<Explolor>
                 {
                     card.Init(newColleague, true);
                     colleagueGO.SetActive(true);
+                    card.GetComponent<RectTransform>().anchoredPosition = Vector2.zero; // 위치 초기화
                 }
             }
         }
@@ -139,14 +162,16 @@ public class Explolor : SingleTonForGameObject<Explolor>
         }
 
         // 2. 현재 내 팀 (영구 데이터) 표시
-        var currentTeam = SaveDataBuffer.Instance.Data.CardDatas;
-        for (int j = 0; j < currentTeam.Count && j < MyTeamBox.Length; j++)
+
+
+        var currentTeam = SaveDataInterface.GetAliveCardInfos(); // 살아있는 카드 데이터들을 가져옴
+        for (int j = 0; j < currentTeam.Count;j++)
         {
             GameObject myTeamGO = MyTeamBox[j];
-            BattleCard card = myTeamGO.GetComponent<BattleCard>();
+            BattleCard card = myTeamGO.GetComponentInChildren<BattleCard>();
             if (card != null)
             {
-                card.Init(currentTeam[j]);
+                card.Init(currentTeam[j],true);
                 myTeamGO.SetActive(true);
             }
         }
@@ -178,7 +203,14 @@ public class Explolor : SingleTonForGameObject<Explolor>
             {
                 MyTeamBox[i].SetActive(false);
             }
-            exState = ExplolorState.None; // 상태 초기화     
+            exState = ExplolorState.None; // 상태 초기화
+
+            Durability.GameObject().SetActive(false);
+            Wreath.GameObject().SetActive(false);
+            DurabilityNum.GameObject().SetActive(false);
+            WreathNum.GameObject().SetActive(false);
+            Explain.gameObject.SetActive(false);
+
         }
     }
 
@@ -221,7 +253,7 @@ public static class ProbabilityUtillity
         float todayBoundary_1_0 = Mathf.Lerp(startBoundary_1_0, endBoundary_1_0, progress);
 
         // 3. 0.0과 1.0 사이의 난수를 생성
-        float randomValue = Random.value;
+        float randomValue = UnityEngine.Random.value;
 
         // 4. 난수가 어느 영역에 속하는지 위에서부터 확인
         if (randomValue >= todayBoundary_3_2)
