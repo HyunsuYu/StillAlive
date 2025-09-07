@@ -146,7 +146,8 @@ public class BattleField : MonoBehaviour
                 {
                     CardData monsterData = new CardData();
                     monsterData.BIsPlayer = false;
-                    monsterData.BIsTraitor = true;
+                    monsterData.BIsTraitor = false;
+                    monsterData.BIsMonster = true; 
 
                     monsterData.NPCLookTable = new Dictionary<CardData.NPCLookPartType, int>();
                     monsterData.ColorPalleteIndex = 0;

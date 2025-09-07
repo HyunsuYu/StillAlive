@@ -57,7 +57,7 @@ public class BattleCard : MonoBehaviour
         }
 
         m_battleField = FindFirstObjectByType<BattleField>();
-        if(m_battleField)
+        if(m_battleField  )
         {
             m_itemContainer.gameObject.SetActive(true);
         }
