@@ -68,6 +68,20 @@ public sealed class SaveDataBuffer : SingleTonForGameObject<SaveDataBuffer>
             {
                 tempSaveData.ItemAmountTable.Add(index, 0);
             }
+            tempSaveData.CardDatas.Add(new CardData()
+            {
+                BIsPlayer = true,
+                Status = new CardData.StatusInfo()
+                {
+                    MaxHP = 5,
+                    CurHP = 5,
+                    Speed = 5,
+                    AttackPower = 5,
+                    DefencePower = 5,
+                },
+                Items = new List<CardData.AttachedItemData>(),
+                NPCLookTable = new Dictionary<CardData.NPCLookPartType, int>()
+            });
 
             return tempSaveData;
         }
