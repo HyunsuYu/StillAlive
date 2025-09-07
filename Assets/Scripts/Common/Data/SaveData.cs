@@ -7,8 +7,15 @@ public struct SaveData
 {
     public struct IntelnfoData
     {
+        public struct SingleConversationInfo
+        {
+            public int SpeakerCardIndex;
+            public string SpeakText;
+        }
+
+
         public List<string> RadioInfos;
-        public Dictionary<int, string> ConversationInfos;
+        public List<SingleConversationInfo> ConversationInfos;
     }
 
 
@@ -26,8 +33,7 @@ public struct SaveData
 
     public int Money;
 
-    public List<string> RadioInfos;
-    public List<string> ConversationInfos;
+    public IntelnfoData IntelInfos;
 
     public List<CardData> LastCombatEnemys;
 
