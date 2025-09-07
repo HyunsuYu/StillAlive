@@ -5,6 +5,7 @@ using UnityEngine;
 using TMPro;
 
 using CommonUtilLib.ThreadSafe;
+using System.Linq;
 
 
 public sealed class ChiefMapManager : SingleTonForGameObject<ChiefMapManager>
@@ -22,6 +23,8 @@ public sealed class ChiefMapManager : SingleTonForGameObject<ChiefMapManager>
     }
 
 
+    [SerializeField] private NPCLookPart m_npcLookPark;
+
     [Header("Late Night")]
     [SerializeField] private GameObject m_layout_LateNight;
 
@@ -37,7 +40,7 @@ public sealed class ChiefMapManager : SingleTonForGameObject<ChiefMapManager>
     private int m_selectedTemplateIndex = -1;
     private int m_curRadioSpeakIndex = 0;
 
-    private EnterancePopupPhase m_curPhase;
+    private EnterancePopupPhase m_curPhase = EnterancePopupPhase.None;
 
 
     public void Awake()
@@ -46,8 +49,6 @@ public sealed class ChiefMapManager : SingleTonForGameObject<ChiefMapManager>
     }
     public void Start()
     {
-        m_curPhase = EnterancePopupPhase.LateNight;
-
         SaveData curSaveData = SaveDataBuffer.Instance.Data;
 
         //#region For Dummy Data
@@ -62,6 +63,30 @@ public sealed class ChiefMapManager : SingleTonForGameObject<ChiefMapManager>
         //}
         //#endregion
 
+        var aliveCardIndexes = SaveDataInterface.GetAliveCardIndexes();
+        foreach (int cardIndex in aliveCardIndexes)
+        {
+            var curCardData = curSaveData.CardDatas[cardIndex];
+            switch(curCardData.Diseases)
+            {
+                case CardData.DiseasesType.Tetanus:
+                    curCardData.Status.CurHP--;
+                    break;
+
+                case CardData.DiseasesType.Zombie:
+                    curCardData.Status.CurHP--;
+                    curCardData.Status.MaxHP--;
+                    curCardData.Status.AttackPower--;
+                    curCardData.Status.DefencePower--;
+                    curCardData.Status.Speed--;
+                    break;
+            }
+
+            curSaveData.CardDatas[cardIndex] = curCardData;
+        }
+        SaveDataBuffer.Instance.TrySetData(curSaveData);
+        SaveDataBuffer.Instance.TrySaveData();
+
         RenderAll();
 
         #region Late Night
@@ -69,12 +94,14 @@ public sealed class ChiefMapManager : SingleTonForGameObject<ChiefMapManager>
         if (curSaveData.DPlusDay != curSaveData.LightActionAppliedDay)
         {
             bool bisSomeoneHit = false;
-
-            var aliveCardIndexes = SaveDataInterface.GetAliveCardIndexes();
             foreach(int cardIndex in aliveCardIndexes)
             {
+                var curCardData = curSaveData.CardDatas[cardIndex];
+                curCardData.LastNight = CardData.LastNightState.Peace;
+                curSaveData.CardDatas[cardIndex] = curCardData;
+
                 // Attack Someone
-                if(SaveDataInterface.GetCardData(cardIndex).BIsTraitor && UnityEngine.Random.Range(0, 2) == 0)
+                if (SaveDataInterface.GetCardData(cardIndex).BIsTraitor && UnityEngine.Random.Range(0, 2) == 0)
                 {
                     int randomTargetCardIndex = -1;
                     while(true)
@@ -89,7 +116,12 @@ public sealed class ChiefMapManager : SingleTonForGameObject<ChiefMapManager>
 
                     var attackTargetCardData = curSaveData.CardDatas[randomTargetCardIndex];
                     attackTargetCardData.Status.CurHP -= (int)(attackTargetCardData.Status.CurHP * 0.2f);
+                    attackTargetCardData.LastNight = CardData.LastNightState.AttackedPerson;
                     curSaveData.CardDatas[randomTargetCardIndex] = attackTargetCardData;
+
+                    var attacherCardData = curSaveData.CardDatas[cardIndex];
+                    attacherCardData.LastNight = CardData.LastNightState.Attacker;
+                    curSaveData.CardDatas[cardIndex] = attacherCardData;
 
                     bisSomeoneHit = true;
                 }
@@ -97,18 +129,38 @@ public sealed class ChiefMapManager : SingleTonForGameObject<ChiefMapManager>
 
             if(bisSomeoneHit)
             {
+                foreach (int cardIndex in aliveCardIndexes)
+                {
+                    if(SaveDataInterface.GetCardData(cardIndex).LastNight == CardData.LastNightState.Peace && UnityEngine.Random.Range(0, 2) == 0)
+                    {
+                        var witnessCardData = curSaveData.CardDatas[cardIndex];
+                        witnessCardData.LastNight = CardData.LastNightState.Witness;
+                        curSaveData.CardDatas[cardIndex] = witnessCardData;
+                    }
+                }
+
+                m_curPhase = EnterancePopupPhase.LateNight;
                 m_layout_LateNight.SetActive(true);
             }
 
             curSaveData.LightActionAppliedDay = curSaveData.DPlusDay;
+
+            SaveDataBuffer.Instance.TrySetData(curSaveData);
+            SaveDataBuffer.Instance.TrySaveData();
         }
-        SaveDataBuffer.Instance.TrySetData(curSaveData);
-        SaveDataBuffer.Instance.TrySaveData();
         #endregion
 
         #region Radio
-        if (!SaveDataBuffer.Instance.Data.ItemAmountTable.ContainsKey(0) || SaveDataBuffer.Instance.Data.ItemAmountTable[0] > 0)
+        if (SaveDataBuffer.Instance.Data.ItemAmountTable[0] > 0)
         {
+            curSaveData = SaveDataBuffer.Instance.Data;
+
+            if (m_curPhase == EnterancePopupPhase.None)
+            {
+                m_curPhase = EnterancePopupPhase.Radio;
+                m_layout_Radio.SetActive(true);
+            }
+            
             var aliveCardDatas = SaveDataInterface.GetAliveCardInfos();
 
             foreach (CardData cardData in aliveCardDatas)
@@ -125,19 +177,79 @@ public sealed class ChiefMapManager : SingleTonForGameObject<ChiefMapManager>
                 m_radioSelectedLoopPart = (CardData.NPCLookPartType)UnityEngine.Random.Range(0, Enum.GetNames(typeof(CardData.NPCLookPartType)).Length);
                 m_selectedTemplateIndex = UnityEngine.Random.Range(0, m_radioTemplates_WithTraiter.Length);
 
-                m_text_RadioSpeak.text = m_radioTemplates_WithTraiter[m_selectedTemplateIndex].SpeakTexts[0];
+                string replceTargetString = string.Empty;
+                switch(m_radioSelectedLoopPart)
+                {
+                    case CardData.NPCLookPartType.Top:
+                        replceTargetString = m_npcLookPark.Tops[m_radioSelectedTraiterCardData.Value.NPCLookTable[m_radioSelectedLoopPart]].Description;
+                        break;
+
+                    case CardData.NPCLookPartType.Face:
+                        replceTargetString = m_npcLookPark.Faces[m_radioSelectedTraiterCardData.Value.NPCLookTable[m_radioSelectedLoopPart]].Description;
+                        break;
+
+                    case CardData.NPCLookPartType.Eye:
+                        replceTargetString = m_npcLookPark.Eyes[m_radioSelectedTraiterCardData.Value.NPCLookTable[m_radioSelectedLoopPart]].Description;
+                        break;
+
+                    case CardData.NPCLookPartType.Mouth:
+                        replceTargetString = m_npcLookPark.Mouths[m_radioSelectedTraiterCardData.Value.NPCLookTable[m_radioSelectedLoopPart]].Description;
+                        break;
+
+                    case CardData.NPCLookPartType.Glasses:
+                        replceTargetString = m_npcLookPark.Glasses[m_radioSelectedTraiterCardData.Value.NPCLookTable[m_radioSelectedLoopPart]].Description;
+                        break;
+
+                    case CardData.NPCLookPartType.Cap:
+                        replceTargetString = m_npcLookPark.Caps[m_radioSelectedTraiterCardData.Value.NPCLookTable[m_radioSelectedLoopPart]].Description;
+                        break;
+
+                    case CardData.NPCLookPartType.FrontHair:
+                        replceTargetString = m_npcLookPark.FrontHairs[m_radioSelectedTraiterCardData.Value.NPCLookTable[m_radioSelectedLoopPart]].Description;
+                        break;
+
+                    case CardData.NPCLookPartType.BackHair:
+                        replceTargetString = m_npcLookPark.BackHairs[m_radioSelectedTraiterCardData.Value.NPCLookTable[m_radioSelectedLoopPart]].Description;
+                        break;
+                }
+
+                curSaveData.IntelInfos.RadioInfos.Add(new SaveData.IntelnfoData.SingleRadioInfo()
+                {
+                    GeneratedDay = curSaveData.DPlusDay,
+                    SpeakText = replceTargetString
+                });
+                SaveDataBuffer.Instance.TrySetData(curSaveData);
+                SaveDataBuffer.Instance.TrySaveData();
+
+                replceTargetString = $"\"{replceTargetString}\"";
+
+                m_text_RadioSpeak.text = m_radioTemplates_WithTraiter[m_selectedTemplateIndex].SpeakTexts[0].Replace("X", replceTargetString);
             }
             else
             {
                 m_selectedTemplateIndex = UnityEngine.Random.Range(0, m_radioTemplates_NoTraiter.Length);
 
                 m_text_RadioSpeak.text = m_radioTemplates_NoTraiter[m_selectedTemplateIndex].SpeakTexts[0];
+
+                curSaveData.IntelInfos.RadioInfos.Add(new SaveData.IntelnfoData.SingleRadioInfo()
+                {
+                    GeneratedDay = curSaveData.DPlusDay,
+                    SpeakText = m_radioTemplates_NoTraiter[m_selectedTemplateIndex].SpeakTexts.Last()
+                });
+                SaveDataBuffer.Instance.TrySetData(curSaveData);
+                SaveDataBuffer.Instance.TrySaveData();
             }
+            m_curRadioSpeakIndex = 1;
         }
         #endregion
     }
     public void Update()
     {
+        if(m_curPhase == EnterancePopupPhase.None)
+        {
+            return;
+        }
+
         if(m_curPhase == EnterancePopupPhase.LateNight && (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)))
         {
             m_layout_LateNight.SetActive(false);
@@ -145,8 +257,7 @@ public sealed class ChiefMapManager : SingleTonForGameObject<ChiefMapManager>
             if (SaveDataBuffer.Instance.Data.ItemAmountTable[0] > 0)
             {
                 m_curPhase = EnterancePopupPhase.Radio;
-                m_curRadioSpeakIndex = 1;
-                Invoke(nameof(ActiveRadioLayout), 2.0f);
+                Invoke(nameof(ActiveRadioLayout), 1.0f);
             }
             else
             {
@@ -157,25 +268,64 @@ public sealed class ChiefMapManager : SingleTonForGameObject<ChiefMapManager>
         {
             if (m_radioSelectedTraiterCardData.HasValue)
             {
-                m_curRadioSpeakIndex++;
-                if(m_radioTemplates_WithTraiter[m_selectedTemplateIndex].SpeakTexts.Length >= m_curRadioSpeakIndex)
+                if(m_curRadioSpeakIndex > m_radioTemplates_WithTraiter[m_selectedTemplateIndex].SpeakTexts.Length - 1)
                 {
                     m_curPhase = EnterancePopupPhase.None;
                     m_layout_Radio.SetActive(false);
+                    return;
                 }
 
-                m_text_RadioSpeak.text = m_radioTemplates_WithTraiter[m_selectedTemplateIndex].SpeakTexts[m_curRadioSpeakIndex];
-            }
-            else
-            {
+                string replceTargetString = string.Empty;
+                switch (m_radioSelectedLoopPart)
+                {
+                    case CardData.NPCLookPartType.Top:
+                        replceTargetString = m_npcLookPark.Tops[m_radioSelectedTraiterCardData.Value.NPCLookTable[m_radioSelectedLoopPart]].Description;
+                        break;
+
+                    case CardData.NPCLookPartType.Face:
+                        replceTargetString = m_npcLookPark.Faces[m_radioSelectedTraiterCardData.Value.NPCLookTable[m_radioSelectedLoopPart]].Description;
+                        break;
+
+                    case CardData.NPCLookPartType.Eye:
+                        replceTargetString = m_npcLookPark.Eyes[m_radioSelectedTraiterCardData.Value.NPCLookTable[m_radioSelectedLoopPart]].Description;
+                        break;
+
+                    case CardData.NPCLookPartType.Mouth:
+                        replceTargetString = m_npcLookPark.Mouths[m_radioSelectedTraiterCardData.Value.NPCLookTable[m_radioSelectedLoopPart]].Description;
+                        break;
+
+                    case CardData.NPCLookPartType.Glasses:
+                        replceTargetString = m_npcLookPark.Glasses[m_radioSelectedTraiterCardData.Value.NPCLookTable[m_radioSelectedLoopPart]].Description;
+                        break;
+
+                    case CardData.NPCLookPartType.Cap:
+                        replceTargetString = m_npcLookPark.Caps[m_radioSelectedTraiterCardData.Value.NPCLookTable[m_radioSelectedLoopPart]].Description;
+                        break;
+
+                    case CardData.NPCLookPartType.FrontHair:
+                        replceTargetString = m_npcLookPark.FrontHairs[m_radioSelectedTraiterCardData.Value.NPCLookTable[m_radioSelectedLoopPart]].Description;
+                        break;
+
+                    case CardData.NPCLookPartType.BackHair:
+                        replceTargetString = m_npcLookPark.BackHairs[m_radioSelectedTraiterCardData.Value.NPCLookTable[m_radioSelectedLoopPart]].Description;
+                        break;
+                }
+                replceTargetString = $"\"{replceTargetString}\"";
+
+                m_text_RadioSpeak.text = m_radioTemplates_WithTraiter[m_selectedTemplateIndex].SpeakTexts[m_curRadioSpeakIndex].Replace("X", replceTargetString);
                 m_curRadioSpeakIndex++;
-                if (m_radioTemplates_NoTraiter[m_selectedTemplateIndex].SpeakTexts.Length >= m_curRadioSpeakIndex)
+            }
+            else 
+            {
+                if (m_curRadioSpeakIndex > m_radioTemplates_NoTraiter[m_selectedTemplateIndex].SpeakTexts.Length - 1)
                 {
                     m_curPhase = EnterancePopupPhase.None;
                     m_layout_Radio.SetActive(false);
+                    return;
                 }
 
                 m_text_RadioSpeak.text = m_radioTemplates_NoTraiter[m_selectedTemplateIndex].SpeakTexts[m_curRadioSpeakIndex];
+                m_curRadioSpeakIndex++;
             }
         }
     }

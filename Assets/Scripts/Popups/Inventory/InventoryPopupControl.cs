@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using CommonUtilLib.ThreadSafe;
+using UnityEngine.Events;
 
 
 public sealed class InventoryPopupControl : SingleTonForGameObject<InventoryPopupControl>
@@ -20,6 +21,8 @@ public sealed class InventoryPopupControl : SingleTonForGameObject<InventoryPopu
     private int m_draggingItemIndex = -1;
     private bool m_bisItemDragging = false;
 
+    [SerializeField] private UnityEvent m_onDragEnd;
+
 
     public void Awake()
     {
@@ -33,6 +36,7 @@ public sealed class InventoryPopupControl : SingleTonForGameObject<InventoryPopu
     {
         if(!m_bisCombatScene)
         {
+            m_spriteRenderer_DraggingItemIcon.gameObject.SetActive(false);
             return;
         }
 
@@ -108,6 +112,11 @@ public sealed class InventoryPopupControl : SingleTonForGameObject<InventoryPopu
         {
             item.Render();
         }
+    }
+
+    internal void InvokeEndDragEvent()
+    {
+        m_onDragEnd.Invoke();
     }
 
     protected override void Dispose(bool bisDisposing)

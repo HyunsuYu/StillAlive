@@ -48,10 +48,19 @@ public sealed class IntelInfosPopupControl : MonoBehaviour
         int childCount = m_transform_RadioIntelItemParent.childCount;
         for(int index = childCount - 1; index >= 0; index--)
         {
-            Destroy(m_transform_RadioIntelItemParent.GetChild(index));
+            Destroy(m_transform_RadioIntelItemParent.GetChild(index).gameObject);
         }
 
+        var radioIntelInfos = SaveDataBuffer.Instance.Data.IntelInfos.RadioInfos;
+        for(int index = 0; index < radioIntelInfos.Count; index++)
+        {
+            Instantiate(m_prefab_RadioIntelItem, m_transform_RadioIntelItemParent).GetComponent<RadioIntelItem>().Init(radioIntelInfos[index]);
 
+            if(index != radioIntelInfos.Count - 1)
+            {
+                Instantiate(m_prefab_Line, m_transform_RadioIntelItemParent);
+            }
+        }
         #endregion
     }
     public void OpenConversationIntelTab()
@@ -61,6 +70,25 @@ public sealed class IntelInfosPopupControl : MonoBehaviour
 
         m_layout_RadioIntelParent.SetActive(false);
         m_layout_ConversationIntelParent.SetActive(true);
+
+        #region Render Conversation
+        int childCount = m_transform_ConversationIntelItemParent.childCount;
+        for (int index = childCount - 1; index >= 0; index--)
+        {
+            Destroy(m_transform_ConversationIntelItemParent.GetChild(index).gameObject);
+        }
+
+        var conversationIntelInfos = SaveDataBuffer.Instance.Data.IntelInfos.ConversationInfos;
+        for (int index = 0; index < conversationIntelInfos.Count; index++)
+        {
+            Instantiate(m_prefab_ConversationIntelItem, m_transform_ConversationIntelItemParent).GetComponent<ConversationIntelItem>().Init(conversationIntelInfos[index]);
+
+            if (index != conversationIntelInfos.Count - 1)
+            {
+                Instantiate(m_prefab_Line, m_transform_ConversationIntelItemParent);
+            }
+        }
+        #endregion
     }
     #endregion
 }
