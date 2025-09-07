@@ -9,7 +9,7 @@ public class ConversationMenu : MonoBehaviour
     [SerializeField] private Button m_infoBT;
     [SerializeField] private Button m_invenBT;
 
-    [SerializeField] private TMP_Text m_coinText;
+    //[SerializeField] private TMP_Text m_coinText;
     [SerializeField] private TMP_Text m_dayText;
 
     [Header("팀 상태창")]
@@ -22,7 +22,7 @@ public class ConversationMenu : MonoBehaviour
     private void Start()
     {
         m_dayText.text = $"D - {SaveDataBuffer.Instance.Data.DPlusDay}";
-        m_coinText.text = SaveDataBuffer.Instance.Data.Money.ToString();
+        //m_coinText.text = SaveDataBuffer.Instance.Data.Money.ToString();
 
         m_teamMemberUIs = new List<GameObject>();
     }

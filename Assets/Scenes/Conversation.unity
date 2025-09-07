@@ -256,6 +256,66 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!1 &512764712
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 512764714}
+  - component: {fileID: 512764713}
+  m_Layer: 0
+  m_Name: ReplicateInterface
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &512764713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 512764712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac19a1f093b8f6746b0c2d850267c622, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_npcLookPark: {fileID: 11400000, guid: 22015ccad53dee4468c159e52f80242b, type: 2}
+  m_responseArrived:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: Test, Assembly-CSharp
+        m_MethodName: Sample
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+--- !u!4 &512764714
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 512764712}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &541951960
 GameObject:
   m_ObjectHideFlags: 0
@@ -1333,7 +1393,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_infoBT: {fileID: 1162806943}
   m_invenBT: {fileID: 1998098757}
-  m_coinText: {fileID: 751495652}
   m_dayText: {fileID: 977061178}
   m_teamStatusParent: {fileID: 1161460567}
   m_teamMemberUIPrefab: {fileID: 2619121832570544379, guid: 5552dd2cd520e004f80a07a44504313e, type: 3}
@@ -1697,3 +1756,4 @@ SceneRoots:
   - {fileID: 727679071}
   - {fileID: 1330840033}
   - {fileID: 541951963}
+  - {fileID: 512764714}

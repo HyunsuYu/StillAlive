@@ -15,52 +15,67 @@ MonoBehaviour:
   MainCharacter: {fileID: 21300000, guid: a8c0f0032ff6a054195c2b72bd9f6727, type: 3}
   Tops:
   - PartSprite: {fileID: 21300000, guid: 5f97892838bcc5a44b142ef3318c18ad, type: 3}
-    Description: 
+    Description: "\uC2EC\uD50C\uD55C \uCE90\uC8FC\uC5BC \uBC18\uD314 \uD2F0\uC154\uCE20,
+      \uC624\uB978\uCABD \uD314\uACFC \uBAA9\uC5D0 \uBD95\uB300\uB97C \uAC10\uACE0
+      \uC788\uC74C."
   - PartSprite: {fileID: 21300000, guid: 245f71b523ab14c459da15df24d399ac, type: 3}
-    Description: 
+    Description: "\uAE43\uC774 \uC788\uB294 \uC154\uCE20, \uC67C\uCABD \uD314\uC5D0
+      \uBD95\uB300\uB97C \uAC10\uACE0 \uC788\uACE0 \uD5C8\uB9AC\uC5D0 \uBCA8\uD2B8\uB97C
+      \uB07C\uACE0 \uC788\uC74C."
   - PartSprite: {fileID: 21300000, guid: 7fa6998c541bf934caa7495e1344d0aa, type: 3}
-    Description: 
+    Description: "\uD6C4\uB4DC\uAC00 \uB2EC\uB9B0 \uCE90\uC8FC\uC5BC\uD55C \uC2A4\uD0C0\uC77C,
+      \uD5C8\uB9AC\uC5D0 \uBD95\uB300\uB97C \uAC10\uACE0 \uC788\uC74C."
   Faces:
   - PartSprite: {fileID: 21300000, guid: f3c8ae697a873e24a9f880575c18f0d8, type: 3}
-    Description: 
+    Description: "\uBD80\uB4DC\uB7FD\uACE0 \uD1B5\uD1B5\uD574 \uBCF4\uC774\uB294
+      \uC5BC\uAD74\uD615"
   - PartSprite: {fileID: 21300000, guid: 046124bee567a134ab72b02695566e09, type: 3}
-    Description: 
+    Description: "\uD131\uC120\uC774 \uAC01\uC9C0\uACE0 \uB2E8\uB2E8\uD574 \uBCF4\uC774\uB294
+      \uC5BC\uAD74\uD615"
   - PartSprite: {fileID: 21300000, guid: 3928cc913d4ea9145b21cdec4dfd97bb, type: 3}
-    Description: 
+    Description: "\uD131\uC774 \uBFB0\uC871\uD558\uACE0 \uAC38\uB984\uD55C \uC5BC\uAD74\uD615"
   Eyes:
   - PartSprite: {fileID: 21300000, guid: 56abef148f6389649b7935d9ce0313ee, type: 3}
-    Description: 
+    Description: "\uB3D9\uADF8\uB797\uAC8C \uD06C\uAC8C \uB72C \uB208\uC73C\uB85C
+      \uC21C\uBC15\uD55C \uC778\uC0C1"
   - PartSprite: {fileID: 21300000, guid: cb4b9ddbfe83b644daecbba0586b5373, type: 3}
-    Description: 
+    Description: "\uB208\uAEBC\uD480\uC774 \uBC18\uCBE4 \uB0B4\uB824\uAC04 \uCC28\uBD84\uD55C
+      \uB208\uC73C\uB85C \uBB34\uD45C\uC815, \uBB34\uC2EC\uD55C \uB290\uB08C"
   - PartSprite: {fileID: 21300000, guid: fbef349614aeac5478f673a07d59fa5d, type: 3}
-    Description: 
+    Description: "\uB208\uAF2C\uB9AC\uAC00 \uC704\uB85C \uC62C\uB77C\uAC00 \uC788\uACE0
+      \uB208\uC379\uC774 \uCC21\uADF8\uB824\uC9C4 \uB208"
   Mouths:
   - PartSprite: {fileID: 21300000, guid: 1c358fa7f997e47459e37389b9da59e5, type: 3}
-    Description: 
+    Description: "\uC785\uC220\uC774 \uB2EB\uD600 \uC788\uB294 \uC911\uB9BD\uC801\uC778
+      \uD45C\uC815"
   - PartSprite: {fileID: 21300000, guid: cd9098134089ad64ba5939f189961057, type: 3}
-    Description: 
+    Description: "\uC785\uAF2C\uB9AC\uAC00 \uC62C\uB77C\uAC04 \uC6C3\uB294 \uD45C\uC815"
   - PartSprite: {fileID: 21300000, guid: ddc14b6e3c22e8f4eb37a94d80696b21, type: 3}
-    Description: 
+    Description: "\uC785\uAF2C\uB9AC\uAC00 \uB0B4\uB824\uAC00\uACE0 \uC2AC\uD508
+      \uD45C\uC815"
   Glasses:
   - PartSprite: {fileID: 21300000, guid: c68c24a42ff38444499cd967f81cf4de, type: 3}
-    Description: 
+    Description: "\uB465\uADFC \uD14C \uC548\uACBD"
   Caps:
   - PartSprite: {fileID: 21300000, guid: af079873a571ab8449e2ac2215b15a0b, type: 3}
-    Description: 
+    Description: "\uAE30\uBCF8\uD615 \uC57C\uAD6C \uBAA8\uC790"
   FrontHairs:
   - PartSprite: {fileID: 21300000, guid: 104dbbc2d59e6e8449f99467ccd100a6, type: 3}
-    Description: 
+    Description: "\uC774\uB9C8 \uC804\uCCB4\uAC00 \uB4DC\uB7EC\uB09C \uD5E4\uC5B4\uC2A4\uD0C0\uC77C"
   - PartSprite: {fileID: 21300000, guid: 708eb24939418a644a2ee5d23d838f44, type: 3}
-    Description: 
+    Description: "\uC55E\uBA38\uB9AC\uAC00 \uBD80\uBD84\uC801\uC73C\uB85C \uC816\uD600\uC838
+      \uC774\uB9C8\uAC00 \uBC18\uCBE4 \uBCF4\uC774\uB294 \uC2A4\uD0C0\uC77C"
   - PartSprite: {fileID: 21300000, guid: 6a8756ee75c2c9f4ebfdae68112efb47, type: 3}
-    Description: 
+    Description: "\uC774\uB9C8\uB97C \uB36E\uC740 \uD3C9\uBC94\uD55C \uC55E\uBA38\uB9AC"
   BackHairs:
   - PartSprite: {fileID: 21300000, guid: 2a031aeda4489a04d9bf54fcf41f0ee8, type: 3}
-    Description: 
+    Description: "\uC5B4\uAE68 \uC544\uB798\uB85C \uB0B4\uB824\uC624\uB294 \uAE34
+      \uBA38\uB9AC"
   - PartSprite: {fileID: 21300000, guid: 9075bb900cebe2d43bd4cf5b250574da, type: 3}
-    Description: 
+    Description: "\uC5B4\uAE68\uAE4C\uC9C0 \uC624\uB294 \uC911\uAC04 \uAE38\uC774
+      \uBA38\uB9AC"
   - PartSprite: {fileID: 21300000, guid: e46865143153d2d4a86e4b26c14153dd, type: 3}
-    Description: 
+    Description: "\uBAA9\uC120\uC744 \uB4DC\uB7EC\uB0B4\uB294 \uC9E7\uC740 \uBA38\uB9AC"
   ColorPalettes:
   - TopColors:
       RedRegionColor: {r: 0.35609913, g: 1, b: 0, a: 0}

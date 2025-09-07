@@ -52,7 +52,7 @@ public sealed class SaveDataBuffer : SingleTonForGameObject<SaveDataBuffer>
                 //MapData = 
                 //CurPlayerMapPos = 
                 DPlusDay = 0,
-                Money = UnityEngine.Random.Range(0, 31),
+                //Money = UnityEngine.Random.Range(0, 31),
                 PassedWays = new List<Vector2Int>(),
                 IntelInfos = new SaveData.IntelnfoData()
                 {
