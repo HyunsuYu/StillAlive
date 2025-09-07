@@ -38,6 +38,9 @@ public sealed class ReplicateInterface : SingleTonForGameObject<ReplicateInterfa
 
     [SerializeField] private UnityEvent m_responseArrived;
 
+    private CardData? m_curTargetCardData = null;
+    private bool m_bisNeed2ReRequest = false;
+
 
     public void Awake()
     {
@@ -48,6 +51,12 @@ public sealed class ReplicateInterface : SingleTonForGameObject<ReplicateInterfa
         if(m_bisRequestProcessing && m_bisResponsed)
         {
             m_responseArrived.Invoke();
+        }
+
+        if(m_bisNeed2ReRequest)
+        {
+            StartCoroutine(CallLLM());
+            m_bisNeed2ReRequest = false;
         }
     }
 
@@ -61,17 +70,21 @@ public sealed class ReplicateInterface : SingleTonForGameObject<ReplicateInterfa
 
     internal void TryGetSpeakText(in CardData targetCardData)
     {
+        m_curTargetCardData = targetCardData;
+
         m_bisRequestProcessing = true;
         m_bisResponsed = false;
-        StartCoroutine(CallLLM(targetCardData));
+        StartCoroutine(CallLLM());
     }
 
-    private IEnumerator CallLLM(CardData targetCardData)
+    private IEnumerator CallLLM()
     {
+        bool bisResponseSuccess = true;
+
         string prompt = string.Empty;
-        prompt += $"당신의 역할 : {(targetCardData.BIsTraitor ? "감염체" : "일반적인 인간")}\n";
-        prompt += $"당신의 성격 : {targetCardData.Personality.ToString()}\n";
-        prompt += $"당신의 몸상태 : {targetCardData.Diseases.ToString()}\n";
+        prompt += $"당신의 역할 : {(m_curTargetCardData.Value.BIsTraitor ? "감염체" : "일반적인 인간")}\n";
+        prompt += $"당신의 성격 : {m_curTargetCardData.Value.Personality.ToString()}\n";
+        prompt += $"당신의 몸상태 : {m_curTargetCardData.Value.Diseases.ToString()}\n";
         prompt += $"당신의 지난 밤 행적 : ";
 
         CardData? attacher = null;
@@ -87,7 +100,7 @@ public sealed class ReplicateInterface : SingleTonForGameObject<ReplicateInterfa
 
         CardData.NPCLookPartType selectedPart = (CardData.NPCLookPartType)UnityEngine.Random.Range(0, System.Enum.GetNames(typeof(CardData.NPCLookPartType)).Length);
 
-        switch (targetCardData.LastNight)
+        switch (m_curTargetCardData.Value.LastNight)
         {
             case CardData.LastNightState.Peace:
                 prompt += $"당신은 지난 밤 어떤 일이 일어났는지 전혀 목격하지 못했습니다. 어쩌면 진짜 아무런 일도 없었을 지도 모릅니다. 따라서 본인의 몸 상태에 특이점이 있다면 그것에 대해 말하거나 혹은 그냥 본인의 성격에 맞게끔 하고 싶은 말을 하면 됩니다";
@@ -102,35 +115,35 @@ public sealed class ReplicateInterface : SingleTonForGameObject<ReplicateInterfa
                 switch(selectedPart)
                 {
                     case CardData.NPCLookPartType.Top:
-                        prompt += $"{m_npcLookPark.Tops[targetCardData.NPCLookTable[CardData.NPCLookPartType.Top]].Description}을(를) 가지고 있는 것을 보았다";
+                        prompt += $"{m_npcLookPark.Tops[m_curTargetCardData.Value.NPCLookTable[CardData.NPCLookPartType.Top]].Description}을(를) 가지고 있는 것을 보았다";
                         break;
 
                     case CardData.NPCLookPartType.Face:
-                        prompt += $"{m_npcLookPark.Faces[targetCardData.NPCLookTable[CardData.NPCLookPartType.Face]].Description}을(를) 가지고 있는 것을 보았다";
+                        prompt += $"{m_npcLookPark.Faces[m_curTargetCardData.Value.NPCLookTable[CardData.NPCLookPartType.Face]].Description}을(를) 가지고 있는 것을 보았다";
                         break;
 
                     case CardData.NPCLookPartType.Eye:
-                        prompt += $"{m_npcLookPark.Eyes[targetCardData.NPCLookTable[CardData.NPCLookPartType.Eye]].Description}을(를) 가지고 있는 것을 보았다";
+                        prompt += $"{m_npcLookPark.Eyes[m_curTargetCardData.Value.NPCLookTable[CardData.NPCLookPartType.Eye]].Description}을(를) 가지고 있는 것을 보았다";
                         break;
 
                     case CardData.NPCLookPartType.Mouth:
-                        prompt += $"{m_npcLookPark.Mouths[targetCardData.NPCLookTable[CardData.NPCLookPartType.Mouth]].Description}을(를) 가지고 있는 것을 보았다";
+                        prompt += $"{m_npcLookPark.Mouths[m_curTargetCardData.Value.NPCLookTable[CardData.NPCLookPartType.Mouth]].Description}을(를) 가지고 있는 것을 보았다";
                         break;
 
                     case CardData.NPCLookPartType.Glasses:
-                        prompt += $"{m_npcLookPark.Glasses[targetCardData.NPCLookTable[CardData.NPCLookPartType.Glasses]].Description}을(를) 가지고 있는 것을 보았다";
+                        prompt += $"{m_npcLookPark.Glasses[m_curTargetCardData.Value.NPCLookTable[CardData.NPCLookPartType.Glasses]].Description}을(를) 가지고 있는 것을 보았다";
                         break;
 
                     case CardData.NPCLookPartType.Cap:
-                        prompt += $"{m_npcLookPark.Caps[targetCardData.NPCLookTable[CardData.NPCLookPartType.Cap]].Description}을(를) 가지고 있는 것을 보았다";
+                        prompt += $"{m_npcLookPark.Caps[m_curTargetCardData.Value.NPCLookTable[CardData.NPCLookPartType.Cap]].Description}을(를) 가지고 있는 것을 보았다";
                         break;
 
                     case CardData.NPCLookPartType.FrontHair:
-                        prompt += $"{m_npcLookPark.FrontHairs[targetCardData.NPCLookTable[CardData.NPCLookPartType.FrontHair]].Description}을(를) 가지고 있는 것을 보았다";
+                        prompt += $"{m_npcLookPark.FrontHairs[m_curTargetCardData.Value.NPCLookTable[CardData.NPCLookPartType.FrontHair]].Description}을(를) 가지고 있는 것을 보았다";
                         break;
 
                     case CardData.NPCLookPartType.BackHair:
-                        prompt += $"{m_npcLookPark.BackHairs[targetCardData.NPCLookTable[CardData.NPCLookPartType.BackHair]].Description}을(를) 가지고 있는 것을 보았다";
+                        prompt += $"{m_npcLookPark.BackHairs[m_curTargetCardData.Value.NPCLookTable[CardData.NPCLookPartType.BackHair]].Description}을(를) 가지고 있는 것을 보았다";
                         break;
                 }
                 break;
@@ -140,35 +153,35 @@ public sealed class ReplicateInterface : SingleTonForGameObject<ReplicateInterfa
                 switch (selectedPart)
                 {
                     case CardData.NPCLookPartType.Top:
-                        prompt += $"{m_npcLookPark.Tops[targetCardData.NPCLookTable[CardData.NPCLookPartType.Top]].Description}을(를) 가지고 있는 것을 보았다";
+                        prompt += $"{m_npcLookPark.Tops[m_curTargetCardData.Value.NPCLookTable[CardData.NPCLookPartType.Top]].Description}을(를) 가지고 있는 것을 보았다";
                         break;
 
                     case CardData.NPCLookPartType.Face:
-                        prompt += $"{m_npcLookPark.Faces[targetCardData.NPCLookTable[CardData.NPCLookPartType.Face]].Description}을(를) 가지고 있는 것을 보았다";
+                        prompt += $"{m_npcLookPark.Faces[m_curTargetCardData.Value.NPCLookTable[CardData.NPCLookPartType.Face]].Description}을(를) 가지고 있는 것을 보았다";
                         break;
 
                     case CardData.NPCLookPartType.Eye:
-                        prompt += $"{m_npcLookPark.Eyes[targetCardData.NPCLookTable[CardData.NPCLookPartType.Eye]].Description}을(를) 가지고 있는 것을 보았다";
+                        prompt += $"{m_npcLookPark.Eyes[m_curTargetCardData.Value.NPCLookTable[CardData.NPCLookPartType.Eye]].Description}을(를) 가지고 있는 것을 보았다";
                         break;
 
                     case CardData.NPCLookPartType.Mouth:
-                        prompt += $"{m_npcLookPark.Mouths[targetCardData.NPCLookTable[CardData.NPCLookPartType.Mouth]].Description}을(를) 가지고 있는 것을 보았다";
+                        prompt += $"{m_npcLookPark.Mouths[m_curTargetCardData.Value.NPCLookTable[CardData.NPCLookPartType.Mouth]].Description}을(를) 가지고 있는 것을 보았다";
                         break;
 
                     case CardData.NPCLookPartType.Glasses:
-                        prompt += $"{m_npcLookPark.Glasses[targetCardData.NPCLookTable[CardData.NPCLookPartType.Glasses]].Description}을(를) 가지고 있는 것을 보았다";
+                        prompt += $"{m_npcLookPark.Glasses[m_curTargetCardData.Value.NPCLookTable[CardData.NPCLookPartType.Glasses]].Description}을(를) 가지고 있는 것을 보았다";
                         break;
 
                     case CardData.NPCLookPartType.Cap:
-                        prompt += $"{m_npcLookPark.Caps[targetCardData.NPCLookTable[CardData.NPCLookPartType.Cap]].Description}을(를) 가지고 있는 것을 보았다";
+                        prompt += $"{m_npcLookPark.Caps[m_curTargetCardData.Value.NPCLookTable[CardData.NPCLookPartType.Cap]].Description}을(를) 가지고 있는 것을 보았다";
                         break;
 
                     case CardData.NPCLookPartType.FrontHair:
-                        prompt += $"{m_npcLookPark.FrontHairs[targetCardData.NPCLookTable[CardData.NPCLookPartType.FrontHair]].Description}을(를) 가지고 있는 것을 보았다";
+                        prompt += $"{m_npcLookPark.FrontHairs[m_curTargetCardData.Value.NPCLookTable[CardData.NPCLookPartType.FrontHair]].Description}을(를) 가지고 있는 것을 보았다";
                         break;
 
                     case CardData.NPCLookPartType.BackHair:
-                        prompt += $"{m_npcLookPark.BackHairs[targetCardData.NPCLookTable[CardData.NPCLookPartType.BackHair]].Description}을(를) 가지고 있는 것을 보았다";
+                        prompt += $"{m_npcLookPark.BackHairs[m_curTargetCardData.Value.NPCLookTable[CardData.NPCLookPartType.BackHair]].Description}을(를) 가지고 있는 것을 보았다";
                         break;
                 }
                 break;
@@ -210,9 +223,17 @@ public sealed class ReplicateInterface : SingleTonForGameObject<ReplicateInterfa
 
                         ReplicateOutput output = JsonConvert.DeserializeObject<ReplicateOutput>(jsonResponse);
 
-                        foreach (string singleOutput in output.output)
+                        try
                         {
-                            m_llmResponse += singleOutput;
+                            foreach (string singleOutput in output.output)
+                            {
+                                m_llmResponse += singleOutput;
+                            }
+                        }
+                        catch
+                        {
+                            bisResponseSuccess = false;
+                            goto Fin;
                         }
                         m_bisResponsed = true;
                     }
@@ -232,6 +253,13 @@ public sealed class ReplicateInterface : SingleTonForGameObject<ReplicateInterfa
                     Debug.LogError(request.url);
                     break;
             }
+        }
+
+        Fin:
+
+        if(!bisResponseSuccess)
+        {
+            m_bisNeed2ReRequest = true;
         }
     }
 
