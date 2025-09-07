@@ -85,23 +85,12 @@ public class BattleFieldMenu : MonoBehaviour
             return;
         }
 
-        // HP바 업데이트
-        Slider hpBar = memberUI.GetComponentInChildren<Slider>();
-
-        float hpRatio = (float)teamCard.GetCurrentHP() / teamCard.GetMaxHP();
-        if (hpRatio <= 0f)
+        // HP 텍스트 업데이트
+        TMP_Text hpText = memberUI.GetComponentInChildren<TMP_Text>();
+        if (hpText != null)
         {
-            hpBar.value = 0f;
+            hpText.text = $"{teamCard.GetCurrentHP()}/{teamCard.GetMaxHP()}";
         }
-        hpBar.value = hpRatio;
-
-
-        //// HP 텍스트 업데이트
-        //TMP_Text hpText = memberUI.GetComponentInChildren<TMP_Text>();
-        //if (hpText != null)
-        //{
-        //    hpText.text = $"{teamCard.GetCurrentHP()}/{teamCard.GetMaxHP()}";
-        //}        
     }
 
     /// <summary>
