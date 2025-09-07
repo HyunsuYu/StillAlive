@@ -24,13 +24,13 @@ MonoBehaviour:
     - BufEffect: 1
       BufDegree: 2
   - Name: "\uCD1D"
-    ItemSprite: {fileID: 0}
+    ItemSprite: {fileID: 21300000, guid: e9b7c1122eceb234db5b224bbf3b2139, type: 3}
     MaxDurability: 3
     BufInfos:
     - BufEffect: 1
       BufDegree: 4
   - Name: "\uD3ED\uD0C4"
-    ItemSprite: {fileID: 0}
+    ItemSprite: {fileID: 21300000, guid: c84b07bfe66cbdc4c8841681e2cb40de, type: 3}
     MaxDurability: 1
     BufInfos:
     - BufEffect: 3
@@ -38,7 +38,7 @@ MonoBehaviour:
     - BufEffect: 1
       BufDegree: 6
   - Name: "\uBC31\uC2E0"
-    ItemSprite: {fileID: 0}
+    ItemSprite: {fileID: 21300000, guid: ebf67deabf27bf8419ffaac4123bcd62, type: 3}
     MaxDurability: 1
     BufInfos:
     - BufEffect: 0
@@ -46,13 +46,13 @@ MonoBehaviour:
     - BufEffect: 4
       BufDegree: 1
   - Name: "\uAD6C\uAE09 \uC0C1\uC790"
-    ItemSprite: {fileID: 0}
+    ItemSprite: {fileID: 21300000, guid: 722f9086721054546812a4f8e06547aa, type: 3}
     MaxDurability: 1
     BufInfos:
     - BufEffect: 5
       BufDegree: 1
   - Name: "\uC544\uB4DC\uB808\uB0A0\uB9B0 \uC8FC\uC0AC\uAE30"
-    ItemSprite: {fileID: 0}
+    ItemSprite: {fileID: 21300000, guid: b08d2644eb7a0574e8524e08225ae25f, type: 3}
     MaxDurability: 1
     BufInfos:
     - BufEffect: 0
@@ -60,7 +60,7 @@ MonoBehaviour:
     - BufEffect: 1
       BufDegree: 2
   - Name: "\uBE75"
-    ItemSprite: {fileID: 0}
+    ItemSprite: {fileID: 21300000, guid: 8a93a17b443911941b4ee0acdc90ccbf, type: 3}
     MaxDurability: 1
     BufInfos:
     - BufEffect: 0

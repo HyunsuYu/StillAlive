@@ -2155,6 +2155,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_layout_LateNight: {fileID: 809899168}
+  m_layout_Radio: {fileID: 934071081}
+  m_text_RadioSpeak: {fileID: 1947512602}
+  m_radioTemplates_NoTraiter:
+  - SpeakTexts:
+    - .............................
+    - "(\uC804\uD30C\uAC00 \uC7A1\uD788\uC9C0 \uC54A\uB294 \uAC83 \uAC19\uB2E4.) "
+  m_radioTemplates_WithTraiter:
+  - SpeakTexts:
+    - "....\uCE58\uC9C1.. \uC624\uB298\uC758 \uAD00\uCE21 \uACB0\uACFC\uB97C \uC804\uC1A1\uD55C\uB2E4."
+    - "\uAC10\uC5FC\uC790\uB294 X\uC744 \uAC00\uC9C0\uACE0 \uC788\uB2E4."
+  - SpeakTexts:
+    - "...\uC9C0\uC9C1.. \uC8FC\uC758\uD558\uB77C. "
+    - "\uD655\uC778\uB41C \uAC10\uC5FC\uC790\uB294 X\uC774\uB2E4. "
+    - "\uBC18\uBCF5\uD55C\uB2E4. X."
+  - SpeakTexts:
+    - "........\uD604\uC7AC\uBCF4\uACE0."
+    - "\uAC10\uC5FC\uC790 \uC911 \uD558\uB098\uB294 X\uC744 \uAC00\uC84C\uB2E4. \uCE58\uC9C1.."
 --- !u!1 &498120061
 GameObject:
   m_ObjectHideFlags: 0
