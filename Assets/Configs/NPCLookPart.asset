@@ -63,9 +63,9 @@ MonoBehaviour:
     Description: 
   ColorPalettes:
   - TopColors:
-      RedRegionColor: {r: 0.35609913, g: 1, b: 0, a: 0}
-      BlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
-      GreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedRegionColor: {r: 0.35609913, g: 1, b: 0, a: 1}
+      BlueRegionColor: {r: 1, g: 0.80724907, b: 0.49999988, a: 1}
+      GreenRegionColor: {r: 0, g: 1, b: 0.8357134, a: 1}
       RedGreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
       RedBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
       GreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
