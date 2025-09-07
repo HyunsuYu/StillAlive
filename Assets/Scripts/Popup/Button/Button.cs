@@ -5,77 +5,90 @@ public class Button : MonoBehaviour
     #region INVEN
     public void Inven()
     {
-        if(!PopupManager.Instance.m_bisINVENOpen)
+        if(!InvenControl.Instance.m_bisInvenOpened)
         {
-            PopupManager.Instance.INVENOpen();
+            InvenControl.Instance.OpenInven();
 
-            PopupManager.Instance.m_bisINVENOpen = true;
+            InvenControl.Instance.m_bisInvenOpened = true;
         }
         else
         {
-            PopupManager.Instance.INVENClose();
+            InvenControl.Instance.CloseInven();
 
-            PopupManager.Instance.m_bisINVENOpen = false;
+            InvenControl.Instance.m_bisInvenOpened = false;
         }
     }
     #endregion
 
     #region INFO
-    public void InfoPenal()
+    public void Info()
     {
-        if(!PopupManager.Instance.m_bisINFOPENALOpen)
+        if(!InfoControl.Instance.m_bisInfoOpened)
         {
-            if(PopupManager.Instance.m_bisINVENOpen)
+            if(InvenControl.Instance.m_bisInvenOpened)
             {
-                PopupManager.Instance.INVENClose();
-                PopupManager.Instance.m_bisINVENOpen = false;
+                InvenControl.Instance.CloseInven();
+                InvenControl.Instance.m_bisInvenOpened = false;
             }
 
-            PopupManager.Instance.INFOPENALOpen();
+            InfoControl.Instance.OpenInfo();
+            RadioInfoControl.Instance.OpenRadioInfo();
 
-            PopupManager.Instance.m_bisINFOPENALOpen = true;
-            PopupManager.Instance.m_bisOtherPopupOpen = true;
+            InfoControl.Instance.m_bisInfoOpened = true;
+            RadioInfoControl.Instance.m_bisRadioInfoOpened = true;
+            PopupControl.Instance.m_bisOtherPopupOpened = true;
         }
         else
         {
-            PopupManager.Instance.INFOPENALClose();
+            if(RadioInfoControl.Instance.m_bisRadioInfoOpened)
+            {
+                RadioInfoControl.Instance.CloseRadioInfo();
+                RadioInfoControl.Instance.m_bisRadioInfoOpened = false;
+            }
+            else if(ConversationInfoControl.Instance.m_bisConversationInfoOpened)
+            {
+                ConversationInfoControl.Instance.CloseConversationInfo();
+                ConversationInfoControl.Instance.m_bisConversationInfoOpened = false;
+            }
 
-            PopupManager.Instance.m_bisINFOPENALOpen = false;
-            PopupManager.Instance.m_bisOtherPopupOpen = false;
+            InfoControl.Instance.CloseInfo();
+            
+            InfoControl.Instance.m_bisInfoOpened = false;
+            PopupControl.Instance.m_bisOtherPopupOpened = false;
         }
     }
 
     public void Radio()
     {
-        if(PopupManager.Instance.m_bisCONVERSATIONOpen)
+        if(ConversationInfoControl.Instance.m_bisConversationInfoOpened)
         {
-            PopupManager.Instance.CONVERSATIONClose();
-            PopupManager.Instance.m_bisCONVERSATIONOpen = false;
+            ConversationInfoControl.Instance.CloseConversationInfo();
+            ConversationInfoControl.Instance.m_bisConversationInfoOpened = false;
 
-            PopupManager.Instance.RADIOOpen();
-            PopupManager.Instance.m_bisRADIOOpen = true;
+            RadioInfoControl.Instance.OpenRadioInfo();
+            RadioInfoControl.Instance.m_bisRadioInfoOpened = true;
         }
         else
         {
-            PopupManager.Instance.RADIOOpen();
-            PopupManager.Instance.m_bisRADIOOpen = true;
+            RadioInfoControl.Instance.OpenRadioInfo();
+            RadioInfoControl.Instance.m_bisRadioInfoOpened = true;
         }
     }
 
     public void Conversation()
     {
-        if(PopupManager.Instance.m_bisRADIOOpen)
+        if (RadioInfoControl.Instance.m_bisRadioInfoOpened)
         {
-            PopupManager.Instance.RADIOClose();
-            PopupManager.Instance.m_bisRADIOOpen = false;
+            RadioInfoControl.Instance.CloseRadioInfo();
+            RadioInfoControl.Instance.m_bisRadioInfoOpened = false;
 
-            PopupManager.Instance.CONVERSATIONOpen();
-            PopupManager.Instance.m_bisCONVERSATIONOpen = true;
+            ConversationInfoControl.Instance.OpenConversationInfo();
+            ConversationInfoControl.Instance.m_bisConversationInfoOpened = true;
         }
         else
         {
-            PopupManager.Instance.CONVERSATIONOpen();
-            PopupManager.Instance.m_bisCONVERSATIONOpen = true;
+            ConversationInfoControl.Instance.OpenConversationInfo();
+            ConversationInfoControl.Instance.m_bisConversationInfoOpened = true;
         }
     }
     #endregion

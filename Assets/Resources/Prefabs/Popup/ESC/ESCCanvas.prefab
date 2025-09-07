@@ -48,7 +48,7 @@ GameObject:
   - component: {fileID: 8559667004617338771}
   - component: {fileID: 6123325709820005263}
   m_Layer: 5
-  m_Name: ESCPanel
+  m_Name: ESC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
