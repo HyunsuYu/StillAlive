@@ -17,6 +17,7 @@ public class ConversationField : MonoBehaviour
     [SerializeField] private ConversationTeam m_conversationTeam;
 
     [Header("대화창 UI")]
+    [SerializeField] private GameObject m_contextBG;
     [SerializeField] private GameObject m_contextPanel;
     [SerializeField] private TMP_Text m_dialogueText;
     [SerializeField] private Button m_dialogueScreenButton; // 대화창 전체를 덮는 투명 버튼
@@ -109,6 +110,7 @@ public class ConversationField : MonoBehaviour
 
         bool isDialogueActive = (newState == ConversationState.GeneratingDialogue || newState == ConversationState.DialogueTyping || newState == ConversationState.DialogueFinished);
         m_contextPanel.SetActive(isDialogueActive);
+        m_contextBG.SetActive(isDialogueActive);
         m_dialogueScreenButton.gameObject.SetActive(isDialogueActive);
 
         bool isVotingActive = (newState == ConversationState.Voting);
@@ -172,6 +174,7 @@ public class ConversationField : MonoBehaviour
     public void CloseDialogue()
     {  
         m_contextPanel.SetActive(false);
+        m_contextBG.SetActive(false);
         m_dialogueText.text = "";
 
         if (m_currentState != ConversationState.Voting)
