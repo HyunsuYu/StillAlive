@@ -65,14 +65,15 @@ public class CardSelecter : SingleTonForGameObject<CardSelecter>
         {
             if (MyTeams.Contains(card))
             {
-                MyTeams.Remove(card);
+                //MyTeams.Remove(card);
             }
 
-            BattleCard battleCard = card.GetComponent<BattleCard>();
+            BattleCard battleCard = card.GetComponentInChildren<BattleCard>();
             if (battleCard != null)
             {
                 CardData removeColleague = battleCard.MyData;
-                SaveDataBuffer.Instance.Data.CardDatas.Remove(removeColleague);
+                removeColleague.Status.CurHP = 0; // 체력을 0으로 설정하여 제거 표시
+                SaveDataBuffer.Instance.TrySaveData();
             }
             else
             {
