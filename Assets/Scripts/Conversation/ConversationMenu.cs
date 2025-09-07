@@ -23,8 +23,6 @@ public class ConversationMenu : MonoBehaviour
     {
         m_dayText.text = $"D - {SaveDataBuffer.Instance.Data.DPlusDay}";
         m_coinText.text = SaveDataBuffer.Instance.Data.Money.ToString();
-
-        m_teamMemberUIs = new List<GameObject>();
     }
 
     public void ConsumeCoin(int _amount)
@@ -38,12 +36,13 @@ public class ConversationMenu : MonoBehaviour
     /// <param name="teamPortrait">팀 카드 리스트</param>
     public void InitTeamStatus(List<NPCPortrait> portraits, List<CardData> datas)
     {
+        m_teamMemberUIs = new List<GameObject>();
+
         int memberCount = portraits.Count;
      
         // 각 팀원에 대해 UI 생성 및 위치 설정
         for (int i = 0; i < memberCount; i++)
         {
-
             // m_teamStatusParent의 중심에서 시작해서 오른쪽으로 간격만큼 배치
             Vector3 memberUIPosition = new Vector3(i * m_teamUISpacing, 0, 0);
 
@@ -53,15 +52,14 @@ public class ConversationMenu : MonoBehaviour
 
             memberUI.transform.localPosition = memberUIPosition;
 
-            // 초상화 생성
             Transform portraitParent = memberUI.transform;
 
           
             if (portraits[i] != null)
             {
                 // 원본 초상화를 클론하여 UI에 배치
-                Instantiate(portraits[i].gameObject, portraitParent);
-
+                GameObject portraitClone = Instantiate(portraits[i].gameObject, portraitParent);
+                portraitClone.transform.localScale = new Vector3(1f, 1f, 1f);
                 // HP바 업데이트
                 Slider hpBar = memberUI.GetComponentInChildren<Slider>();
 
