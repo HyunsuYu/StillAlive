@@ -3,26 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// ´ëÈ­Ã¢À» °ü¸®ÇÏ´Â Å¬·¡½º
+/// ëŒ€í™”ê´€ë ¨ëœ ë¡œì§ì„ ê´€ë¦¬í•˜ëŠ” í´ë˜ìŠ¤
 /// </summary>
 public class ConversationField : MonoBehaviour
 {
     [SerializeField] private ConversationMenu m_conversationMenu;
-    [SerializeField] private ConversationTeam m_conversationField;
+    [SerializeField] private ConversationTeam m_conversationTeam;
     
-    
-
-    public void Start()
+    private void Start()
     {
         SaveDataBuffer.Instance.TryLoadData();
-
-        // ³ªÁß¿¡ ÇÊÅÍ¸µ ÇÒ ¿¹Á¤ --> 
+    
         List<CardData> cardDatas = SaveDataBuffer.Instance.Data.CardDatas;
+        
+        if(cardDatas == null)
+        {
+            Debug.LogError("CardDatas is null");
+            return;
+        }
 
-        List<NPCPortrait> npcPortraits = m_conversationMenu.InitTeamStatus(cardDatas);
+        List<NPCPortrait> npcPortraits = m_conversationTeam.Init(cardDatas);
 
-
-
+        m_conversationMenu.InitTeamStatus(npcPortraits, cardDatas);
     }
-
 }

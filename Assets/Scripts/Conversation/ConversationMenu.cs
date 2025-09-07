@@ -36,10 +36,10 @@ public class ConversationMenu : MonoBehaviour
     /// 팀 전체 상태창을 초기화 세팅을 합니다.
     /// </summary>
     /// <param name="teamPortrait">팀 카드 리스트</param>
-    public List<NPCPortrait> InitTeamStatus(List<CardData> cardData)
+    public void InitTeamStatus(List<NPCPortrait> portraits, List<CardData> datas)
     {
-        int memberCount = cardData.Count;
-        List<NPCPortrait> npcPortraitsList = new List<NPCPortrait>();
+        int memberCount = portraits.Count;
+     
         // 각 팀원에 대해 UI 생성 및 위치 설정
         for (int i = 0; i < memberCount; i++)
         {
@@ -56,18 +56,16 @@ public class ConversationMenu : MonoBehaviour
             // 초상화 생성
             Transform portraitParent = memberUI.transform;
 
-            NPCPortrait teamPortrait = CharacterPortraitHelper.CreatePortrait(cardData[i]).GetComponent<NPCPortrait>();
-            npcPortraitsList.Add(teamPortrait);
-
-            if (teamPortrait != null)
+          
+            if (portraits[i] != null)
             {
                 // 원본 초상화를 클론하여 UI에 배치
-                Instantiate(teamPortrait.gameObject, portraitParent);
+                Instantiate(portraits[i].gameObject, portraitParent);
 
                 // HP바 업데이트
                 Slider hpBar = memberUI.GetComponentInChildren<Slider>();
 
-                float hpRatio = (float)cardData[i].Status.CurHP / cardData[i].Status.MaxHP;
+                float hpRatio = (float)datas[i].Status.CurHP / datas[i].Status.MaxHP;
                 if (hpRatio <= 0f)
                 {
                     hpBar.value = 0f;
@@ -79,7 +77,7 @@ public class ConversationMenu : MonoBehaviour
                 Debug.LogError("Portrait 비어있음");
             }
         }
-        return npcPortraitsList;
+      
 
     }
 

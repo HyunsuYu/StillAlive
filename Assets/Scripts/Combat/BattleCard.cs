@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class BattleCard : MonoBehaviour
 {
     private CardData m_myData;
-
+    public CardData MyData => m_myData;
     private Canvas m_canvas;
 
     [SerializeField] private TMP_Text m_hpText;
