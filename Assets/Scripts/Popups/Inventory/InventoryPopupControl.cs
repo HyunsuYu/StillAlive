@@ -36,6 +36,7 @@ public sealed class InventoryPopupControl : SingleTonForGameObject<InventoryPopu
     {
         if(!m_bisCombatScene)
         {
+            m_spriteRenderer_DraggingItemIcon.gameObject.SetActive(false);
             return;
         }
 
