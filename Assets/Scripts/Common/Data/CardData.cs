@@ -80,6 +80,7 @@ public struct CardData
     public Dictionary<NPCLookPartType, int> NPCLookTable;
     public int ColorPalleteIndex;
 
+    public bool BIsMonster;
     public bool BIsTraitor;
 
     public DiseasesType Diseases;
