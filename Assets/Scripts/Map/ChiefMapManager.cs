@@ -50,17 +50,17 @@ public sealed class ChiefMapManager : SingleTonForGameObject<ChiefMapManager>
 
         SaveData curSaveData = SaveDataBuffer.Instance.Data;
 
-        #region For Dummy Data
-        if (curSaveData.CardDatas.Count == 0)
-        {
-            curSaveData.CardDatas.Add(GetRandomCardDataDummy(true, false, CardData.LastNightState.Peace));
-            curSaveData.CardDatas.Add(GetRandomCardDataDummy(false, true, CardData.LastNightState.Peace));
-            curSaveData.CardDatas.Add(GetRandomCardDataDummy(false, false, CardData.LastNightState.Peace));
-            curSaveData.CardDatas.Add(GetRandomCardDataDummy(false, false, CardData.LastNightState.Peace));
-            SaveDataBuffer.Instance.TrySetData(curSaveData);
-            SaveDataBuffer.Instance.TrySaveData();
-        }
-        #endregion
+        //#region For Dummy Data
+        //if (curSaveData.CardDatas.Count == 0)
+        //{
+        //    curSaveData.CardDatas.Add(GetRandomCardDataDummy(true, false, CardData.LastNightState.Peace));
+        //    curSaveData.CardDatas.Add(GetRandomCardDataDummy(false, true, CardData.LastNightState.Peace));
+        //    curSaveData.CardDatas.Add(GetRandomCardDataDummy(false, false, CardData.LastNightState.Peace));
+        //    curSaveData.CardDatas.Add(GetRandomCardDataDummy(false, false, CardData.LastNightState.Peace));
+        //    SaveDataBuffer.Instance.TrySetData(curSaveData);
+        //    SaveDataBuffer.Instance.TrySaveData();
+        //}
+        //#endregion
 
         RenderAll();
 
