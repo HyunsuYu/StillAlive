@@ -26,6 +26,9 @@ public class NPCPortrait : MonoBehaviour
     [SerializeField] private Image glassesImage;
     [SerializeField] private Image capImage;
 
+    [SerializeField] private Transform partsContainer;
+    [SerializeField] private Image mainPlayerImage;
+
     [Header("외형 데이터")]
     [SerializeField] private NPCLookPart m_lookPartData;
     public NPCLookPart GetLookPartData => m_lookPartData;
@@ -33,8 +36,21 @@ public class NPCPortrait : MonoBehaviour
     private Dictionary<CardData.NPCLookPartType, Image> m_partImageMap;
     private Dictionary<CardData.NPCLookPartType, Material> m_partMaterials;
 
+    private bool isMainPlayer;
+
     public void Init(CardData cardData)
     {
+        if (cardData.BIsPlayer)
+        {
+            partsContainer.gameObject.SetActive(false);
+            mainPlayerImage.gameObject.SetActive(true);
+            mainPlayerImage.sprite = m_lookPartData.MainCharacter;
+            return;
+        }
+        
+        partsContainer.gameObject.SetActive(true);
+        mainPlayerImage.gameObject.SetActive(false);
+
         m_partImageMap = new Dictionary<CardData.NPCLookPartType, Image>
         {
             { CardData.NPCLookPartType.Top,       topImage },

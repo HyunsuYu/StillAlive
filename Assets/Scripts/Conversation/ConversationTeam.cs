@@ -39,6 +39,9 @@ public class ConversationTeam : MonoBehaviour
     private NPCPortrait m_currentHoveredPortrait;
     private NPCPortrait m_currentSelectedPortrait;
 
+    public event Action<CardData> OnPortraitSelected;
+    public event Action OnPortraitDeselected;
+
     /// <summary>
     /// 카드 데이터 리스트를 기반으로 팀 초상화들을 초기화합니다.
     /// </summary>
@@ -95,6 +98,17 @@ public class ConversationTeam : MonoBehaviour
         // 이미 선택된 것을 다시 클릭하면 선택 해제, 아니면 새로 선택
         m_currentSelectedPortrait = (m_currentSelectedPortrait == portrait) ? null : portrait;
         UpdateAllPortraitAppearances();
+
+        if (m_currentSelectedPortrait != null)
+        {
+            // 선택된 캐릭터의 CardData와 함께 '선택됨' 이벤트를 방송
+            OnPortraitSelected?.Invoke(GetSelectedCardData());
+        }
+        else
+        {
+            // '선택 해제됨' 이벤트를 방송
+            OnPortraitDeselected?.Invoke();
+        }
     }
 
     /// <summary>
@@ -104,6 +118,8 @@ public class ConversationTeam : MonoBehaviour
     {
         m_currentSelectedPortrait = null;
         UpdateAllPortraitAppearances();
+
+        OnPortraitDeselected?.Invoke();
     }
 
     /// <summary>
