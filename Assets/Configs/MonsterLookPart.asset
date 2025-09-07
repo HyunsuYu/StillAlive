@@ -1,0 +1,88 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e021099486563da47adf853b0726a3f9, type: 3}
+  m_Name: MonsterLookPart
+  m_EditorClassIdentifier: 
+  MainCharacter: {fileID: 0}
+  Tops: []
+  Faces: []
+  Eyes: []
+  Mouths: []
+  Glasses: []
+  Caps: []
+  FrontHairs: []
+  BackHairs: []
+  ColorPalettes:
+  - TopColors:
+      RedRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      BlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      GreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedGreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      GreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedGreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+    FacesColors:
+      RedRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      BlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      GreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedGreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      GreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedGreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+    EyesColors:
+      RedRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      BlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      GreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedGreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      GreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedGreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+    MouthsColors:
+      RedRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      BlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      GreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedGreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      GreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedGreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+    GlassesColors:
+      RedRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      BlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      GreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedGreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      GreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedGreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+    CapsColors:
+      RedRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      BlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      GreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedGreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      GreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedGreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+    FrontHairsColors:
+      RedRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      BlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      GreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedGreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      GreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedGreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+    BackHairsColors:
+      RedRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      BlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      GreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedGreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      GreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedGreenBlueRegionColor: {r: 0, g: 0, b: 0, a: 0}

@@ -1,5 +1,5 @@
 using System;
-
+using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -29,20 +29,25 @@ public class NPCLookPart : ScriptableObject
         public LookPartColors FrontHairsColors;
         public LookPartColors BackHairsColors;
     }
+    [Serializable] public struct PartData
+    {
+        public Sprite PartSprite;
+        public string Description;
+    }
 
 
     [Header("Fixed Characters")]
     public Sprite MainCharacter;
 
     [Header("Random Characters")]
-    public Sprite[] Tops;
-    public Sprite[] Faces;
-    public Sprite[] Eyes;
-    public Sprite[] Mouths;
-    public Sprite[] Glasses;
-    public Sprite[] Caps;
-    public Sprite[] FrontHairs;
-    public Sprite[] BackHairs;
+    public PartData[] Tops;
+    public PartData[] Faces;
+    public PartData[] Eyes;
+    public PartData[] Mouths;
+    public PartData[] Glasses;
+    public PartData[] Caps;
+    public PartData[] FrontHairs;
+    public PartData[] BackHairs;
 
 
     public ColorPalette[] ColorPalettes;

@@ -1,107 +1,90 @@
-Shader "Custom/7ColorMaskShader"
+Shader "UI/7ColorMaskShader_Final"
 {
     Properties
     {
-        _MainTex("Base Texture", 2D) = "white" {} 
-        _MaskTex("Mask (R,G,B Combinations)", 2D) = "black" {} 
+        [PerRendererData] _MainTex("Sprite Texture (is Mask)", 2D) = "white" {}
+        _Color("Tint", Color) = (1,1,1,1)
         
-        [Header(Region Colors)] 
-        _ColorR("Color (R)", Color) = (1,0,0,1) 
-        _ColorG("Color (G)", Color) = (0,1,0,1) 
-        _ColorB("Color (B)", Color) = (0,0,1,1) 
-        _ColorRG("Color (R+G)", Color) = (1,1,0,1) 
-        _ColorRB("Color (R+B)", Color) = (1,0,1,1) 
-        _ColorGB("Color (G+B)", Color) = (0,1,1,1) 
-        _ColorRGB("Color (R+G+B)", Color) = (1,1,1,1) 
+        [Header(Region Colors)]
+        _ColorR("Color (R)", Color) = (1,0,0,1)
+        _ColorG("Color (G)", Color) = (0,1,0,1)
+        _ColorB("Color (B)", Color) = (0,0,1,1)
+        _ColorRG("Color (R+G)", Color) = (1,1,0,1)
+        _ColorRB("Color (R+B)", Color) = (1,0,1,1)
+        _ColorGB("Color (G+B)", Color) = (0,1,1,1)
+        _ColorRGB("Color (R+G+B)", Color) = (1,1,1,1)
+
+        _StencilComp ("Stencil Comparison", Float) = 8
+        _Stencil ("Stencil ID", Float) = 0
+        _StencilOp ("Stencil Operation", Float) = 0
+        _StencilWriteMask ("Stencil Write Mask", Float) = 255
+        _StencilReadMask ("Stencil Read Mask", Float) = 255
+        _ColorMask ("Color Mask", Float) = 15
     }
+
     SubShader
     {
+        Tags { "Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" "PreviewType"="Plane" "CanUseSpriteAtlas"="True" }
 
-        Tags { "RenderType"="Transparent" "Queue"="Transparent" }
+        Stencil
+        {
+            Ref[_Stencil]
+            Comp[_StencilComp]
+            Pass[_StencilOp]
+            ReadMask[_StencilReadMask]
+            WriteMask[_StencilWriteMask]
+        }
+
+        Cull Off
         ZWrite Off 
-        Blend SrcAlpha OneMinusSrcAlpha
+        Blend SrcAlpha OneMinusSrcAlpha 
+        ColorMask [_ColorMask]
 
         Pass
         {
             CGPROGRAM
- 
             #pragma vertex vert
             #pragma fragment frag
             #include "UnityCG.cginc"
-
-            struct appdata
-            {
-                float4 vertex : POSITION; 
-                float2 uv : TEXCOORD0;   
-            };
-
-            struct v2f
-            {
-                float2 uv : TEXCOORD0;       
-                float4 vertex : SV_POSITION; 
-            };
+            #include "UnityUI.cginc"
 
             sampler2D _MainTex;
-            float4 _MainTex_ST;
-            sampler2D _MaskTex;
+            fixed4 _Color;
             fixed4 _ColorR, _ColorG, _ColorB, _ColorRG, _ColorRB, _ColorGB, _ColorRGB;
 
-            v2f vert (appdata v)
+            struct v2f { float4 vertex : SV_POSITION; fixed4 color : COLOR; float2 texcoord : TEXCOORD0; };
+            struct appdata { float4 vertex : POSITION; float4 color : COLOR; float2 texcoord : TEXCOORD0; };
+
+            v2f vert(appdata v)
             {
                 v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex); 
-                o.uv = TRANSFORM_TEX(v.uv, _MainTex);    
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.texcoord = v.texcoord;
+                o.color = v.color * _Color;
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target
+            fixed4 frag(v2f i) : SV_Target
             {
-                fixed4 mainTexColor = tex2D(_MainTex, i.uv);
-                fixed4 mask = tex2D(_MaskTex, i.uv);
+                fixed4 maskColor = tex2D(_MainTex, i.texcoord);
+                fixed4 finalColor = fixed4(0, 0, 0, 0);
+                float threshold = 0.8;
 
-                if (mask.r < 0.1 && mask.g < 0.1 && mask.b < 0.1)
-                {
-                    return fixed4(mainTexColor.rgb, 0); 
-                }
-
-                fixed4 finalColor = fixed4(0.0, 0.0, 0.0, 0.0);
-
-                // 마스크 텍스처의 RGB 값 조합에 따라 어떤 색상을 사용할지 결정
-                float threshold = 0.8; 
-
-                if (mask.r > threshold && mask.g > threshold && mask.b > threshold)
-                {
-                    finalColor = _ColorRGB; // R, G, B 모두 켜졌을 때
-                }
-                else if (mask.r > threshold && mask.g > threshold)
-                {
-                    finalColor = _ColorRG;  // R, G가 켜졌을 때
-                }
-                else if (mask.r > threshold && mask.b > threshold)
-                {
-                    finalColor = _ColorRB;  // R, B가 켜졌을 때
-                }
-                else if (mask.g > threshold && mask.b > threshold)
-                {
-                    finalColor = _ColorGB;  // G, B가 켜졌을 때
-                }
-                else if (mask.r > threshold)
-                {
-                    finalColor = _ColorR;   // R만 켜졌을 때
-                }
-                else if (mask.g > threshold)
-                {
-                    finalColor = _ColorG;   // G만 켜졌을 때
-                }
-                else if (mask.b > threshold)
-                {
-                    finalColor = _ColorB;   // B만 켜졌을 때
-                }
+                if (maskColor.r > threshold && maskColor.g > threshold && maskColor.b > threshold) { finalColor = _ColorRGB; }
+                else if (maskColor.r > threshold && maskColor.g > threshold) { finalColor = _ColorRG; }
+                else if (maskColor.r > threshold && maskColor.b > threshold) { finalColor = _ColorRB; }
+                else if (maskColor.g > threshold && maskColor.b > threshold) { finalColor = _ColorGB; }
+                else if (maskColor.r > threshold) { finalColor = _ColorR; }
+                else if (maskColor.g > threshold) { finalColor = _ColorG; }
+                else if (maskColor.b > threshold) { finalColor = _ColorB; }
                 
+                finalColor.rgb *= i.color.rgb;
+                finalColor.a *= maskColor.a * i.color.a;
+
                 return finalColor;
             }
             ENDCG
         }
     }
-    FallBack "Transparent/VertexLit" 
+    FallBack "UI/Default"
 }
