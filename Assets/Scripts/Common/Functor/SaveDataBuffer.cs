@@ -56,7 +56,7 @@ public sealed class SaveDataBuffer : SingleTonForGameObject<SaveDataBuffer>
                 PassedWays = new List<Vector2Int>(),
                 IntelInfos = new SaveData.IntelnfoData()
                 {
-                    ConversationInfos = new Dictionary<int, string>(),
+                    ConversationInfos = new List<SaveData.IntelnfoData.SingleConversationInfo>(),
                     RadioInfos = new List<string>()
                 },
                 CurPlayerMapPos = new Vector2Int(7, 0),
