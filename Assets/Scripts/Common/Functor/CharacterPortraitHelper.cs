@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 /// <summary>
 /// CardData와 NPCLookPart를 기반으로 캐릭터 초상화 UI를 생성하고 설정하는 헬퍼 클래스
@@ -77,49 +76,6 @@ public static class CharacterPortraitHelper
             case CardData.NPCLookPartType.Glasses: return palette.GlassesColors;
             case CardData.NPCLookPartType.Cap: return palette.CapsColors;
             default: return null;
-        }
-    }
-
-    /// <summary>
-    /// 특정 Portrait의 부위 설명을 가져옵니다.
-    /// </summary>
-    /// <param name="portrait">NPCPortrait 인스턴스</param>
-    /// <param name="cardData">카드 데이터</param>
-    /// <param name="partType">부위 타입</param>
-    /// <returns>해당 부위의 Description</returns>
-    public static string GetPartDescription(NPCPortrait portrait, CardData cardData, CardData.NPCLookPartType partType)
-    {
-        if (portrait == null) return null;
-        return portrait.GetPartDescription(cardData, partType);
-    }
-
-    /// <summary>
-    /// 특정 Portrait의 모든 부위 설명을 가져옵니다.
-    /// </summary>
-    /// <param name="portrait">NPCPortrait 인스턴스</param>
-    /// <param name="cardData">카드 데이터</param>
-    /// <returns>부위별 Description Dictionary</returns>
-    public static Dictionary<CardData.NPCLookPartType, string> GetAllPartDescriptions(NPCPortrait portrait, CardData cardData)
-    {
-        if (portrait == null) return new Dictionary<CardData.NPCLookPartType, string>();
-        return portrait.GetAllPartDescriptions(cardData);
-    }
-
-    /// <summary>
-    /// Portrait와 CardData의 매핑 정보를 담는 구조체
-    /// </summary>
-    [System.Serializable]
-    public struct PortraitData
-    {
-        public NPCPortrait Portrait;
-        public CardData CardData;
-        public string Name; // 선택적 이름
-
-        public PortraitData(NPCPortrait portrait, CardData cardData, string name = "")
-        {
-            Portrait = portrait;
-            CardData = cardData;
-            Name = name;
         }
     }
 }
