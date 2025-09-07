@@ -14,36 +14,56 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainCharacter: {fileID: 21300000, guid: a8c0f0032ff6a054195c2b72bd9f6727, type: 3}
   Tops:
-  - {fileID: 21300000, guid: 5f97892838bcc5a44b142ef3318c18ad, type: 3}
-  - {fileID: 21300000, guid: 245f71b523ab14c459da15df24d399ac, type: 3}
-  - {fileID: 21300000, guid: 7fa6998c541bf934caa7495e1344d0aa, type: 3}
+  - PartSprite: {fileID: 21300000, guid: 5f97892838bcc5a44b142ef3318c18ad, type: 3}
+    Description: 
+  - PartSprite: {fileID: 21300000, guid: 245f71b523ab14c459da15df24d399ac, type: 3}
+    Description: 
+  - PartSprite: {fileID: 21300000, guid: 7fa6998c541bf934caa7495e1344d0aa, type: 3}
+    Description: 
   Faces:
-  - {fileID: 21300000, guid: f3c8ae697a873e24a9f880575c18f0d8, type: 3}
-  - {fileID: 21300000, guid: 046124bee567a134ab72b02695566e09, type: 3}
-  - {fileID: 21300000, guid: 3928cc913d4ea9145b21cdec4dfd97bb, type: 3}
+  - PartSprite: {fileID: 21300000, guid: f3c8ae697a873e24a9f880575c18f0d8, type: 3}
+    Description: 
+  - PartSprite: {fileID: 21300000, guid: 046124bee567a134ab72b02695566e09, type: 3}
+    Description: 
+  - PartSprite: {fileID: 21300000, guid: 3928cc913d4ea9145b21cdec4dfd97bb, type: 3}
+    Description: 
   Eyes:
-  - {fileID: 21300000, guid: 56abef148f6389649b7935d9ce0313ee, type: 3}
-  - {fileID: 21300000, guid: cb4b9ddbfe83b644daecbba0586b5373, type: 3}
-  - {fileID: 21300000, guid: fbef349614aeac5478f673a07d59fa5d, type: 3}
+  - PartSprite: {fileID: 21300000, guid: 56abef148f6389649b7935d9ce0313ee, type: 3}
+    Description: 
+  - PartSprite: {fileID: 21300000, guid: cb4b9ddbfe83b644daecbba0586b5373, type: 3}
+    Description: 
+  - PartSprite: {fileID: 21300000, guid: fbef349614aeac5478f673a07d59fa5d, type: 3}
+    Description: 
   Mouths:
-  - {fileID: 21300000, guid: 1c358fa7f997e47459e37389b9da59e5, type: 3}
-  - {fileID: 21300000, guid: cd9098134089ad64ba5939f189961057, type: 3}
-  - {fileID: 21300000, guid: ddc14b6e3c22e8f4eb37a94d80696b21, type: 3}
+  - PartSprite: {fileID: 21300000, guid: 1c358fa7f997e47459e37389b9da59e5, type: 3}
+    Description: 
+  - PartSprite: {fileID: 21300000, guid: cd9098134089ad64ba5939f189961057, type: 3}
+    Description: 
+  - PartSprite: {fileID: 21300000, guid: ddc14b6e3c22e8f4eb37a94d80696b21, type: 3}
+    Description: 
   Glasses:
-  - {fileID: 21300000, guid: c68c24a42ff38444499cd967f81cf4de, type: 3}
+  - PartSprite: {fileID: 21300000, guid: c68c24a42ff38444499cd967f81cf4de, type: 3}
+    Description: 
   Caps:
-  - {fileID: 21300000, guid: af079873a571ab8449e2ac2215b15a0b, type: 3}
+  - PartSprite: {fileID: 21300000, guid: af079873a571ab8449e2ac2215b15a0b, type: 3}
+    Description: 
   FrontHairs:
-  - {fileID: 21300000, guid: 104dbbc2d59e6e8449f99467ccd100a6, type: 3}
-  - {fileID: 21300000, guid: 708eb24939418a644a2ee5d23d838f44, type: 3}
-  - {fileID: 21300000, guid: 6a8756ee75c2c9f4ebfdae68112efb47, type: 3}
+  - PartSprite: {fileID: 21300000, guid: 104dbbc2d59e6e8449f99467ccd100a6, type: 3}
+    Description: 
+  - PartSprite: {fileID: 21300000, guid: 708eb24939418a644a2ee5d23d838f44, type: 3}
+    Description: 
+  - PartSprite: {fileID: 21300000, guid: 6a8756ee75c2c9f4ebfdae68112efb47, type: 3}
+    Description: 
   BackHairs:
-  - {fileID: 21300000, guid: 2a031aeda4489a04d9bf54fcf41f0ee8, type: 3}
-  - {fileID: 21300000, guid: 9075bb900cebe2d43bd4cf5b250574da, type: 3}
-  - {fileID: 21300000, guid: e46865143153d2d4a86e4b26c14153dd, type: 3}
+  - PartSprite: {fileID: 21300000, guid: 2a031aeda4489a04d9bf54fcf41f0ee8, type: 3}
+    Description: 
+  - PartSprite: {fileID: 21300000, guid: 9075bb900cebe2d43bd4cf5b250574da, type: 3}
+    Description: 
+  - PartSprite: {fileID: 21300000, guid: e46865143153d2d4a86e4b26c14153dd, type: 3}
+    Description: 
   ColorPalettes:
   - TopColors:
-      RedRegionColor: {r: 0, g: 0, b: 0, a: 0}
+      RedRegionColor: {r: 0.35609913, g: 1, b: 0, a: 0}
       BlueRegionColor: {r: 0, g: 0, b: 0, a: 0}
       GreenRegionColor: {r: 0, g: 0, b: 0, a: 0}
       RedGreenRegionColor: {r: 0, g: 0, b: 0, a: 0}

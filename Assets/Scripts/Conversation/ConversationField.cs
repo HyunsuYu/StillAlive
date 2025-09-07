@@ -8,15 +8,18 @@ using UnityEngine;
 public class ConversationField : MonoBehaviour
 {
     [SerializeField] private ConversationMenu m_conversationMenu;
+    [SerializeField] private ConversationTeam m_conversationField;
     
-    List<NPCPortrait> npcPortraits;
+    
+
     public void Start()
     {
         SaveDataBuffer.Instance.TryLoadData();
 
+        // 나중에 필터링 할 예정 --> 
         List<CardData> cardDatas = SaveDataBuffer.Instance.Data.CardDatas;
 
-        npcPortraits = m_conversationMenu.InitTeamStatus(cardDatas);
+        List<NPCPortrait> npcPortraits = m_conversationMenu.InitTeamStatus(cardDatas);
 
 
 
