@@ -34,6 +34,8 @@ public sealed class ReplicateInterface : SingleTonForGameObject<ReplicateInterfa
     private bool m_bisResponsed = false;
     private string m_llmResponse = string.Empty;
 
+    [SerializeField] private string m_APIKey;
+
     private string m_systemPrompt = "너는 한 명의 등장인물이 되어서 주어진 프롬프트의 설정에 따라 대사를 출력해야만 해. 우선, 세계관은 아포칼립스 이후의 세계관이먀, 변형된 감염체들이 동료 사이에 섞여있을 수 있어. 감염체는 겉보기에는 일반적인 인간과 차이가 나지 않아 동료 중 한 명으로 숨어들어와있을 수 있는 거지.";
 
     [SerializeField] private UnityEvent m_responseArrived;
@@ -207,7 +209,7 @@ public sealed class ReplicateInterface : SingleTonForGameObject<ReplicateInterfa
         {
             request.method = "POST";
             request.downloadHandler = new DownloadHandlerBuffer();
-            request.SetRequestHeader("Authorization", "Bearer " + "r8_JRKzchgHmJn2sSewlnGKGBGBmWeZHi54Mghvm");
+            request.SetRequestHeader("Authorization", "Bearer " + m_APIKey);
             request.SetRequestHeader("Content-Type", "application/json");
             request.SetRequestHeader("Prefer", "wait");
 
