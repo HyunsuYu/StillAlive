@@ -24,6 +24,24 @@ public struct CardData
         Zombie      = 0b0000_0010,
         Tetanus     = 0b0000_0100
     }
+    public enum CardPersonality
+    {
+        Optimistic,
+        Pessimistic,
+        Realistic,
+        Rebellious,
+        Dependent
+    }
+    public enum LastNightState
+    {
+        /// <summary>
+        /// Peace는 공격이 일어났는지, 아닌지도 모르는 상태입니다. 즉, 전날 밤에 공격이 애초에 이루어지지 않았다면 살아있는 동료 전원이 Peace 상태입니다. 만약 전날 밤에 공격이 일어났더라도 목격조차 못한 인원은 Peace 상태일 수 있습니다.
+        /// </summary>
+        Peace,
+        Attacker,
+        AttackedPerson,
+        Witness,
+    }
 
     public struct StatusInfo
     {
@@ -59,6 +77,8 @@ public struct CardData
     public bool BIsTraitor;
 
     public DiseasesType Diseases;
+    public CardPersonality Personality;
+    public LastNightState LastNight;
 
     public List<int> ItemIndexes;
 }
