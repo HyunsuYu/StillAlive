@@ -3,8 +3,13 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Collections;
 
+
+// 수정이 필요한 시점
+// NPCLookPartType이 늘어나면, Switch문을 변경해야 함.
+// Material은 인스턴스로 생성하고 있음 --> 성능을 잡아먹을 수 있음
+
 /// <summary>
-/// 동적 머티리얼에 텍스처를 수동 할당하도록 수정된 최종 버전
+/// 동적 머티리얼에 텍스처를 수동 할당하고 있음 
 /// </summary>
 public class NPCPortrait : MonoBehaviour
 {
@@ -155,6 +160,39 @@ public class NPCPortrait : MonoBehaviour
         return spriteArray;
     }
 
+    private NPCLookPart.PartData[] GetPartDataArrayByType(CardData.NPCLookPartType partType)
+    {
+        switch (partType)
+        {
+            case CardData.NPCLookPartType.Top:
+                return m_lookPartData.Tops;
+
+            case CardData.NPCLookPartType.Face:
+                return m_lookPartData.Faces;
+
+            case CardData.NPCLookPartType.FrontHair:
+                return m_lookPartData.FrontHairs;
+
+            case CardData.NPCLookPartType.BackHair:
+                return m_lookPartData.BackHairs;
+
+            case CardData.NPCLookPartType.Eye:
+                return m_lookPartData.Eyes;
+
+            case CardData.NPCLookPartType.Mouth:
+                return m_lookPartData.Mouths;
+
+            case CardData.NPCLookPartType.Glasses:
+                return m_lookPartData.Glasses;
+
+            case CardData.NPCLookPartType.Cap:
+                return m_lookPartData.Caps;
+
+            default:
+                return null;
+        }
+    }
+
     /// <summary>
     /// 특정 부위의 Description을 가져옵니다.
     /// </summary>
@@ -176,52 +214,6 @@ public class NPCPortrait : MonoBehaviour
             return null;
 
         return partDataArray[partIndex].Description;
-    }
-
-    /// <summary>
-    /// 모든 부위의 Description을 Dictionary로 가져옵니다.
-    /// </summary>
-    /// <param name="cardData">카드 데이터</param>
-    /// <returns>부위별 Description Dictionary</returns>
-    public Dictionary<CardData.NPCLookPartType, string> GetAllPartDescriptions(CardData cardData)
-    {
-        Dictionary<CardData.NPCLookPartType, string> descriptions = new Dictionary<CardData.NPCLookPartType, string>();
-
-        if (cardData.NPCLookTable == null || m_lookPartData == null)
-            return descriptions;
-
-        foreach (var partType in System.Enum.GetValues(typeof(CardData.NPCLookPartType)))
-        {
-            CardData.NPCLookPartType type = (CardData.NPCLookPartType)partType;
-            string description = GetPartDescription(cardData, type);
-            if (!string.IsNullOrEmpty(description))
-            {
-                descriptions[type] = description;
-            }
-        }
-
-        return descriptions;
-    }
-
-    /// <summary>
-    /// 부위 타입에 따른 PartData 배열을 가져옵니다.
-    /// </summary>
-    /// <param name="partType">부위 타입</param>
-    /// <returns>해당 부위의 PartData 배열</returns>
-    private NPCLookPart.PartData[] GetPartDataArrayByType(CardData.NPCLookPartType partType)
-    {
-        switch (partType)
-        {
-            case CardData.NPCLookPartType.Top: return m_lookPartData.Tops;
-            case CardData.NPCLookPartType.Face: return m_lookPartData.Faces;
-            case CardData.NPCLookPartType.FrontHair: return m_lookPartData.FrontHairs;
-            case CardData.NPCLookPartType.BackHair: return m_lookPartData.BackHairs;
-            case CardData.NPCLookPartType.Eye: return m_lookPartData.Eyes;
-            case CardData.NPCLookPartType.Mouth: return m_lookPartData.Mouths;
-            case CardData.NPCLookPartType.Glasses: return m_lookPartData.Glasses;
-            case CardData.NPCLookPartType.Cap: return m_lookPartData.Caps;
-            default: return null;
-        }
     }
 
     // 히트 이펙트
