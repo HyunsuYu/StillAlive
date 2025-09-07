@@ -37,8 +37,21 @@ internal static class SaveDataInterface
         return cardDatas;
     }
 
-    internal static CardData GetCardData(int index)
+    internal static CardData GetCardData(in int index)
     {
         return SaveDataBuffer.Instance.Data.CardDatas[index];
+    }
+    internal static int GetCardIndex(in CardData cardData)
+    {
+        var cardDatas = SaveDataBuffer.Instance.Data.CardDatas;
+        for(int index = 0; index <  cardDatas.Count; index++)
+        {
+            if (cardDatas[index] == cardData)
+            {
+                return index;
+            }
+        }
+
+        return -1;
     }
 }
