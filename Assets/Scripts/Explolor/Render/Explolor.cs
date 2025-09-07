@@ -130,6 +130,7 @@ public class Explolor : SingleTonForGameObject<Explolor>
                 {
                     card.Init(newColleague, true);
                     colleagueGO.SetActive(true);
+                    card.GetComponent<RectTransform>().anchoredPosition = Vector2.zero; // 위치 초기화
                 }
             }
         }
@@ -139,14 +140,16 @@ public class Explolor : SingleTonForGameObject<Explolor>
         }
 
         // 2. 현재 내 팀 (영구 데이터) 표시
-        var currentTeam = SaveDataBuffer.Instance.Data.CardDatas;
+
+
+        var currentTeam = SaveDataInterface.GetAliveCardInfos(); // 살아있는 카드 데이터들을 가져옴
         for (int j = 0; j < currentTeam.Count && j < MyTeamBox.Length; j++)
         {
             GameObject myTeamGO = MyTeamBox[j];
             BattleCard card = myTeamGO.GetComponent<BattleCard>();
             if (card != null)
             {
-                card.Init(currentTeam[j]);
+                card.Init(currentTeam[j],true);
                 myTeamGO.SetActive(true);
             }
         }

@@ -69,7 +69,7 @@ public class CardSelecter : SingleTonForGameObject<CardSelecter>
             }
 
             BattleCard battleCard = card.GetComponent<BattleCard>();
-            if(battleCard != null)
+            if (battleCard != null)
             {
                 CardData removeColleague = battleCard.MyData;
                 SaveDataBuffer.Instance.Data.CardDatas.Remove(removeColleague);
@@ -79,9 +79,9 @@ public class CardSelecter : SingleTonForGameObject<CardSelecter>
                 Debug.LogError("선택된 카드에 BattleCard 컴포넌트가 없습니다.");
             }
         }
-        
+
         SaveDataBuffer.Instance.TrySaveData();
-        foreach(var card in _selectedCard)
+        foreach (var card in _selectedCard)
         {
             card.SetActive(false);
         }
@@ -90,25 +90,25 @@ public class CardSelecter : SingleTonForGameObject<CardSelecter>
 
     public void GetCard() // 선택된 카드 팀에 추가
     {
-        if(_selectedCard.Count ==0)
+        if (_selectedCard.Count == 0)
         {
             return;
         }
 
         foreach (var card in _selectedCard)
         {
-            if(SaveDataBuffer.Instance.Data.CardDatas.Count >= 3)
+            if (SaveDataBuffer.Instance.Data.CardDatas.Count >= 3)
             {
                 Debug.Log("팀 인원 초과");
                 break;
             }
 
             BattleCard battleCard = card.GetComponent<BattleCard>();
-                CardData newColleague = battleCard.MyData;
-                SaveDataBuffer.Instance.Data.CardDatas.Add(newColleague);
-                Debug.Log("팀에 추가됨" + newColleague.Status.AttackPower.ToString());
-                SaveDataBuffer.Instance.TrySaveData();
-           
+            CardData newColleague = battleCard.MyData;
+            SaveDataBuffer.Instance.Data.CardDatas.Add(newColleague);
+            Debug.Log("팀에 추가됨" + newColleague.Status.AttackPower.ToString());
+            SaveDataBuffer.Instance.TrySaveData();
+
         }
         ClearSelection();
         Explolor.Instance.exState = Explolor.ExplolorState.None;
