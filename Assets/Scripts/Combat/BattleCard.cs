@@ -6,8 +6,8 @@ using UnityEngine.UI;
 
 public class BattleCard : MonoBehaviour
 {
-    private CardData m_persistentData; // ì˜êµ¬ ì €ì¥ë  ì›ë³¸ ë°ì´í„° (ì•„ì´í…œ ìŠ¤íƒ¯ í¬í•¨)
-    private CardData m_battleData;     // ì´ë²ˆ ì „íˆ¬ì—ë§Œ ì‚¬ìš©ë  ì„ì‹œ ë°ì´í„° (ë””ë²„í”„ ë“± ì ìš©)
+    private CardData m_persistentData; // ¿µ±¸ ÀúÀåµÉ ¿øº» µ¥ÀÌÅÍ (¾ÆÀÌÅÛ ½½·Ô Àû¿ë)
+    private CardData m_battleData;     // ÀÌ¹ø ÀüÅõ¿¡¸¸ »ç¿ëµÉ ÀÓ½Ã µ¥ÀÌÅÍ (µğ¹öÇÁ ¹ú·¹ Àû¿ë)
     private bool isDebuffed = false;
 
     public CardData MyData => m_persistentData;
@@ -41,7 +41,7 @@ public class BattleCard : MonoBehaviour
                 m_itemContainer.gameObject.SetActive(true);
             else
             {
-                m_cardImage.sprite = Resources.Load<Sprite>($"Card/ê´´ë¬¼ì¹´ë“œ");
+                m_cardImage.sprite = Resources.Load<Sprite>($"Card/±«¹°Ä«µå");
                 m_itemContainer.gameObject.SetActive(false);
             }
             ApplyDiseaseEffects();
@@ -54,13 +54,13 @@ public class BattleCard : MonoBehaviour
     }
 
     /// <summary>
-    /// ì „íˆ¬ ì‹œì‘ ì‹œ ì§ˆë³‘ íš¨ê³¼ë¥¼ ì „íˆ¬ìš© ë°ì´í„°(m_battleData)ì— ì ìš©í•©ë‹ˆë‹¤.
+    /// ÀüÅõ ½ÃÀÛ ½Ã Áúº´ È¿°ú¸¦ ÀüÅõ¿ë µ¥ÀÌÅÍ(m_battleData)¿¡ Àû¿ëÇÕ´Ï´Ù.
     /// </summary>
     private void ApplyDiseaseEffects()
     {
         if ((m_battleData.Diseases & CardData.DiseasesType.ColdFever) != 0)
         {
-            m_cardImage.sprite = Resources.Load<Sprite>($"Card/ì—´ê°ê¸°");
+            m_cardImage.sprite = Resources.Load<Sprite>($"Card/¿­°¨±â");
             isDebuffed = true;
             m_battleData.Status.CurHP = Mathf.Max(1, m_battleData.Status.CurHP / 2);
             m_battleData.Status.MaxHP = Mathf.Max(1, m_battleData.Status.MaxHP / 2);
@@ -71,7 +71,7 @@ public class BattleCard : MonoBehaviour
     }
 
     /// <summary>
-    /// ì§ˆë³‘ ì¹˜ë£Œ ì‹œ ì›ë˜ ëŠ¥ë ¥ì¹˜ë¡œ ë³µêµ¬í•˜ëŠ” í•¨ìˆ˜
+    /// Áúº´ Á¦°Å ½Ã ¿ø·¡ ´É·ÂÄ¡·Î º¹±¸ÇÏ´Â ÇÔ¼ö
     /// </summary>
     private void RestoreOriginalStats()
     {
@@ -83,7 +83,7 @@ public class BattleCard : MonoBehaviour
     }
 
     /// <summary>
-    /// ì „íˆ¬ í›„ ì €ì¥í•  ìµœì¢… CardDataë¥¼ ë°˜í™˜í•˜ëŠ” í•¨ìˆ˜
+    /// ÀüÅõ ÈÄ ÀúÀåÇÒ ÃÖÁ¾ CardData¸¦ ¹İÈ¯ÇÏ´Â ÇÔ¼ö
     /// </summary>
     public CardData GetFinalCardDataForSave()
     {
@@ -94,7 +94,7 @@ public class BattleCard : MonoBehaviour
     }
 
     /// <summary>
-    /// ì¸ë²¤í† ë¦¬ì—ì„œ ì•„ì´í…œì„ ë“œë¡­í–ˆì„ ë•Œ í˜¸ì¶œë˜ëŠ” í•¨ìˆ˜
+    /// ÀÎº¥Åä¸®¿¡¼­ ¾ÆÀÌÅÛÀ» ÀåÂøÇßÀ» ¶§ È£ÃâµÇ´Â ÇÔ¼ö
     /// </summary>
     public void ApplyItem(int itemIndex)
     {
@@ -148,14 +148,14 @@ public class BattleCard : MonoBehaviour
     }
 
     /// <summary>
-    /// ê³µê²© ì§í›„ í˜¸ì¶œë˜ì–´ ì•„ì´í…œ íš¨ê³¼(ë‚´êµ¬ë„, Boom ë“±)ë¥¼ ì²˜ë¦¬í•©ë‹ˆë‹¤.
+    /// °ø°İ ÀÌÈÄ È£ÃâµÇ¾î ¾ÆÀÌÅÛ È¿°ú(³»±¸µµ, Boom ¹ú·¹)¸¦ Ã³¸®ÇÕ´Ï´Ù.
     /// </summary>
     public void ProcessAttackEffects(BattleCard target, List<BattleCard> allEnemies, List<BattleCard> allAllies)
     {
         if (m_battleData.Items == null || m_battleData.Items.Count == 0) return;
         List<CardData.AttachedItemData> itemsToDestroy = new List<CardData.AttachedItemData>();
 
-        // Boom íš¨ê³¼ ì²˜ë¦¬
+        // Boom È¿°ú Ã³¸®
         foreach (var attachedItem in m_battleData.Items)
         {
             ItemTypes.ItemData itemData = InventoryPopupControl.Instance.ItemType.ItemDatas[attachedItem.ItemIndex];
@@ -167,7 +167,7 @@ public class BattleCard : MonoBehaviour
             }
         }
 
-        // ë‚´êµ¬ë„ ê°ì†Œ ë° íŒŒê´´ ì²˜ë¦¬
+        // ³»±¸µµ °¨¼Ò ¹× ÆÄ±« Ã³¸®
         for (int i = 0; i < m_battleData.Items.Count; i++)
         {
             var item = m_battleData.Items[i];
@@ -186,25 +186,25 @@ public class BattleCard : MonoBehaviour
     }
 
     /// <summary>
-    /// ë‚´êµ¬ë„ê°€ ë‹¤ ë‹³ì€ ì•„ì´í…œì„ íŒŒê´´í•˜ê³  ëŠ¥ë ¥ì¹˜ë¥¼ ë˜ëŒë¦½ë‹ˆë‹¤.
+    /// ³»±¸µµ°¡ ´Ù ¶³¾îÁø ¾ÆÀÌÅÛÀ» ÀåÂøÇØÁ¦ÇÏ°í ´É·ÂÄ¡¸¦ Á¦°ÅÇÕ´Ï´Ù.
     /// </summary>
     private void UnequipItem(CardData.AttachedItemData itemToRemove)
     {
-        // 1. ì›ë³¸ ë°ì´í„°ì—ì„œ ì•„ì´í…œ ì œê±° ë° ìŠ¤íƒ¯ ì˜êµ¬ ê°ì†Œ
+        // 1. ¿øº» µ¥ÀÌÅÍ¿¡¼­ ¾ÆÀÌÅÛ Á¦°Å ¹× ½½·Ô ¿ø·¡ ´É·ÂÄ¡
         m_persistentData.Items.Remove(itemToRemove);
         ApplyStatsToData(ref m_persistentData, itemToRemove, -1);
 
-        // 2. ì „íˆ¬ ë°ì´í„°ëŠ” ì›ë³¸ ë°ì´í„°ë¥¼ ë‹¤ì‹œ ë³µì‚¬í•˜ì—¬ ê°±ì‹ 
+        // 2. ÀüÅõ µ¥ÀÌÅÍ´Â ¿øº» µ¥ÀÌÅÍ¸¦ ´Ù½Ã º¹»çÇÏ¿© °»½Å
         int hpBeforeUpdate = m_battleData.Status.CurHP;
         m_battleData = m_persistentData;
         m_battleData.Status.CurHP = hpBeforeUpdate;
 
-        // 3. ë””ë²„í”„ê°€ ìˆì—ˆë‹¤ë©´ ì „íˆ¬ ë°ì´í„°ì— ë‹¤ì‹œ ì ìš©
+        // 3. µğ¹öÇÁ°¡ ÀÖ¾ú´Ù¸é ÀüÅõ µ¥ÀÌÅÍ¿¡ ´Ù½Ã Àû¿ë
         if (isDebuffed) ApplyDiseaseEffects();
     }
 
     /// <summary>
-    /// íŠ¹ì • CardDataì— ì•„ì´í…œ ëŠ¥ë ¥ì¹˜ë¥¼ ì ìš©í•˜ê±°ë‚˜ ì œê±°í•˜ëŠ” í•¨ìˆ˜
+    /// Æ¯Á¤ CardData¿¡ ¾ÆÀÌÅÛ ´É·ÂÄ¡¸¦ Àû¿ëÇÏ°Å³ª Á¦°ÅÇÏ´Â ÇÔ¼ö
     /// </summary>
     private void ApplyStatsToData(ref CardData data, CardData.AttachedItemData item, int multiplier)
     {
@@ -224,7 +224,7 @@ public class BattleCard : MonoBehaviour
     }
 
     /// <summary>
-    /// í˜„ì¬ ì¥ì°©ëœ ì•„ì´í…œë“¤ì„ UI ìŠ¬ë¡¯ì— ë‹¤ì‹œ ê·¸ë¦½ë‹ˆë‹¤.
+    /// ÇöÀç ÀåÂøµÈ ¾ÆÀÌÅÛµéÀ» UI ½½·Ô¿¡ ´Ù½Ã Ç¥½ÃÇÕ´Ï´Ù.
     /// </summary>
     private void RefreshItemSlotsUI()
     {
@@ -249,13 +249,13 @@ public class BattleCard : MonoBehaviour
     }
 
     /// <summary>
-    /// ì´ˆìƒí™”ë¥¼ ìƒì„±í•©ë‹ˆë‹¤.
+    /// ÃÊ»óÈ­¸¦ »ı¼ºÇÕ´Ï´Ù.
     /// </summary>
     private void CreatePortrait(bool isUI)
     {
         if (m_portraitInstance != null) Destroy(m_portraitInstance.gameObject);
 
-        // ì´ˆìƒí™”ëŠ” ì „íˆ¬ìš© ë°ì´í„°(ë””ë²„í”„ ì‹œ ëª¨ìŠµì´ ë°”ë€” ìˆ˜ ìˆìœ¼ë¯€ë¡œ)ë¥¼ ê¸°ì¤€ìœ¼ë¡œ ìƒì„±
+        // ÃÊ»óÈ­´Â ÀüÅõ¿ë µ¥ÀÌÅÍ(µğ¹öÇÁ ½Ã ÃÊ»óÈ­°¡ º¯°æµÉ ¼ö ÀÖÀ¸¹Ç·Î)¸¦ ±âÁØÀ¸·Î »ı¼º
         m_battleData.ColorPalleteIndex = 0;
         GameObject portraitObj = CharacterPortraitHelper.CreatePortrait(m_battleData);
         if (portraitObj != null)
@@ -268,18 +268,18 @@ public class BattleCard : MonoBehaviour
     }
 
     /// <summary>
-    /// UI í…ìŠ¤íŠ¸ë¥¼ í˜„ì¬ ì „íˆ¬ ëŠ¥ë ¥ì¹˜ë¡œ ì—…ë°ì´íŠ¸í•©ë‹ˆë‹¤.
+    /// UI ÅØ½ºÆ®¸¦ ÇöÀç ÀüÅõ ´É·ÂÄ¡·Î ¾÷µ¥ÀÌÆ®ÇÕ´Ï´Ù.
     /// </summary>
     public void UpdateStatusUI()
     {
         m_hpText.text = $"{m_battleData.Status.CurHP}/{m_battleData.Status.MaxHP}";
-        m_defenceText.text = $"ë°©ì–´ë ¥\n{m_battleData.Status.DefencePower}";
-        m_speedText.text = $"ìŠ¤í”¼ë“œ\n{m_battleData.Status.Speed}";
-        m_atkText.text = $"ê³µê²©ë ¥\n{m_battleData.Status.AttackPower}";
+        m_defenceText.text = $"¹æ¾î·Â\n{m_battleData.Status.DefencePower}";
+        m_speedText.text = $"½ºÇÇµå\n{m_battleData.Status.Speed}";
+        m_atkText.text = $"°ø°İ·Â\n{m_battleData.Status.AttackPower}";
     }
 
     /// <summary>
-    /// í”¼í•´ë¥¼ ì…ì—ˆì„ ë•Œ í˜¸ì¶œë©ë‹ˆë‹¤.
+    /// ÇÇÇØ¸¦ ÀÔ¾úÀ» ¶§ È£ÃâµË´Ï´Ù.
     /// </summary>
     public void TakeDamage(int damage)
     {
@@ -291,7 +291,7 @@ public class BattleCard : MonoBehaviour
         m_battleField.UpdateTeamMemberStatusUI(this);
     }
 
-    // --- Getter í•¨ìˆ˜ë“¤ (ì „íˆ¬ìš© ë°ì´í„°ë¥¼ ê¸°ì¤€ìœ¼ë¡œ ê°’ì„ ë°˜í™˜) ---
+    // --- Getter ÇÔ¼öµé (ÀüÅõ¿ë µ¥ÀÌÅÍ¸¦ ±âÁØÀ¸·Î °ªÀ» ¹İÈ¯) ---
     public int GetSpeed() => m_battleData.Status.Speed;
     public int GetAttackPower() => m_battleData.Status.AttackPower;
     public int GetCurrentHP() => m_battleData.Status.CurHP;

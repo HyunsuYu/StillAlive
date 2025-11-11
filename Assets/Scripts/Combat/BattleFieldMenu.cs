@@ -13,12 +13,12 @@ public class BattleFieldMenu : MonoBehaviour
     //[SerializeField] private TMP_Text m_coinText;
     [SerializeField] private TMP_Text m_dayText;
 
-    [Header("íŒ€ ìƒíƒœì°½")]
-    [SerializeField] private Transform m_teamStatusParent;     // íŒ€ ìƒíƒœì°½ ë¶€ëª¨ ì˜¤ë¸Œì íŠ¸
-    [SerializeField] private GameObject m_teamMemberUIPrefab;  // íŒ€ì› UI í”„ë¦¬íŒ¹ (ì´ˆìƒí™” + HPë°”)
+    [Header("ÆÀ »óÅÂÃ¢")]
+    [SerializeField] private Transform m_teamStatusParent;     // ÆÀ »óÅÂÃ¢ ºÎ¸ğ ¿ÀºêÁ§Æ®
+    [SerializeField] private GameObject m_teamMemberUIPrefab;  // ÆÀ¿ø UI ÇÁ¸®ÆÕ (ÃÊ»óÈ­ + HP¹Ù)
     [SerializeField] private float m_teamUISpacing;
 
-    private List<GameObject> m_teamMemberUIs;// ìƒì„±ëœ íŒ€ì› UIë“¤
+    private List<GameObject> m_teamMemberUIs;// »ı¼ºµÈ ÆÀ¿ø UIµé
 
     private void Start()
     {
@@ -34,43 +34,43 @@ public class BattleFieldMenu : MonoBehaviour
     }
 
     /// <summary>
-    /// íŒ€ ì „ì²´ ìƒíƒœì°½ì„ ì´ˆê¸°í™” í•©ë‹ˆë‹¤.
+    /// ÆÀ ÀüÃ¼ »óÅÂÃ¢À» ÃÊ±âÈ­ ÇÕ´Ï´Ù.
     /// </summary>
-    /// <param name="teamCards">íŒ€ ì¹´ë“œ ë¦¬ìŠ¤íŠ¸</param>
+    /// <param name="teamCards">ÆÀ Ä«µå ¸®½ºÆ®</param>
     public void InitTeamStatus(List<BattleCard> teamCards)
     {
         if (teamCards == null || m_teamStatusParent == null) return;
 
         int memberCount = teamCards.Count;
 
-        // ê° íŒ€ì›ì— ëŒ€í•´ UI ìƒì„± ë° ìœ„ì¹˜ ì„¤ì •
+        // °¢ ÆÀ¿ø¿¡ ¸Â°Ô UI »ı¼º ¹× À§Ä¡ ¼³Á¤
         for (int i = 0; i < memberCount; i++)
         {
             if (teamCards[i] != null)
             {
-                // m_teamStatusParentì˜ ì¤‘ì‹¬ì—ì„œ ì‹œì‘í•´ì„œ ì˜¤ë¥¸ìª½ìœ¼ë¡œ ê°„ê²©ë§Œí¼ ë°°ì¹˜
+                // m_teamStatusParentÀÇ ¿ŞÂÊºÎÅÍ ½ÃÀÛÇØ¼­ ¿ÀºêÁ§Æ®·ÎºÎÅÍ °£°İ¸¸Å­ ¹èÄ¡
                 Vector3 memberUIPosition = new Vector3(i * m_teamUISpacing, 0, 0);
 
-                // íŒ€ì› UI ì¸ìŠ¤í„´ìŠ¤ ìƒì„±
+                // ÆÀ¿ø UI ÀÎ½ºÅÏ½º »ı¼º
                 GameObject memberUI = Instantiate(m_teamMemberUIPrefab, m_teamStatusParent);
                 m_teamMemberUIs.Add(memberUI);
 
                 memberUI.transform.localPosition = memberUIPosition;
 
-                // ì´ˆìƒí™” ìƒì„±
+                // ÃÊ»óÈ­ »ı¼º
                 CreateTeamMemberPortrait(teamCards[i], memberUI);
 
-                // HPë°”ì™€ ì„¤ì •
+                // HP¹Ù ¼³Á¤
                 UpdateTeamMemberStatus(teamCards[i], i);
             }
         }
     }
 
     /// <summary>
-    /// íŠ¹ì • íŒ€ì›ì˜ ìƒíƒœë¥¼ ì—…ë°ì´íŠ¸ í˜„ì¬ëŠ” Hpë°”
+    /// Æ¯Á¤ ÆÀ¿øÀÇ »óÅÂ¸¦ ¾÷µ¥ÀÌÆ®ÇÕ´Ï´Ù. ÇöÀç´Â HP¹Ù¸¸ ¾÷µ¥ÀÌÆ®ÇÕ´Ï´Ù.
     /// </summary>
-    /// <param name="teamCard">ì—…ë°ì´íŠ¸í•  íŒ€ ì¹´ë“œ</param>
-    /// <param name="index">íŒ€ì—ì„œì˜ ì¸ë±ìŠ¤</param>
+    /// <param name="teamCard">¾÷µ¥ÀÌÆ®ÇÒ ÆÀ Ä«µå</param>
+    /// <param name="index">¸®½ºÆ®¿¡¼­ÀÇ ÀÎµ¦½º</param>
     public void UpdateTeamMemberStatus(BattleCard teamCard, int index, bool isRemove = false)
     {
         if (teamCard == null || index < 0 || index >= m_teamMemberUIs.Count) return;
@@ -85,7 +85,7 @@ public class BattleFieldMenu : MonoBehaviour
             return;
         }
 
-        // HP í…ìŠ¤íŠ¸ ì—…ë°ì´íŠ¸
+        // HP ÅØ½ºÆ® ¾÷µ¥ÀÌÆ®
         TMP_Text hpText = memberUI.GetComponentInChildren<TMP_Text>();
         if (hpText != null)
         {
@@ -94,21 +94,21 @@ public class BattleFieldMenu : MonoBehaviour
     }
 
     /// <summary>
-    /// íŒ€ì›ì˜ ì´ˆìƒí™”ë¥¼ ìƒì„±, ì›ë³¸ ì¹´ë“œì˜ ì´ˆìƒí™” í´ë¡  ì‚¬ìš©
+    /// ÆÀ¿øÀÇ ÃÊ»óÈ­¸¦ »ı¼ºÇÕ´Ï´Ù. ¿øº» Ä«µåÀÇ ÃÊ»óÈ­¸¦ ÂüÁ¶ÇÏ¿© »ç¿ëÇÕ´Ï´Ù.
     /// </summary>
-    /// <param name="teamCard">íŒ€ ì¹´ë“œ ì˜¤ë¸Œì íŠ¸</param>
-    /// <param name="memberUI">íŒ€ì› UI ì˜¤ë¸Œì íŠ¸</param>
+    /// <param name="teamCard">ÆÀ Ä«µå ¿ÀºêÁ§Æ®</param>
+    /// <param name="memberUI">ÆÀ¿ø UI ¿ÀºêÁ§Æ®</param>
     private void CreateTeamMemberPortrait(BattleCard teamCard, GameObject memberUI)
     {
         Transform portraitParent = memberUI.transform;
         if (portraitParent == null)
             return;
 
-        // ì›ë³¸ ì¹´ë“œì˜ ì´ˆìƒí™” ì¸ìŠ¤í„´ìŠ¤ ê°€ì ¸ì˜¤ê¸°
+        // ¿øº» Ä«µåÀÇ ÃÊ»óÈ­ ÀÎ½ºÅÏ½º °¡Á®¿À±â
         NPCPortrait originalPortrait = teamCard.GetPortraitInstance();
         if (originalPortrait != null)
         {
-            // ì›ë³¸ ì´ˆìƒí™”ë¥¼ í´ë¡ í•˜ì—¬ UIì— ë°°ì¹˜
+            // ¿øº» ÃÊ»óÈ­¸¦ º¹Á¦ÇÏ¿© UI¿¡ ¹èÄ¡
             GameObject portraitClone = Instantiate(originalPortrait.gameObject, portraitParent);
             portraitClone.transform.localScale = new Vector3(1f, 1f, 1f);
         }

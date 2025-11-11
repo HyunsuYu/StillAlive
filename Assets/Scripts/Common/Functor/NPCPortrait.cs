@@ -4,19 +4,19 @@ using System.Collections.Generic;
 using System.Collections;
 
 
-// ìˆ˜ì •ì´ í•„ìš”í•œ ì‹œì 
-// NPCLookPartTypeì´ ëŠ˜ì–´ë‚˜ë©´, Switchë¬¸ì„ ë³€ê²½í•´ì•¼ í•¨.
-// Materialì€ ì¸ìŠ¤í„´ìŠ¤ë¡œ ìƒì„±í•˜ê³  ìžˆìŒ --> ì„±ëŠ¥ì„ ìž¡ì•„ë¨¹ì„ ìˆ˜ ìžˆìŒ
+// ¼öÁ¤ÀÌ ÇÊ¿äÇÑ ½ÃÁ¡
+// NPCLookPartTypeÀÌ Ãß°¡µÇ¸é, Switch¹®À» ¼öÁ¤ÇØ¾ß ÇÔ.
+// MaterialÀ» ÀÎ½ºÅÏ½º·Î »ý¼ºÇÏ°í ÀÖÀ½ --> ¼º´ÉÀ» °í·ÁÇØº¼ ¼ö ÀÖÀ½
 
 /// <summary>
-/// ë™ì  ë¨¸í‹°ë¦¬ì–¼ì— í…ìŠ¤ì²˜ë¥¼ ìˆ˜ë™ í• ë‹¹í•˜ê³  ìžˆìŒ 
+/// µ¿Àû ÃÊ»óÈ­ ½Ã½ºÅÛ¿¡ ÃÊ»óÈ­¸¦ ¼öµ¿À¸·Î Àû¿ëÇÏ°í ÀÖÀ½ 
 /// </summary>
 public class NPCPortrait : MonoBehaviour
 {
     private const string MATERIAL_PATH = "LoadMaterials/PortraitMaterial";
     // private const string ENEMY_MATERIAL_PATH = "LoadMaterials/EnemyPortraitMaterial";
 
-    [Header("ë¶€ìœ„ë³„ Image ì„¤ì •")]
+    [Header("ºÎÀ§º° Image ¼³Á¤")]
     [SerializeField] private Image topImage;
     [SerializeField] private Image faceImage;
     [SerializeField] private Image frontHairImage;
@@ -29,7 +29,7 @@ public class NPCPortrait : MonoBehaviour
     [SerializeField] private Transform partsContainer;
     [SerializeField] private Image mainPlayerImage;
 
-    [Header("ì™¸í˜• ë°ì´í„°")]
+    [Header("¿ÜÇü µ¥ÀÌÅÍ")]
     [SerializeField] private NPCLookPart m_lookPartData;
     public NPCLookPart GetLookPartData => m_lookPartData;
 
@@ -42,12 +42,14 @@ public class NPCPortrait : MonoBehaviour
     {
         if (cardData.BIsPlayer)
         {
+            isMainPlayer = true;
             partsContainer.gameObject.SetActive(false);
             mainPlayerImage.gameObject.SetActive(true);
             mainPlayerImage.sprite = m_lookPartData.MainCharacter;
             return;
         }
-        
+
+        isMainPlayer = false;
         partsContainer.gameObject.SetActive(true);
         mainPlayerImage.gameObject.SetActive(false);
 
@@ -121,7 +123,7 @@ public class NPCPortrait : MonoBehaviour
     {
         if (m_partImageMap.TryGetValue(partType, out Image targetImage))
         {
-            Sprite[] spriteArray = GetSpriteArrayByPartType(partType); // ì´ switchëŠ” ë°ì´í„° êµ¬ì¡°ìƒ ìœ ì§€
+            Sprite[] spriteArray = GetSpriteArrayByPartType(partType); // ÀÌ switch´Â µ¥ÀÌÅÍ ±¸Á¶»ó ÇÊ¿ä
 
             if (spriteArray != null && spriteIndex >= 0 && spriteIndex < spriteArray.Length)
             {
@@ -140,7 +142,7 @@ public class NPCPortrait : MonoBehaviour
         }
     }
 
-    // ê°ê° íŒŒì¸ ë§ˆë‹¤ ì»¬ëŸ¬ ë¶€ì—¬
+    // »ö»ó ÆÈ·¹Æ®¿¡ µû¶ó »ö»ó Àû¿ë
     public void ApplyPartColor(CardData.NPCLookPartType partType, NPCLookPart.ColorPalette.LookPartColors colors)
     {
         if (m_partMaterials != null && m_partMaterials.TryGetValue(partType, out Material partMaterial))
@@ -175,7 +177,7 @@ public class NPCPortrait : MonoBehaviour
         if (partDataArray == null)
             return null;
         
-        // PartData[]ì—ì„œ Sprite[] ì¶”ì¶œ
+        // PartData[]¿¡¼­ Sprite[] º¯È¯
         Sprite[] spriteArray = new Sprite[partDataArray.Length];
         for (int i = 0; i < partDataArray.Length; i++)
         {
@@ -233,24 +235,36 @@ public class NPCPortrait : MonoBehaviour
         return partDataArray[partIndex].Description;
     }
 
-    // ížˆíŠ¸ ì´íŽ™íŠ¸
+    // È÷Æ® ÀÌÆåÆ®
     public IEnumerator PlayHitEffect(float duration = 0.15f)
     {
-        if (m_partMaterials != null)
+        if (isMainPlayer)
         {
-            foreach (var material in m_partMaterials.Values)
+            if (mainPlayerImage != null)
             {
-                if (material != null && material.HasProperty("_Color"))
-                {
-                    material.SetColor("_Color", Color.red);
-                }
+                mainPlayerImage.color = Color.red;
+                yield return new WaitForSeconds(duration);
+                mainPlayerImage.color = Color.white;
             }
-            yield return new WaitForSeconds(duration);
-            foreach (var material in m_partMaterials.Values)
+        }
+        else
+        {
+            if (m_partMaterials != null)
             {
-                if (material != null && material.HasProperty("_Color"))
+                foreach (var material in m_partMaterials.Values)
                 {
-                    material.SetColor("_Color", Color.white);
+                    if (material != null && material.HasProperty("_Color"))
+                    {
+                        material.SetColor("_Color", Color.red);
+                    }
+                }
+                yield return new WaitForSeconds(duration);
+                foreach (var material in m_partMaterials.Values)
+                {
+                    if (material != null && material.HasProperty("_Color"))
+                    {
+                        material.SetColor("_Color", Color.white);
+                    }
                 }
             }
         }
